@@ -117,11 +117,17 @@ export function InlineQuiz({ data }: { data: QuizItem[] }) {
           />
         ))}
       </div>
-      <div className="flex justify-between mb-4">
-        <span className="text-xs font-bold text-[#585858]">
-          Câu {idx + 1} / {data.length}
-        </span>
-        <span className="text-xs font-bold text-[#DA251D]">{score} đúng</span>
+      <div className="flex justify-between items-center mb-6 bg-black/5 p-3 rounded-sm border border-black/5">
+        <div className="flex flex-col">
+          <span className="text-[10px] uppercase font-bold text-[#585858] opacity-60">Tiến độ</span>
+          <span className="text-sm font-black text-[#2C2A29]">
+            Câu {idx + 1} <span className="text-[#999] font-normal mx-1">/</span> {data.length}
+          </span>
+        </div>
+        <div className="flex flex-col items-end">
+          <span className="text-[10px] uppercase font-bold text-[#585858] opacity-60">Kết quả</span>
+          <span className="text-sm font-black text-[#DA251D]">{score} đúng</span>
+        </div>
       </div>
 
       <AnimatePresence mode="wait">

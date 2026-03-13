@@ -38,6 +38,7 @@ import { QuizItem, quizData } from "./data/quiz";
 import { MilestoneCard } from "./components/MilestoneCard";
 import { InlineQuiz } from "./components/InlineQuiz";
 import { MilestoneDetailModal } from "./components/MilestoneDetailModal";
+import Museum3D from "./components/Museum3D";
 
 /* ═══════════════════════════════════════════════════════════════════ */
 /*  COMPONENTS                                                        */
@@ -85,7 +86,7 @@ export default function Wrapper() {
 
 function Page() {
   const sp = useSearchParams();
-  const [tab, setTab] = useState<1 | 2 | 3>(1);
+  const [tab, setTab] = useState<1 | 2 | 3 | 4>(1);
   const [selectedMilestone, setSelectedMilestone] = useState<Milestone | null>(null);
 
   useEffect(() => {
@@ -178,6 +179,7 @@ function Page() {
             { id: 1 as const, label: "1975 – 1981", sub: "Bước chuyển mình" },
             { id: 2 as const, label: "1982 – 1986", sub: "Vượt khủng hoảng" },
             { id: 3 as const, label: "Tổng kết", sub: "11 năm nhìn lại" },
+            { id: 4 as const, label: "Không gian 3D", sub: "Bảo tàng ký ức" },
           ]).map((t) => (
             <button
               key={t.id}
@@ -197,14 +199,47 @@ function Page() {
       {/* ═══ CONTENT ═══ */}
       <AnimatePresence mode="wait">
         {tab === 1 && (
-          <motion.section key="p1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-3xl mx-auto px-4 py-16">
-            {/* section intro */}
-            <div className="text-center mb-14">
-              <span className="inline-block px-3 py-1 rounded-full text-[10px] font-sans font-bold uppercase tracking-wider text-[#FAF3EB] bg-[#DA251D] mb-4">Giai đoạn 1</span>
-              <h2 className="text-3xl md:text-4xl font-serif-heading font-bold text-[#2C2A29] mb-3">Bước Chuyển Mình Đầu Tiên</h2>
-              <p className="font-serif-body text-[#5C554E] max-w-lg mx-auto text-sm leading-relaxed">
-                Thống nhất non sông, bảo vệ biên giới, và những "đốm lửa" đổi mới đầu tiên.
-              </p>
+          <motion.section key="p1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-4xl mx-auto px-4 py-16">
+            {/* Newspaper Masthead for Phase 1 */}
+            <div className="relative mb-16 border-4 border-double border-[#2C2A29] p-8 bg-[#FAF3EB] shadow-[10px_10px_0px_0px_rgba(44,42,41,1)] overflow-hidden">
+               {/* Background Texture */}
+               <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/notebook.png')]" />
+               
+               <div className="relative z-10">
+                 <div className="flex flex-col md:flex-row items-center justify-between border-b-2 border-[#2C2A29] pb-4 mb-6">
+                    <span className="text-[11px] font-black uppercase tracking-[0.3em] text-[#DA251D]">Giai đoạn 1: 1975 — 1981</span>
+                    <span className="text-sm font-serif-heading italic font-bold text-[#5C554E]">Tập san Đặc biệt</span>
+                    <span className="text-[11px] font-black uppercase tracking-[0.3em] text-[#DA251D]">Kỳ I: Kiến thiết & Vệ quốc</span>
+                 </div>
+
+                 <div className="text-center mb-10">
+                    <h2 className="text-5xl md:text-7xl font-serif-heading font-black text-[#2C2A29] mb-4 uppercase tracking-tighter leading-[0.85]">
+                       Bước Chuyển Mình<br />
+                       <span className="text-[#DA251D]">Đầu Tiên</span>
+                    </h2>
+                    <div className="w-32 h-[2px] bg-[#DA251D] mx-auto mb-6" />
+                    <p className="font-serif-body text-[#333] max-w-2xl mx-auto text-xl italic leading-relaxed">
+                       "Thống nhất non sông, bảo vệ biên giới, và những 'đốm lửa' đổi mới đầu tiên."
+                    </p>
+                 </div>
+
+                 {/* Timeline Summary Box */}
+                 <div className="grid grid-cols-2 md:grid-cols-5 gap-0 border-t-2 border-[#2C2A29]">
+                    {[
+                      { year: "1975", date: "30/4", event: "Giải phóng miền Nam" },
+                      { year: "1975", date: "Tháng 8", event: "Hội nghị TW 24" },
+                      { year: "1975", date: "Tháng 11", event: "Hiệp thương Bắc-Nam" },
+                      { year: "1976", date: "25/4", event: "Tổng tuyển cử lịch sử" },
+                      { year: "1976", date: "Đại hội IV", event: "Chiến lược xây dựng" },
+                    ].map((item, idx) => (
+                      <div key={idx} className={`p-4 flex flex-col items-center justify-center text-center ${idx !== 4 ? 'md:border-r border-b md:border-b-0 border-[#2C2A29]/20' : ''} hover:bg-[#DA251D]/5 transition-colors group`}>
+                         <div className="text-[10px] font-bold text-[#2C2A29] opacity-40 group-hover:opacity-100 mb-1">{item.year}</div>
+                         <div className="text-lg font-serif-heading font-black text-[#DA251D] leading-none mb-2">{item.date}</div>
+                         <div className="text-[9px] font-bold uppercase tracking-wider text-[#2C2A29] leading-tight">{item.event}</div>
+                      </div>
+                    ))}
+                 </div>
+               </div>
             </div>
             <div className="space-y-12">
               {PHASE_1.map((m, i) => <MilestoneCard key={i} m={m} index={i} onClick={() => setSelectedMilestone(m)} />)}
@@ -371,6 +406,12 @@ function Page() {
             </motion.div>
           </motion.section>
         )}
+
+        {tab === 4 && (
+          <motion.section key="p4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-4xl mx-auto px-4 py-16">
+            <Museum3D />
+          </motion.section>
+        )}
       </AnimatePresence>
 
       <Divider color="#DA251D" />
@@ -385,7 +426,7 @@ function Page() {
           <p className="font-serif-body text-sm text-[#5C554E]">10 câu trắc nghiệm — Chương 3.1 (1975 – 1986)</p>
         </div>
         <div className="bg-[#FAF3EB] rounded-sm p-6 md:p-8 border-2 border-[#D1C2A5] shadow-[6px_6px_0px_0px_rgba(44,42,41,1)]">
-          <InlineQuiz data={quizData} />
+          <InlineQuiz data={quizData.slice(0, 10)} />
         </div>
       </section>
     </div>

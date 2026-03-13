@@ -11,7 +11,7 @@ const sections = [
     content: [
       {
         type: 'editorial',
-        text: 'Nhiệm vụ hàng đầu sau năm 1975 là nhanh chóng hoàn thành thống nhất đất nước về mặt Nhà nước. Đại hội IV của Đảng (12/1976) đã xác định đường lối chung là đưa cả nước tiến nhanh, tiến mạnh, tiến vững chắc lên chủ nghĩa xã hội. Đây là giai đoạn của những nỗ lực bứt phá trong bối cảnh nền kinh tế kiệt quệ sau chiến tranh.'
+        text: 'Sau đại thắng 1975, đất nước bước vào kỷ nguyên mới với niềm tin mãnh liệt. Tuy nhiên, thực tế lịch sử đặt ra 4 thử thách nghiệt ngã: (1) Hậu quả chiến tranh tàn khốc; (2) Di sản kinh tế nghèo nàn, lạc hậu của chế độ cũ; (3) Thiên tai liên tiếp (1977-1978); (4) Bao vây, cấm vận và chiến tranh biên giới. Những khó khăn này đòi hỏi một quyết tâm sắt đá để vừa tái thiết vừa giữ vững độc lập.'
       },
       {
         type: 'points',
@@ -21,33 +21,37 @@ const sections = [
           'Tiến hành cải tạo XHCN ở miền Nam, thiết lập quan hệ sản xuất mới.',
           'Chiến đấu bảo vệ chủ quyền biên giới Tây Nam và phía Bắc (1978-1979).'
         ]
+      },
+      {
+        type: 'editorial',
+        text: 'Đại hội IV của Đảng (12/1976) đã vạch ra con đường tiến lên CNXH thông qua 3 cuộc cách mạng: Cách mạng quan hệ sản xuất, Cách mạng khoa học - kỹ thuật (là then chốt) và Cách mạng tư tưởng - văn hóa. Đây là kim chỉ nam cho toàn bộ quá trình xây dựng đất nước trong giai đoạn này.'
       }
     ],
     breakthroughs: [
-      { year: '1979', event: 'Hội nghị TW 6 (Khóa IV)', goal: 'Đột phá đầu tiên: "Bung ra" sản xuất, khắc phục các rào cản hành chính.' }
+      { year: '1979', event: 'Hội nghị TW 6 (Khóa IV)', goal: 'Đột phá đầu tiên: "Bung ra" sản xuất, bước đầu điều chỉnh các rào cản hành chính.' }
     ],
     flashcard: {
       title: 'Ghi nhớ nhanh 3.1.1',
-      items: ['Đại hội IV (1976): Thống nhất đất nước rực rỡ.', 'Chiến tranh biên giới: Kiên cường vệ quốc.', '1979: Bắt đầu tìm tòi đổi mới.']
+      items: ['Đại hội IV (1976): Thống nhất rực rỡ.', '3 Cuộc Cách mạng: KH-KT là then chốt.', 'Thử thách: 4 khó khăn chồng chất.']
     },
     highlight: 'Dân tộc ta đã chứng minh sức mạnh đoàn kết không thể lay chuyển khi vừa tái thiết, vừa bảo vệ từng tấc đất biên cương.'
   },
   {
     id: '3.1.2',
     title: '3.1.2. Đại hội V và các bước đột phá tiếp tục đổi mới kinh tế (1982 - 1986)',
-    subtitle: 'Hai nhiệm vụ chiến lược: Xây dựng & Bảo vệ Tổ quốc',
+    subtitle: 'Nhận diện sai lầm và Tìm đường thoát khỏi khủng hoảng',
     content: [
       {
         type: 'editorial',
-        text: 'Đại hội V (3/1982) xác định hai nhiệm vụ chiến lược: Xây dựng thành công CNXH và Bảo vệ vững chắc Tổ quốc. Đây là thời kỳ bứt phá mạnh mẽ về tư duy kinh tế qua 2 bước đột phá tiếp theo.'
+        text: 'Giai đoạn 1976-1980, dù có những thành tựu nhất định, nhưng nền kinh tế rơi vào khủng hoảng trầm trọng. Nguyên nhân chủ yếu là do sai lầm chủ quan duy ý chí, cơ chế tập trung quan liêu bao cấp và sự nóng vội trong việc xóa bỏ các thành phần kinh tế phi XHCN. Đại hội V (3/1982) là một bước nhìn thẳng vào sự thật để điều chỉnh chiến lược.'
       },
       {
         type: 'points',
         items: [
-          'Chỉ thị 100-CT/TW (1981): Khoán sản phẩm đến nhóm và người lao động trong nông nghiệp.',
-          'Hội nghị Trung ương 8 (Khóa V - 1985): Xóa bỏ bao cấp, chuyển sang hạch toán kinh doanh XHCN.',
-          'Kết luận Bộ Chính trị (1986): Đưa ra 3 chương trình kinh tế (Lương thực, Hàng tiêu dùng, Hàng xuất khẩu).',
-          'Kiên quyết đấu tranh chống quan liêu, bao cấp và phục hồi quy luật giá trị.'
+          'Chỉ thị 100-CT/TW (1981): "Khoán 100" - luồng gió mới cho nông nghiệp.',
+          'Hội nghị Trung ương 8 (Khóa V - 1985): Quyết tâm xóa bỏ bao cấp trong Giá - Lương - Tiền.',
+          'Kết luận Bộ Chính trị (1986): Chốt hạ 3 chương trình kinh tế lớn (Lương thực - Thực phẩm, Hàng tiêu dùng, Hàng xuất khẩu).',
+          'Bài học quan trọng: Phải tôn trọng quy luật khách quan và thực tiễn sản xuất.'
         ]
       }
     ],
