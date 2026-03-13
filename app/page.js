@@ -3,7 +3,7 @@
 import HeroVintage from '@/components/HeroVintage';
 import InteractiveTimeline from '@/components/InteractiveTimeline';
 import BorderAndSubsidySection from '@/components/BorderAndSubsidySection';
-import DocumentSearch from '@/components/DocumentSearch';
+import HeritageSection from '@/components/HeritageSection';
 
 export default function Home() {
   return (
@@ -11,7 +11,7 @@ export default function Home() {
       <HeroVintage />
       <InteractiveTimeline />
       <BorderAndSubsidySection />
-      <DocumentSearch />
+      <HeritageSection />
 
       {/* Footer Vintage Style */}
       <footer className="bg-[#2C2A29] text-[#F5E6D3] py-12 text-center border-t-8 border-[#DA251D]">
