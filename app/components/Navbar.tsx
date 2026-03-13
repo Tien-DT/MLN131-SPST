@@ -43,21 +43,21 @@ export default function Navbar() {
   }, [isHomePage]);
 
   return (
-    <motion.nav 
+    <motion.nav
       className="w-full fixed z-50 bg-white/80 backdrop-blur-md border-b-2 border-black"
       initial={false}
     >
       <div className="h-1 w-full bg-[#A61F2B]"></div>
-    
+
       <div className="absolute top-12 left-16 w-32 h-32 bg-[#A61F2B]/10 rounded-full blur-2xl"></div>
       <div className="absolute top-8 right-16 w-24 h-24 bg-black/5 rounded-full blur-xl"></div>
-      
+
       <motion.div
         className="overflow-hidden"
-        animate={{ 
+        animate={{
           height: showMasthead ? "auto" : 0,
           opacity: showMasthead ? 1 : 0,
-        }} 
+        }}
         transition={{
           height: { duration: 0.35, ease: [0.1, 0.9, 0.2, 1] },
           opacity: { duration: showMasthead ? 0.3 : 0.15 }
@@ -66,42 +66,42 @@ export default function Navbar() {
         <div className="container-custom py-4 md:py-6 px-4 border-b-2 border-[#D1C2A5] relative">
           <div className="flex flex-col md:flex-row items-center justify-between text-center relative z-10 gap-3 md:gap-0">
             {/* Thay đổi Label trái */}
-            <p className="font-sans text-[10px] md:text-xs uppercase tracking-widest font-bold text-[#5C554E] min-w-[120px] md:text-left">Kỷ nguyên Độc lập</p>
+            <p className="font-sans text-xs md:text-sm uppercase tracking-widest font-bold text-[#5C554E] min-w-[120px] md:text-left">Kỷ nguyên Độc lập</p>
 
             {/* Centered Title */}
             <Link href="/" className="md:absolute md:left-1/2 md:transform md:-translate-x-1/2 group">
-              <h1 className="font-serif-heading font-bold text-2xl sm:text-3xl md:text-5xl tracking-wider uppercase text-center inline-block relative whitespace-nowrap">
+              <h1 className="font-serif-heading font-bold text-3xl sm:text-4xl md:text-6xl tracking-wider uppercase text-center inline-block relative whitespace-nowrap">
                 <span className="text-[#2C2A29]">KÝ ỨC </span>
                 <span className="text-[#DA251D]">THỐNG NHẤT</span>
-                <span className="absolute -top-2 -right-3 text-[#DA251D] text-xs md:text-sm">★</span>
+                <span className="absolute -top-2 -right-3 text-[#DA251D] text-sm md:text-base">★</span>
               </h1>
             </Link>
 
-            <p className="font-sans text-[10px] md:text-xs uppercase tracking-widest font-bold text-[#5C554E] min-w-[120px] md:text-right">1975 – 1981</p>
+            <p className="font-sans text-xs md:text-sm uppercase tracking-widest font-bold text-[#5C554E] min-w-[120px] md:text-right">1975 – 1981</p>
           </div>
         </div>
       </motion.div>
 
       {/* Main navbar content */}
-      <motion.div 
+      <motion.div
         className="container-custom relative z-10"
-        animate={{ 
+        animate={{
           y: showMasthead ? 0 : 5,
         }}
         transition={{ duration: 0.35, ease: [0.1, 0.9, 0.2, 1] }}
       >
-        <div className="flex justify-between items-center h-16 border-b-2 border-[#2C2A29]">
+        <div className="flex justify-between items-center h-20 border-b-2 border-[#2C2A29]">
           <div className="hidden lg:flex items-center">
             <div className="w-8 xl:w-16 h-[2px] bg-[#2C2A29]"></div>
             <motion.div
-              className="ml-2 xl:ml-4 bg-[#DA251D] px-2 py-1"
+              className="ml-2 xl:ml-4 bg-[#DA251D] px-3 py-1.5"
               animate={{
                 opacity: showMasthead ? 0 : 1,
                 x: showMasthead ? -20 : 0,
               }}
             >
               <Link href="/" className="group">
-                <h1 className="font-serif-heading font-bold text-base xl:text-lg tracking-wider uppercase inline-block relative whitespace-nowrap text-[#F5E6D3]">
+                <h1 className="font-serif-heading font-bold text-lg xl:text-xl tracking-wider uppercase inline-block relative whitespace-nowrap text-[#F5E6D3]">
                   KÝ ỨC THỐNG NHẤT
                 </h1>
               </Link>
@@ -121,7 +121,7 @@ export default function Navbar() {
               <div key={item.name} className="relative flex items-center">
                 <Link
                   href={item.path}
-                  className={`group relative px-1 lg:px-2 py-1 transition-colors font-sans font-bold tracking-widest text-[10px] lg:text-xs uppercase whitespace-nowrap ${
+                  className={`group relative px-2 lg:px-3 py-2 transition-colors font-sans font-bold tracking-widest text-xs lg:text-sm uppercase whitespace-nowrap ${
                     pathname === item.path ? 'text-[#DA251D]' : 'text-[#2C2A29] hover:text-[#DA251D]'
                   }`}
                 >
@@ -142,31 +142,31 @@ export default function Navbar() {
           {/* Right side elements */}
           <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
             <div className="flex flex-col items-end mr-1 lg:mr-2">
-                <span className="text-[8px] lg:text-[10px] font-sans font-bold text-[#5C554E] leading-none tracking-widest whitespace-nowrap">VIỆT NAM</span>
-                <span className="text-[8px] lg:text-[10px] font-sans font-bold text-[#DA251D] leading-none tracking-widest mt-1 whitespace-nowrap">DÂN CHỦ</span>
+                <span className="text-[10px] lg:text-xs font-sans font-bold text-[#5C554E] leading-none tracking-widest whitespace-nowrap">VIỆT NAM</span>
+                <span className="text-[10px] lg:text-xs font-sans font-bold text-[#DA251D] leading-none tracking-widest mt-1 whitespace-nowrap">DÂN CHỦ</span>
             </div>
-            <div className="w-6 h-5 lg:w-8 lg:h-6 bg-[#DA251D] flex items-center justify-center border-2 border-[#2C2A29] flex-shrink-0">
-               <span className="text-[#F4D03F] text-[10px] lg:text-xs">★</span>
+            <div className="w-8 h-6 lg:w-10 lg:h-8 bg-[#DA251D] flex items-center justify-center border-2 border-[#2C2A29] flex-shrink-0">
+               <span className="text-[#F4D03F] text-xs lg:text-sm">★</span>
             </div>
           </div>
 
           {/* Mobile navigation header when collapsed */}
           <div className="md:hidden flex items-center w-full justify-between">
             <div className="flex items-center">
-              <div className="w-4 h-4 bg-[#DA251D] border-2 border-[#2C2A29] flex items-center justify-center mr-2">
-                 <span className="text-[#F4D03F] text-[8px]">★</span>
+              <div className="w-5 h-5 bg-[#DA251D] border-2 border-[#2C2A29] flex items-center justify-center mr-2">
+                 <span className="text-[#F4D03F] text-[10px]">★</span>
               </div>
               {!showMasthead && (
-                <span className="font-serif-heading font-bold text-sm text-[#2C2A29] uppercase">Ký ức Thống nhất</span>
+                <span className="font-serif-heading font-bold text-base text-[#2C2A29] uppercase">Ký ức Thống nhất</span>
               )}
             </div>
-            
+
             {/* Mobile menu button */}
-            <button 
+            <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="flex items-center justify-center p-2 text-[#2C2A29] hover:text-[#DA251D]"
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
             </button>
           </div>
         </div>
@@ -200,7 +200,7 @@ export default function Navbar() {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <span className="mr-3 text-[#DA251D]">—</span>
-                    <span className="uppercase text-sm tracking-widest">{item.name}</span>
+                    <span className="uppercase text-base tracking-widest">{item.name}</span>
                   </Link>
                 ))}
               </div>

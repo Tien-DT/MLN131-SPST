@@ -268,44 +268,44 @@ export default function GamePage() {
       >
         {/* Top bar */}
         <div
-          className="flex items-center justify-between px-4 py-2 border-b-2 border-[#333] shrink-0"
+          className="flex items-center justify-between px-4 py-3 border-b-2 border-[#333] shrink-0"
           style={{ background: "rgba(0,0,0,0.3)" }}
         >
-          <Link href="/" className="pixel-font text-[8px] sm:text-[9px] text-[#888] hover:text-[#FFD700] transition-colors">
+          <Link href="/" className="pixel-font text-[11px] sm:text-[13px] text-[#888] hover:text-[#FFD700] transition-colors">
             ← THOÁT
           </Link>
-          <span className="pixel-font text-[8px] sm:text-[9px] text-[#FFD700]">
+          <span className="pixel-font text-[11px] sm:text-[13px] text-[#FFD700]">
             KÝ ỨC THỐNG NHẤT — XÂY DỰNG & BẢO VỆ TỔ QUỐC
           </span>
-          <span className="pixel-font text-[8px] sm:text-[9px] text-[#555]">v2.0</span>
+          <span className="pixel-font text-[11px] sm:text-[13px] text-[#555]">v2.0</span>
         </div>
 
         {/* HUD */}
         {(screen === "combat" || screen === "quiz") && (
           <div
-            className="flex items-center justify-between px-5 py-2 border-b border-[#222] flex-wrap gap-2 shrink-0"
+            className="flex items-center justify-between px-5 py-3 border-b border-[#222] flex-wrap gap-2 shrink-0"
             style={{ background: "rgba(0,0,0,0.2)" }}
           >
             <div className="flex items-center gap-1">
-              <span className="pixel-font text-[9px] text-[#888] mr-1">HP</span>
+              <span className="pixel-font text-[12px] text-[#888] mr-1">HP</span>
               <div className="flex gap-0.5">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <PixelHeart key={i} filled={i < hp} />
                 ))}
               </div>
             </div>
-            <div className="pixel-font text-[10px] sm:text-[11px] text-[#aaa]">
+            <div className="pixel-font text-[13px] sm:text-[14px] text-[#aaa]">
               ĐẠN: <span className={ammo <= 5 ? "text-[#ff4444]" : "text-[#4fc3f7]"}>{ammo}</span>
             </div>
             {activeUpgrades.length > 0 && (
-              <div className="pixel-font text-[8px] sm:text-[9px] text-[#a855f7]">
+              <div className="pixel-font text-[11px] sm:text-[12px] text-[#a855f7]">
                 {activeUpgrades.join(" ")}
               </div>
             )}
-            <div className="pixel-font text-[10px] sm:text-[11px] text-[#FFD700]">
+            <div className="pixel-font text-[13px] sm:text-[14px] text-[#FFD700]">
               ⬡ {score.toString().padStart(5, "0")}
             </div>
-            <div className="pixel-font text-[9px] text-[#888]">
+            <div className="pixel-font text-[12px] text-[#888]">
               LV{level + 1} • W{waveIdx + 1}/{totalQ}
             </div>
           </div>
@@ -334,6 +334,7 @@ export default function GamePage() {
               >
                 <ShooterArena
                   levelData={levelData}
+                  levelIndex={level}
                   onWaveCleared={onWaveCleared}
                   onAmmoEmpty={onAmmoEmpty}
                   setHp={setHp}

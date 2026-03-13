@@ -150,7 +150,7 @@ export function TutorialScreen({ onStart }: { onStart: () => void }) {
         className="mb-5"
       >
         <span
-          className="pixel-font text-[13px] sm:text-[15px] px-5 py-2 bg-[#FFD700] text-[#1a1a2e]"
+          className="pixel-font text-[16px] sm:text-[18px] px-6 py-2.5 bg-[#FFD700] text-[#1a1a2e]"
         >
           📖 HƯỚNG DẪN CHƠI
         </span>
@@ -161,13 +161,13 @@ export function TutorialScreen({ onStart }: { onStart: () => void }) {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="p-4 sm:p-5 border-4 border-[#333] mb-5 w-full max-w-md"
+        className="p-5 sm:p-7 border-4 border-[#333] mb-5 w-full max-w-lg"
         style={{ background: "#12122a", boxShadow: "4px 4px 0px #000" }}
       >
-        <p className="pixel-font text-[10px] sm:text-[11px] text-[#FFD700] mb-3">
+        <p className="pixel-font text-[13px] sm:text-[14px] text-[#FFD700] mb-4">
           ⌨ ĐIỀU KHIỂN
         </p>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {tips.map((t, i) => (
             <motion.div
               key={i}
@@ -176,11 +176,11 @@ export function TutorialScreen({ onStart }: { onStart: () => void }) {
               transition={{ delay: 0.4 + i * 0.1 }}
               className="flex items-center gap-3 text-left"
             >
-              <span className="text-lg">{t.icon}</span>
-              <span className="pixel-font text-[9px] sm:text-[10px] text-[#4fc3f7] min-w-[90px] sm:min-w-[120px]">
+              <span className="text-xl">{t.icon}</span>
+              <span className="pixel-font text-[12px] sm:text-[13px] text-[#4fc3f7] min-w-[100px] sm:min-w-[130px]">
                 {t.key}
               </span>
-              <span className="pixel-font text-[8px] sm:text-[9px] text-[#aaa]">
+              <span className="pixel-font text-[11px] sm:text-[12px] text-[#aaa]">
                 {t.desc}
               </span>
             </motion.div>
@@ -193,10 +193,10 @@ export function TutorialScreen({ onStart }: { onStart: () => void }) {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.7 }}
-        className="p-4 sm:p-5 border-4 border-[#333] mb-6 w-full max-w-md"
+        className="p-5 sm:p-7 border-4 border-[#333] mb-6 w-full max-w-lg"
         style={{ background: "#12122a", boxShadow: "4px 4px 0px #000" }}
       >
-        <p className="pixel-font text-[10px] sm:text-[11px] text-[#FFD700] mb-3">
+        <p className="pixel-font text-[13px] sm:text-[14px] text-[#FFD700] mb-4">
           📋 CÁCH CHƠI
         </p>
         <div className="space-y-3">
@@ -208,8 +208,8 @@ export function TutorialScreen({ onStart }: { onStart: () => void }) {
               transition={{ delay: 0.8 + i * 0.1 }}
               className="flex items-start gap-3 text-left"
             >
-              <span className="text-base mt-0.5">{r.icon}</span>
-              <span className="pixel-font text-[8px] sm:text-[9px] text-[#ccc] leading-relaxed">
+              <span className="text-lg mt-0.5">{r.icon}</span>
+              <span className="pixel-font text-[11px] sm:text-[12px] text-[#ccc] leading-relaxed">
                 {r.text}
               </span>
             </motion.div>
@@ -222,7 +222,7 @@ export function TutorialScreen({ onStart }: { onStart: () => void }) {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4 }}
         onClick={onStart}
-        className="pixel-font text-[10px] sm:text-xs px-8 py-4 text-[#1a1a2e] font-bold border-4 border-[#1a1a2e] hover:translate-y-1 hover:shadow-none transition-all"
+        className="pixel-font text-[13px] sm:text-[15px] px-10 py-4 text-[#1a1a2e] font-bold border-4 border-[#1a1a2e] hover:translate-y-1 hover:shadow-none transition-all"
         style={{ background: "#FFD700", boxShadow: "4px 4px 0px #1a1a2e" }}
       >
         ▶ BẮT ĐẦU CHIẾN ĐẤU!
@@ -312,25 +312,25 @@ export function QuizScreen({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
-      className="max-w-2xl mx-auto px-4 py-8"
+      className="max-w-3xl mx-auto px-4 py-8"
     >
       <div className="text-center mb-5">
-        <span className="pixel-font text-[11px] sm:text-[13px] px-4 py-1.5 bg-[#FFD700] text-[#1a1a2e]">
+        <span className="pixel-font text-[14px] sm:text-[16px] px-4 py-1.5 bg-[#FFD700] text-[#1a1a2e]">
           ⚔ WAVE CLEARED — QUIZ TIME!
         </span>
       </div>
 
       <div
-        className="p-5 sm:p-7 border-4 border-[#333] relative"
+        className="p-6 sm:p-8 border-4 border-[#333] relative"
         style={{ background: "#12122a", boxShadow: "4px 4px 0px #000" }}
       >
         <div className="absolute -top-3 left-4">
-          <span className="pixel-font text-[9px] px-3 py-1 bg-[#FFD700] text-[#1a1a2e]">
+          <span className="pixel-font text-[11px] px-3 py-1 bg-[#FFD700] text-[#1a1a2e]">
             {question.era}
           </span>
         </div>
 
-        <p className="pixel-font text-[11px] sm:text-[13px] text-white leading-relaxed mb-6 mt-3">
+        <p className="pixel-font text-[14px] sm:text-[16px] text-white leading-relaxed mb-6 mt-3">
           {question.question}
         </p>
 
@@ -357,7 +357,7 @@ export function QuizScreen({
                 key={i}
                 onClick={() => pick === null && setPick(i)}
                 disabled={pick !== null}
-                className="pixel-font text-[9px] sm:text-[11px] text-left px-4 py-4 transition-all hover:translate-y-[-2px] disabled:cursor-default"
+                className="pixel-font text-[12px] sm:text-[14px] text-left px-5 py-5 transition-all hover:translate-y-[-2px] disabled:cursor-default"
                 style={{
                   background: bg,
                   borderWidth: 3,
@@ -368,7 +368,7 @@ export function QuizScreen({
                 }}
               >
                 <span
-                  className="inline-block w-5 mr-1"
+                  className="inline-block w-6 mr-2"
                   style={{
                     color: pick === null ? "#FFD700" : isCorrectOpt ? "#95d5b2" : isThis ? "#ff6b6b" : "#555",
                   }}
@@ -385,14 +385,14 @@ export function QuizScreen({
           {pick !== null && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-5">
               <div
-                className="pixel-font text-[9px] sm:text-[11px] p-4 border-2 leading-relaxed"
+                className="pixel-font text-[12px] sm:text-[14px] p-5 border-2 leading-relaxed"
                 style={{
                   background: isCorrect ? "#1b4332" : "#3d0000",
                   borderColor: isCorrect ? "#2d6a4f" : "#cc0000",
                   color: isCorrect ? "#95d5b2" : "#ff6b6b",
                 }}
               >
-                <p className="mb-2 text-[11px] sm:text-[13px]">
+                <p className="mb-2 text-[14px] sm:text-[16px]">
                   {isCorrect ? "✦ CHÍNH XÁC! +1 HP, +10 ĐẠN, +100 ĐIỂM" : "✕ SAI RỒI! +5 ĐẠN"}
                 </p>
                 <p style={{ color: isCorrect ? "#a7c7b8" : "#cc8888" }}>
@@ -402,7 +402,7 @@ export function QuizScreen({
 
               <button
                 onClick={() => onAnswer(isCorrect)}
-                className="pixel-font text-[11px] sm:text-[13px] mt-4 px-8 py-4 text-[#1a1a2e] font-bold border-3 border-[#1a1a2e] hover:translate-y-1 hover:shadow-none transition-all"
+                className="pixel-font text-[14px] sm:text-[16px] mt-4 px-10 py-4 text-[#1a1a2e] font-bold border-3 border-[#1a1a2e] hover:translate-y-1 hover:shadow-none transition-all"
                 style={{ background: "#FFD700", boxShadow: "3px 3px 0px #1a1a2e" }}
               >
                 TIẾP TỤC ▶

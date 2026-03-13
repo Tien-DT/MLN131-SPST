@@ -15,13 +15,13 @@ export interface Obstacle {
   y: number;
   w: number;
   h: number;
-  type: "sandbag" | "crater" | "trench" | "tank" | "wall" | "bunker" | "barrel" | "wire";
+  type: "sandbag" | "crater" | "trench" | "tank" | "wall" | "bunker" | "barrel" | "wire" | "palace" | "gate";
 }
 
 export interface MapDecoration {
   x: number;
   y: number;
-  type: "fire" | "smoke" | "flag" | "debris" | "tree_stump" | "shell_casing";
+  type: "fire" | "smoke" | "flag" | "debris" | "tree_stump" | "shell_casing" | "tank_active";
 }
 
 export interface MapTheme {
@@ -54,11 +54,40 @@ export interface Bullet {
   dy: number;
 }
 
+export interface EnemyBullet {
+  id: number;
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+  fromTank: boolean;
+}
+
+export type EnemyType = "soldier" | "fortified" | "tank";
+
+export interface EnemyTypeConfig {
+  type: EnemyType;
+  speed: number;
+  size: number;
+  hp: number;
+  shootCooldown: number;
+  bulletSpeed: number;
+  scoreValue: number;
+}
+
 export interface Enemy {
   id: number;
   x: number;
   y: number;
   hp: number;
+  type: EnemyType;
+  speed: number;
+  size: number;
+  lastShot: number;
+  anchorX?: number;
+  anchorY?: number;
+  shootCooldown: number;
+  bulletSpeed: number;
 }
 
 export interface Explosion {
@@ -90,6 +119,64 @@ export const ENEMY_SIZE = 20;
 export const ENEMY_SPEED = 1.3;
 export const ENEMIES_PER_WAVE = 6;
 export const SHOOT_COOLDOWN = 180;
+
+export const ENEMY_TYPES: Record<EnemyType, EnemyTypeConfig> = {
+  soldier: {
+    type: "soldier",
+    speed: 1.3,
+    size: 20,
+    hp: 1,
+    shootCooldown: 2500,
+    bulletSpeed: 3,
+    scoreValue: 50,
+  },
+  fortified: {
+    type: "fortified",
+    speed: 0.3,
+    size: 20,
+    hp: 2,
+    shootCooldown: 1800,
+    bulletSpeed: 3.5,
+    scoreValue: 80,
+  },
+  tank: {
+    type: "tank",
+    speed: 0.5,
+    size: 36,
+    hp: 5,
+    shootCooldown: 3000,
+    bulletSpeed: 4,
+    scoreValue: 150,
+  },
+};
+
+export const ENEMY_SHOOT_RANGE = 300;
+export const FORTIFIED_ANCHOR_RANGE = 60;
+export const ENEMY_BULLET_SIZE = 3;
+export const TANK_BULLET_SIZE = 6;
+
+export interface WaveComposition {
+  soldiers: number;
+  fortified: number;
+  tanks: number;
+}
+
+export function getWaveComposition(levelIndex: number, waveNum: number): WaveComposition {
+  if (levelIndex === 0) {
+    // Level 1: Chiến dịch HCM — lính địch tử thủ, có xe tăng
+    return {
+      soldiers: 3 + waveNum,
+      fortified: 2 + Math.floor(waveNum / 2),
+      tanks: waveNum >= 2 ? 1 + Math.floor(waveNum / 3) : 0,
+    };
+  }
+  // Default cho các level khác (backwards compatible)
+  return {
+    soldiers: ENEMIES_PER_WAVE + waveNum * 2,
+    fortified: 0,
+    tanks: 0,
+  };
+}
 
 export const WEAPONS: WeaponType[] = [
   {
@@ -133,6 +220,102 @@ export const WEAPONS: WeaponType[] = [
 /* ── Level data ────────────────────────────────────────────────────── */
 
 export const GAME_LEVELS: LevelData[] = [
+  /* ──────── LEVEL 1: CHIẾN DỊCH HCM — Xe tăng húc Dinh Độc Lập ──────── */
+  {
+    name: "GIẢI PHÓNG SÀI GÒN",
+    emoji: "🚩",
+    bg: "#2a3a2a",
+    groundColor: "#3a5a3a",
+    enemyColor: "#8B7355",
+    map: {
+      terrain: "urban",
+      weather: "clear",
+      obstacles: [
+        // Dinh Độc Lập (tòa nhà chính phía trên)
+        { x: 280, y: 20, w: 240, h: 80, type: "palace" },
+        // Cổng Dinh (2 trụ cổng)
+        { x: 300, y: 110, w: 20, h: 30, type: "gate" },
+        { x: 480, y: 110, w: 20, h: 30, type: "gate" },
+        // Hàng rào 2 bên
+        { x: 120, y: 100, w: 60, h: 15, type: "wall" },
+        { x: 600, y: 100, w: 60, h: 15, type: "wall" },
+        // Công sự phòng thủ — nơi lính tử thủ
+        { x: 150, y: 200, w: 50, h: 20, type: "sandbag" },
+        { x: 600, y: 200, w: 50, h: 20, type: "sandbag" },
+        { x: 350, y: 280, w: 60, h: 40, type: "bunker" },
+        { x: 700, y: 350, w: 50, h: 20, type: "sandbag" },
+        { x: 80, y: 320, w: 50, h: 40, type: "bunker" },
+        // Hố bom trên đường tiến công
+        { x: 200, y: 400, w: 50, h: 50, type: "crater" },
+        { x: 500, y: 450, w: 40, h: 20, type: "sandbag" },
+        { x: 100, y: 500, w: 60, h: 20, type: "sandbag" },
+      ],
+      decorations: [
+        // Xe tăng 843 tiến về cổng Dinh
+        { x: 400, y: 220, type: "tank_active" },
+        // Cờ giải phóng
+        { x: 395, y: 15, type: "flag" },
+        // Khói lửa chiến trận
+        { x: 150, y: 250, type: "smoke" },
+        { x: 550, y: 300, type: "fire" },
+        { x: 350, y: 480, type: "debris" },
+        { x: 650, y: 200, type: "smoke" },
+      ],
+    },
+    questions: [
+      {
+        question: "Chiến dịch Hồ Chí Minh bắt đầu ngày nào?",
+        options: ["26/4/1975", "30/4/1975", "21/4/1975", "1/5/1975"],
+        correctIndex: 0,
+        explanation:
+          "Chiến dịch Hồ Chí Minh bắt đầu ngày 26/4/1975, kết thúc thắng lợi vào 30/4/1975.",
+        era: "1975",
+      },
+      {
+        question: "Ai là Tổng tư lệnh Chiến dịch Hồ Chí Minh?",
+        options: [
+          "Võ Nguyên Giáp",
+          "Văn Tiến Dũng",
+          "Lê Đức Thọ",
+          "Trần Văn Trà",
+        ],
+        correctIndex: 1,
+        explanation:
+          "Đại tướng Văn Tiến Dũng là Tư lệnh Chiến dịch Hồ Chí Minh.",
+        era: "1975",
+      },
+      {
+        question: "Xe tăng nào húc đổ cổng Dinh Độc Lập?",
+        options: ["Xe 390", "Xe 843", "Xe 354", "Xe 279"],
+        correctIndex: 1,
+        explanation:
+          "Xe tăng 843 do Bùi Quang Thận lái húc đổ cổng Dinh Độc Lập trưa 30/4/1975.",
+        era: "1975",
+      },
+      {
+        question: "Chiến dịch Tây Nguyên bắt đầu đánh vào đâu?",
+        options: ["Pleiku", "Buôn Ma Thuột", "Kon Tum", "Đà Lạt"],
+        correctIndex: 1,
+        explanation:
+          "Chiến dịch Tây Nguyên mở màn bằng trận đánh Buôn Ma Thuột ngày 10/3/1975.",
+        era: "1975",
+      },
+      {
+        question: "Tổng thống cuối cùng của Việt Nam Cộng hòa là ai?",
+        options: [
+          "Nguyễn Văn Thiệu",
+          "Trần Văn Hương",
+          "Dương Văn Minh",
+          "Nguyễn Cao Kỳ",
+        ],
+        correctIndex: 2,
+        explanation:
+          "Dương Văn Minh tuyên bố đầu hàng vô điều kiện trưa 30/4/1975.",
+        era: "1975",
+      },
+    ],
+  },
+  /* ──────── LEVEL 2: THỐNG NHẤT ──────── */
   {
     name: "THỐNG NHẤT",
     emoji: "🏛️",
@@ -214,81 +397,7 @@ export const GAME_LEVELS: LevelData[] = [
       },
     ],
   },
-  {
-    name: "KINH TẾ & ĐỔI MỚI",
-    emoji: "📜",
-    bg: "#1a3a5c",
-    groundColor: "#1a5276",
-    enemyColor: "#8833aa",
-    map: {
-      terrain: "urban",
-      weather: "clear",
-      obstacles: [
-        { x: 100, y: 100, w: 80, h: 60, type: "wall" },
-        { x: 500, y: 80, w: 60, h: 40, type: "wall" },
-        { x: 300, y: 300, w: 50, h: 50, type: "bunker" },
-        { x: 150, y: 420, w: 40, h: 30, type: "barrel" },
-        { x: 580, y: 400, w: 80, h: 60, type: "wall" },
-      ],
-      decorations: [
-        { x: 250, y: 150, type: "debris" },
-        { x: 450, y: 350, type: "debris" },
-        { x: 620, y: 100, type: "smoke" },
-      ],
-    },
-    questions: [
-      {
-        question: "Đại hội V coi ngành nào là 'mặt trận hàng đầu'?",
-        options: ["Công nghiệp nặng", "Giáo dục", "Nông nghiệp", "Quốc phòng"],
-        correctIndex: 2,
-        explanation:
-          "Đại hội V quyết định coi nông nghiệp là mặt trận hàng đầu.",
-        era: "1982",
-      },
-      {
-        question: "Lạm phát cao nhất 1985-86 lên tới bao nhiêu?",
-        options: ["200%", "500%", "Trên 700%", "50%"],
-        correctIndex: 2,
-        explanation:
-          "Lạm phát phi mã lên tới hơn 700% trong giai đoạn 1985-1986.",
-        era: "1986",
-      },
-      {
-        question: "Cơ chế nào gây khủng hoảng kinh tế trước Đổi Mới?",
-        options: [
-          "Kinh tế thị trường",
-          "Tập trung quan liêu bao cấp",
-          "Kinh tế hỗn hợp",
-          "Kinh tế tư nhân",
-        ],
-        correctIndex: 1,
-        explanation:
-          "Cơ chế tập trung quan liêu bao cấp triệt tiêu mọi động lực phát triển.",
-        era: "1982-86",
-      },
-      {
-        question: "Khoán 100 ban hành năm nào?",
-        options: ["1979", "1981", "1983", "1986"],
-        correctIndex: 1,
-        explanation:
-          "Chỉ thị 100 về khoán sản phẩm trong nông nghiệp ban hành năm 1981.",
-        era: "1981",
-      },
-      {
-        question: "Đại hội VI (12/1986) được gọi là gì?",
-        options: [
-          "Đại hội Thống nhất",
-          "Đại hội Đổi mới",
-          "Đại hội Cải cách",
-          "Đại hội Mở cửa",
-        ],
-        correctIndex: 1,
-        explanation:
-          "Đại hội VI mở ra thời kỳ Đổi mới toàn diện đất nước.",
-        era: "1986",
-      },
-    ],
-  },
+  /* ──────── LEVEL 3: BIÊN GIỚI ──────── */
   {
     name: "BIÊN GIỚI",
     emoji: "⚔️",
@@ -372,171 +481,83 @@ export const GAME_LEVELS: LevelData[] = [
       },
     ],
   },
+  /* ──────── LEVEL 4: KINH TẾ & ĐỔI MỚI ──────── */
   {
-    name: "CHIẾN DỊCH HCM",
-    emoji: "🚩",
-    bg: "#1a2e0a",
-    groundColor: "#2d4a12",
-    enemyColor: "#cc3333",
+    name: "KINH TẾ & ĐỔI MỚI",
+    emoji: "📜",
+    bg: "#1a3a5c",
+    groundColor: "#1a5276",
+    enemyColor: "#8833aa",
     map: {
-      terrain: "jungle",
-      weather: "rain",
+      terrain: "urban",
+      weather: "clear",
       obstacles: [
-        { x: 60, y: 100, w: 80, h: 16, type: "trench" },
-        { x: 200, y: 60, w: 70, h: 50, type: "tank" },
-        { x: 500, y: 150, w: 60, h: 20, type: "sandbag" },
-        { x: 350, y: 350, w: 50, h: 50, type: "crater" },
-        { x: 100, y: 420, w: 60, h: 60, type: "crater" },
-        { x: 580, y: 380, w: 80, h: 16, type: "trench" },
-        { x: 450, y: 250, w: 40, h: 20, type: "sandbag" },
+        { x: 100, y: 100, w: 80, h: 60, type: "wall" },
+        { x: 500, y: 80, w: 60, h: 40, type: "wall" },
+        { x: 300, y: 300, w: 50, h: 50, type: "bunker" },
+        { x: 150, y: 420, w: 40, h: 30, type: "barrel" },
+        { x: 580, y: 400, w: 80, h: 60, type: "wall" },
       ],
       decorations: [
-        { x: 300, y: 120, type: "fire" },
-        { x: 150, y: 300, type: "smoke" },
-        { x: 600, y: 80, type: "flag" },
-        { x: 500, y: 480, type: "debris" },
-        { x: 250, y: 450, type: "shell_casing" },
+        { x: 250, y: 150, type: "debris" },
+        { x: 450, y: 350, type: "debris" },
+        { x: 620, y: 100, type: "smoke" },
       ],
     },
     questions: [
       {
-        question: "Chiến dịch Hồ Chí Minh bắt đầu ngày nào?",
-        options: ["26/4/1975", "30/4/1975", "21/4/1975", "1/5/1975"],
-        correctIndex: 0,
-        explanation:
-          "Chiến dịch Hồ Chí Minh bắt đầu ngày 26/4/1975, kết thúc thắng lợi vào 30/4/1975.",
-        era: "1975",
-      },
-      {
-        question: "Ai là Tổng tư lệnh Chiến dịch Hồ Chí Minh?",
-        options: [
-          "Võ Nguyên Giáp",
-          "Văn Tiến Dũng",
-          "Lê Đức Thọ",
-          "Trần Văn Trà",
-        ],
-        correctIndex: 1,
-        explanation:
-          "Đại tướng Văn Tiến Dũng là Tư lệnh Chiến dịch Hồ Chí Minh.",
-        era: "1975",
-      },
-      {
-        question: "Xe tăng nào húc đổ cổng Dinh Độc Lập?",
-        options: ["Xe 390", "Xe 843", "Xe 354", "Xe 279"],
-        correctIndex: 1,
-        explanation:
-          "Xe tăng 843 do Bùi Quang Thận lái húc đổ cổng Dinh Độc Lập trưa 30/4/1975.",
-        era: "1975",
-      },
-      {
-        question: "Chiến dịch Tây Nguyên bắt đầu đánh vào đâu?",
-        options: ["Pleiku", "Buôn Ma Thuột", "Kon Tum", "Đà Lạt"],
-        correctIndex: 1,
-        explanation:
-          "Chiến dịch Tây Nguyên mở màn bằng trận đánh Buôn Ma Thuột ngày 10/3/1975.",
-        era: "1975",
-      },
-      {
-        question: "Tổng thống cuối cùng của Việt Nam Cộng hòa là ai?",
-        options: [
-          "Nguyễn Văn Thiệu",
-          "Trần Văn Hương",
-          "Dương Văn Minh",
-          "Nguyễn Cao Kỳ",
-        ],
+        question: "Đại hội V coi ngành nào là 'mặt trận hàng đầu'?",
+        options: ["Công nghiệp nặng", "Giáo dục", "Nông nghiệp", "Quốc phòng"],
         correctIndex: 2,
         explanation:
-          "Dương Văn Minh tuyên bố đầu hàng vô điều kiện trưa 30/4/1975.",
-        era: "1975",
+          "Đại hội V quyết định coi nông nghiệp là mặt trận hàng đầu.",
+        era: "1982",
+      },
+      {
+        question: "Lạm phát cao nhất 1985-86 lên tới bao nhiêu?",
+        options: ["200%", "500%", "Trên 700%", "50%"],
+        correctIndex: 2,
+        explanation:
+          "Lạm phát phi mã lên tới hơn 700% trong giai đoạn 1985-1986.",
+        era: "1986",
+      },
+      {
+        question: "Cơ chế nào gây khủng hoảng kinh tế trước Đổi Mới?",
+        options: [
+          "Kinh tế thị trường",
+          "Tập trung quan liêu bao cấp",
+          "Kinh tế hỗn hợp",
+          "Kinh tế tư nhân",
+        ],
+        correctIndex: 1,
+        explanation:
+          "Cơ chế tập trung quan liêu bao cấp triệt tiêu mọi động lực phát triển.",
+        era: "1982-86",
+      },
+      {
+        question: "Khoán 100 ban hành năm nào?",
+        options: ["1979", "1981", "1983", "1986"],
+        correctIndex: 1,
+        explanation:
+          "Chỉ thị 100 về khoán sản phẩm trong nông nghiệp ban hành năm 1981.",
+        era: "1981",
+      },
+      {
+        question: "Đại hội VI (12/1986) được gọi là gì?",
+        options: [
+          "Đại hội Thống nhất",
+          "Đại hội Đổi mới",
+          "Đại hội Cải cách",
+          "Đại hội Mở cửa",
+        ],
+        correctIndex: 1,
+        explanation:
+          "Đại hội VI mở ra thời kỳ Đổi mới toàn diện đất nước.",
+        era: "1986",
       },
     ],
   },
-  {
-    name: "ĐƯỜNG TRƯỜNG SƠN",
-    emoji: "🌿",
-    bg: "#0d2b0d",
-    groundColor: "#1a4d1a",
-    enemyColor: "#cc6600",
-    map: {
-      terrain: "jungle",
-      weather: "rain",
-      obstacles: [
-        { x: 100, y: 50, w: 50, h: 50, type: "crater" },
-        { x: 350, y: 100, w: 40, h: 20, type: "sandbag" },
-        { x: 550, y: 200, w: 60, h: 60, type: "crater" },
-        { x: 200, y: 300, w: 70, h: 50, type: "tank" },
-        { x: 450, y: 400, w: 60, h: 20, type: "sandbag" },
-        { x: 80, y: 450, w: 50, h: 50, type: "crater" },
-        { x: 620, y: 100, w: 40, h: 30, type: "barrel" },
-        { x: 300, y: 200, w: 100, h: 16, type: "trench" },
-      ],
-      decorations: [
-        { x: 180, y: 120, type: "tree_stump" },
-        { x: 400, y: 50, type: "tree_stump" },
-        { x: 600, y: 350, type: "fire" },
-        { x: 100, y: 350, type: "smoke" },
-        { x: 500, y: 500, type: "shell_casing" },
-        { x: 300, y: 480, type: "tree_stump" },
-      ],
-    },
-    questions: [
-      {
-        question: "Đường Trường Sơn bắt đầu mở từ năm nào?",
-        options: ["1954", "1959", "1965", "1968"],
-        correctIndex: 1,
-        explanation:
-          "Đường Trường Sơn (đường Hồ Chí Minh) bắt đầu mở từ ngày 19/5/1959.",
-        era: "1959",
-      },
-      {
-        question: "Đơn vị nào được giao nhiệm vụ mở đường Trường Sơn?",
-        options: [
-          "Đoàn 559",
-          "Đoàn 338",
-          "Đoàn 125",
-          "Đoàn 772",
-        ],
-        correctIndex: 0,
-        explanation:
-          "Đoàn 559 (Binh đoàn Trường Sơn) được thành lập ngày 19/5/1959 để mở đường.",
-        era: "1959",
-      },
-      {
-        question: "Tổng chiều dài đường Trường Sơn khoảng bao nhiêu km?",
-        options: ["5.000 km", "10.000 km", "20.000 km", "1.000 km"],
-        correctIndex: 2,
-        explanation:
-          "Hệ thống đường Trường Sơn có tổng chiều dài khoảng 20.000 km đường bộ.",
-        era: "1959-75",
-      },
-      {
-        question: "Đường Trường Sơn còn gọi là gì?",
-        options: [
-          "Đường Quốc lộ 1",
-          "Đường Hồ Chí Minh",
-          "Đường Cách mạng",
-          "Đường Thống nhất",
-        ],
-        correctIndex: 1,
-        explanation:
-          "Đường Trường Sơn được gọi là đường Hồ Chí Minh – con đường huyền thoại.",
-        era: "1959-75",
-      },
-      {
-        question: "Nữ anh hùng nào nổi tiếng trên đường Trường Sơn?",
-        options: [
-          "Võ Thị Sáu",
-          "Nguyễn Thị Minh Khai",
-          "Tám thanh niên xung phong Ngã ba Đồng Lộc",
-          "Nguyễn Thị Định",
-        ],
-        correctIndex: 2,
-        explanation:
-          "10 cô gái ở Ngã ba Đồng Lộc hy sinh anh dũng để bảo vệ huyết mạch Trường Sơn.",
-        era: "1968",
-      },
-    ],
-  },
+  /* ──────── LEVEL 5: ĐIỆN BIÊN PHỦ ──────── */
   {
     name: "ĐIỆN BIÊN PHỦ",
     emoji: "🏔️",
@@ -628,6 +649,94 @@ export const GAME_LEVELS: LevelData[] = [
       },
     ],
   },
+  /* ──────── LEVEL 6: ĐƯỜNG TRƯỜNG SƠN ──────── */
+  {
+    name: "ĐƯỜNG TRƯỜNG SƠN",
+    emoji: "🌿",
+    bg: "#0d2b0d",
+    groundColor: "#1a4d1a",
+    enemyColor: "#cc6600",
+    map: {
+      terrain: "jungle",
+      weather: "rain",
+      obstacles: [
+        { x: 100, y: 50, w: 50, h: 50, type: "crater" },
+        { x: 350, y: 100, w: 40, h: 20, type: "sandbag" },
+        { x: 550, y: 200, w: 60, h: 60, type: "crater" },
+        { x: 200, y: 300, w: 70, h: 50, type: "tank" },
+        { x: 450, y: 400, w: 60, h: 20, type: "sandbag" },
+        { x: 80, y: 450, w: 50, h: 50, type: "crater" },
+        { x: 620, y: 100, w: 40, h: 30, type: "barrel" },
+        { x: 300, y: 200, w: 100, h: 16, type: "trench" },
+      ],
+      decorations: [
+        { x: 180, y: 120, type: "tree_stump" },
+        { x: 400, y: 50, type: "tree_stump" },
+        { x: 600, y: 350, type: "fire" },
+        { x: 100, y: 350, type: "smoke" },
+        { x: 500, y: 500, type: "shell_casing" },
+        { x: 300, y: 480, type: "tree_stump" },
+      ],
+    },
+    questions: [
+      {
+        question: "Đường Trường Sơn bắt đầu mở từ năm nào?",
+        options: ["1954", "1959", "1965", "1968"],
+        correctIndex: 1,
+        explanation:
+          "Đường Trường Sơn (đường Hồ Chí Minh) bắt đầu mở từ ngày 19/5/1959.",
+        era: "1959",
+      },
+      {
+        question: "Đơn vị nào được giao nhiệm vụ mở đường Trường Sơn?",
+        options: [
+          "Đoàn 559",
+          "Đoàn 338",
+          "Đoàn 125",
+          "Đoàn 772",
+        ],
+        correctIndex: 0,
+        explanation:
+          "Đoàn 559 (Binh đoàn Trường Sơn) được thành lập ngày 19/5/1959 để mở đường.",
+        era: "1959",
+      },
+      {
+        question: "Tổng chiều dài đường Trường Sơn khoảng bao nhiêu km?",
+        options: ["5.000 km", "10.000 km", "20.000 km", "1.000 km"],
+        correctIndex: 2,
+        explanation:
+          "Hệ thống đường Trường Sơn có tổng chiều dài khoảng 20.000 km đường bộ.",
+        era: "1959-75",
+      },
+      {
+        question: "Đường Trường Sơn còn gọi là gì?",
+        options: [
+          "Đường Quốc lộ 1",
+          "Đường Hồ Chí Minh",
+          "Đường Cách mạng",
+          "Đường Thống nhất",
+        ],
+        correctIndex: 1,
+        explanation:
+          "Đường Trường Sơn được gọi là đường Hồ Chí Minh – con đường huyền thoại.",
+        era: "1959-75",
+      },
+      {
+        question: "Nữ anh hùng nào nổi tiếng trên đường Trường Sơn?",
+        options: [
+          "Võ Thị Sáu",
+          "Nguyễn Thị Minh Khai",
+          "Tám thanh niên xung phong Ngã ba Đồng Lộc",
+          "Nguyễn Thị Định",
+        ],
+        correctIndex: 2,
+        explanation:
+          "10 cô gái ở Ngã ba Đồng Lộc hy sinh anh dũng để bảo vệ huyết mạch Trường Sơn.",
+        era: "1968",
+      },
+    ],
+  },
+  /* ──────── LEVEL 7: TẾT MẬU THÂN ──────── */
   {
     name: "TẾT MẬU THÂN",
     emoji: "💥",

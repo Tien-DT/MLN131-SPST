@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useRef, useState } from "react";
-import type { LevelData, Bullet, Enemy, Explosion, Obstacle, MapDecoration, WeaponType } from "../data";
+import type { LevelData, Bullet, Enemy, EnemyBullet, Explosion, Obstacle, MapDecoration, WeaponType } from "../data";
 import {
   ARENA_W,
   ARENA_H,
@@ -14,6 +14,12 @@ import {
   ENEMIES_PER_WAVE,
   SHOOT_COOLDOWN,
   WEAPONS,
+  ENEMY_TYPES,
+  ENEMY_SHOOT_RANGE,
+  FORTIFIED_ANCHOR_RANGE,
+  ENEMY_BULLET_SIZE,
+  TANK_BULLET_SIZE,
+  getWaveComposition,
 } from "../data";
 
 /* ═══════════════════════════════════════════════════════════════════ */
@@ -22,6 +28,7 @@ import {
 
 export default function ShooterArena({
   levelData,
+  levelIndex,
   onWaveCleared,
   onAmmoEmpty,
   setHp,
@@ -33,6 +40,7 @@ export default function ShooterArena({
   upgrades,
 }: {
   levelData: LevelData;
+  levelIndex: number;
   onWaveCleared: () => void;
   onAmmoEmpty: () => void;
   setHp: React.Dispatch<React.SetStateAction<number>>;
@@ -71,6 +79,7 @@ export default function ShooterArena({
     player: { x: sizeRef.current.w / 2, y: sizeRef.current.h / 2 },
     aimAngle: -Math.PI / 2,
     bullets: [] as Bullet[],
+    enemyBullets: [] as EnemyBullet[],
     enemies: [] as Enemy[],
     explosions: [] as Explosion[],
     keys: new Set<string>(),
@@ -82,6 +91,9 @@ export default function ShooterArena({
     killed: 0,
     enemyCount: ENEMIES_PER_WAVE + waveNum * 2,
     frameId: 0,
+    hitFlash: 0,
+    spawnedByType: { soldier: 0, fortified: 0, tank: 0 },
+    waveComposition: getWaveComposition(levelIndex, waveNum),
   });
 
   const ammoRef = useRef(ammo);
@@ -163,13 +175,18 @@ export default function ShooterArena({
     s.player = { x: sizeRef.current.w / 2, y: sizeRef.current.h / 2 };
     s.aimAngle = -Math.PI / 2;
     s.bullets = [];
+    s.enemyBullets = [];
     s.enemies = [];
     s.explosions = [];
     s.waveCleared = false;
     s.spawnTimer = 0;
     s.spawned = 0;
     s.killed = 0;
-    s.enemyCount = ENEMIES_PER_WAVE + waveNum * 2;
+    s.hitFlash = 0;
+    s.spawnedByType = { soldier: 0, fortified: 0, tank: 0 };
+    s.waveComposition = getWaveComposition(levelIndex, waveNum);
+    const comp = s.waveComposition;
+    s.enemyCount = comp.soldiers + comp.fortified + comp.tanks;
 
     function handleKeyDown(e: KeyboardEvent) {
       s.keys.add(e.key);
@@ -228,15 +245,65 @@ export default function ShooterArena({
     const ctx = canvas.getContext("2d")!;
     const s = stateRef.current;
 
+    const obstacles = levelData.map?.obstacles || [];
+
     function spawnEnemy() {
       const AW = sizeRef.current.w, AH = sizeRef.current.h;
-      const side = Math.floor(Math.random() * 4);
+      const comp = s.waveComposition;
+      const st = s.spawnedByType;
+
+      // Determine type to spawn (priority: fortified → tank → soldier)
+      let etype: "soldier" | "fortified" | "tank";
+      if (st.fortified < comp.fortified) {
+        etype = "fortified";
+      } else if (st.tank < comp.tanks) {
+        etype = "tank";
+      } else {
+        etype = "soldier";
+      }
+
+      const config = ENEMY_TYPES[etype];
       let x = 0, y = 0;
-      if (side === 0)      { x = Math.random() * AW; y = -ENEMY_SIZE; }
-      else if (side === 1) { x = Math.random() * AW; y = AH + ENEMY_SIZE; }
-      else if (side === 2) { x = -ENEMY_SIZE;         y = Math.random() * AH; }
-      else                 { x = AW + ENEMY_SIZE;     y = Math.random() * AH; }
-      s.enemies.push({ id: s.nextId++, x, y, hp: 1 });
+      let anchorX: number | undefined;
+      let anchorY: number | undefined;
+
+      if (etype === "fortified") {
+        // Spawn near a sandbag/bunker (defensive position)
+        const defenseObs = obstacles.filter(
+          (o) => o.type === "sandbag" || o.type === "bunker"
+        );
+        if (defenseObs.length > 0) {
+          const obs = defenseObs[Math.floor(Math.random() * defenseObs.length)];
+          anchorX = obs.x + obs.w / 2;
+          anchorY = obs.y + obs.h + config.size;
+          x = anchorX;
+          y = anchorY;
+        } else {
+          x = Math.random() * AW;
+          y = -config.size;
+        }
+      } else {
+        // Soldiers & tanks spawn from edges
+        const side = Math.floor(Math.random() * 4);
+        if (side === 0)      { x = Math.random() * AW; y = -config.size; }
+        else if (side === 1) { x = Math.random() * AW; y = AH + config.size; }
+        else if (side === 2) { x = -config.size;        y = Math.random() * AH; }
+        else                 { x = AW + config.size;    y = Math.random() * AH; }
+      }
+
+      s.enemies.push({
+        id: s.nextId++,
+        x, y,
+        hp: config.hp,
+        type: etype,
+        speed: config.speed,
+        size: config.size,
+        lastShot: Date.now() - Math.random() * config.shootCooldown,
+        anchorX, anchorY,
+        shootCooldown: config.shootCooldown,
+        bulletSpeed: config.bulletSpeed,
+      });
+      st[etype]++;
       s.spawned++;
     }
 
@@ -247,56 +314,250 @@ export default function ShooterArena({
       ctx.save();
       ctx.translate(cx, cy);
 
-      // Body
-      ctx.fillStyle = "#DA251D";
-      ctx.fillRect(-half + 2, -half + 4, sz - 4, sz - 6);
-      // Head
-      ctx.fillStyle = "#FFD5A0";
-      ctx.fillRect(-4, -half, 8, 6);
-      // Helmet
+      // === BỘ ĐỘI GIẢI PHÓNG (Vietnamese Liberation Soldier) ===
+
+      // Pith helmet (mũ cối) - dome shape
+      ctx.fillStyle = "#5A6D33";
+      ctx.fillRect(-6, -half - 2, 12, 4);
+      // Helmet brim
       ctx.fillStyle = "#4A5D23";
-      ctx.fillRect(-5, -half - 2, 10, 4);
+      ctx.fillRect(-7, -half + 1, 14, 2);
+      // Red star on helmet
+      ctx.fillStyle = "#DA251D";
+      ctx.fillRect(-1, -half - 1, 2, 2);
+
+      // Face
+      ctx.fillStyle = "#FFD5A0";
+      ctx.fillRect(-4, -half + 3, 8, 5);
       // Eyes
       ctx.fillStyle = "#1a1a2e";
-      ctx.fillRect(-2, -half + 2, 2, 2);
-      ctx.fillRect(1, -half + 2, 2, 2);
-      // Star on chest
-      ctx.fillStyle = "#FFD700";
-      ctx.fillRect(-2, 2, 4, 3);
+      ctx.fillRect(-2, -half + 5, 2, 1);
+      ctx.fillRect(1, -half + 5, 2, 1);
+
+      // Collar
+      ctx.fillStyle = "#3a4d18";
+      ctx.fillRect(-5, -half + 8, 10, 1);
+
+      // Body (olive green uniform)
+      ctx.fillStyle = "#4A5D23";
+      ctx.fillRect(-6, -half + 9, 12, 7);
+      // Pockets
+      ctx.fillStyle = "#3a4d18";
+      ctx.fillRect(-5, -half + 10, 3, 2);
+      ctx.fillRect(2, -half + 10, 3, 2);
+      // Belt
+      ctx.fillStyle = "#5C4033";
+      ctx.fillRect(-6, -half + 15, 12, 2);
+      ctx.fillStyle = "#8B7355";
+      ctx.fillRect(-1, -half + 15, 2, 2);
+
+      // Legs (olive pants)
+      ctx.fillStyle = "#3a4d18";
+      ctx.fillRect(-5, -half + 17, 4, 3);
+      ctx.fillRect(1, -half + 17, 4, 3);
+      // Boots
+      ctx.fillStyle = "#2a1a0a";
+      ctx.fillRect(-5, -half + 19, 4, 2);
+      ctx.fillRect(1, -half + 19, 4, 2);
 
       ctx.restore();
 
-      // Gun barrel - drawn toward aim direction
-      const barrelLen = 12;
+      // Gun barrel (AK-style) - drawn toward aim direction
+      const barrelLen = 14;
       const bx = cx + Math.cos(angle) * (half + 1);
       const by = cy + Math.sin(angle) * (half + 1);
       const bex = cx + Math.cos(angle) * (half + barrelLen);
       const bey = cy + Math.sin(angle) * (half + barrelLen);
-      ctx.strokeStyle = "#555";
+      // Gun body
+      ctx.strokeStyle = "#3a3020";
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(bx, by);
       ctx.lineTo(bex, bey);
       ctx.stroke();
+      // Barrel tip
+      ctx.strokeStyle = "#555";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(bex - Math.cos(angle) * 3, bey - Math.sin(angle) * 3);
+      ctx.lineTo(bex, bey);
+      ctx.stroke();
       // Muzzle
-      ctx.fillStyle = "#888";
-      ctx.fillRect(bex - 2, bey - 2, 4, 4);
+      ctx.fillStyle = "#666";
+      ctx.fillRect(bex - 1, bey - 1, 3, 3);
     }
 
-    function drawEnemy(ex: number, ey: number) {
-      const sz = ENEMY_SIZE;
-      const half = sz / 2;
-      ctx.fillStyle = levelData.enemyColor;
-      ctx.fillRect(ex - half, ey - half + 2, sz, sz - 4);
+    function drawEnemyByType(e: Enemy) {
+      const p = stateRef.current.player;
+      switch (e.type) {
+        case "fortified":
+          drawFortifiedEnemy(e, p);
+          break;
+        case "tank":
+          drawTankEnemy(e, p);
+          break;
+        default:
+          drawSoldierEnemy(e, p);
+      }
+      // HP bar for multi-HP enemies
+      if (ENEMY_TYPES[e.type].hp > 1) {
+        const maxHp = ENEMY_TYPES[e.type].hp;
+        const barW = e.size + 4;
+        const bx = e.x - barW / 2;
+        const by = e.y - e.size / 2 - 8;
+        ctx.fillStyle = "#333";
+        ctx.fillRect(bx, by, barW, 3);
+        const ratio = e.hp / maxHp;
+        ctx.fillStyle = ratio > 0.5 ? "#44cc44" : ratio > 0.25 ? "#ccaa22" : "#cc2222";
+        ctx.fillRect(bx, by, barW * ratio, 3);
+        ctx.strokeStyle = "#111";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(bx, by, barW, 3);
+      }
+    }
+
+    function drawSoldierEnemy(e: Enemy, p: { x: number; y: number }) {
+      const half = e.size / 2;
+      const ec = levelData.enemyColor;
+      const angle = Math.atan2(p.y - e.y, p.x - e.x);
+
+      ctx.save();
+      ctx.translate(e.x, e.y);
+
+      // Helmet
+      ctx.fillStyle = "#444";
+      ctx.fillRect(-5, -half - 3, 10, 3);
+      ctx.fillRect(-6, -half, 12, 2);
+      // Face
       ctx.fillStyle = "#ddb896";
-      ctx.fillRect(ex - 4, ey - half - 2, 8, 6);
+      ctx.fillRect(-4, -half + 2, 8, 4);
+      // Eyes
+      ctx.fillStyle = "#cc0000";
+      ctx.fillRect(-3, -half + 3, 2, 1);
+      ctx.fillRect(1, -half + 3, 2, 1);
+      ctx.fillStyle = "#1a1a1a";
+      ctx.fillRect(-2, -half + 4, 1, 1);
+      ctx.fillRect(2, -half + 4, 1, 1);
+      // Body
+      ctx.fillStyle = ec;
+      ctx.fillRect(-5, -half + 6, 10, 8);
+      ctx.fillStyle = "#4a3520";
+      ctx.fillRect(-5, -half + 13, 10, 1);
+      // Legs & boots
+      ctx.fillStyle = ec;
+      ctx.fillRect(-4, -half + 14, 3, 3);
+      ctx.fillRect(1, -half + 14, 3, 3);
+      ctx.fillStyle = "#1a1a1a";
+      ctx.fillRect(-4, -half + 16, 3, 2);
+      ctx.fillRect(1, -half + 16, 3, 2);
+
+      ctx.restore();
+
+      // Gun barrel aimed at player
+      const barrelLen = 10;
+      ctx.strokeStyle = "#555";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(e.x + Math.cos(angle) * (half + 1), e.y + Math.sin(angle) * (half + 1));
+      ctx.lineTo(e.x + Math.cos(angle) * (half + barrelLen), e.y + Math.sin(angle) * (half + barrelLen));
+      ctx.stroke();
+    }
+
+    function drawFortifiedEnemy(e: Enemy, p: { x: number; y: number }) {
+      const half = e.size / 2;
+      const ec = levelData.enemyColor;
+      const angle = Math.atan2(p.y - e.y, p.x - e.x);
+
+      ctx.save();
+      ctx.translate(e.x, e.y);
+
+      // Heavier helmet with chin strap
       ctx.fillStyle = "#333";
-      ctx.fillRect(ex - 5, ey - half - 4, 10, 3);
-      ctx.fillStyle = "#ff0000";
-      ctx.fillRect(ex - 3, ey - half, 2, 2);
-      ctx.fillRect(ex + 1, ey - half, 2, 2);
-      ctx.fillStyle = "#666";
-      ctx.fillRect(ex + half - 1, ey - 1, 4, 2);
+      ctx.fillRect(-6, -half - 4, 12, 4);
+      ctx.fillRect(-7, -half, 14, 3);
+      // Face (partially covered)
+      ctx.fillStyle = "#ddb896";
+      ctx.fillRect(-4, -half + 3, 8, 3);
+      // Focused eyes
+      ctx.fillStyle = "#cc0000";
+      ctx.fillRect(-3, -half + 4, 2, 1);
+      ctx.fillRect(1, -half + 4, 2, 1);
+      // Body with ammo vest
+      ctx.fillStyle = ec;
+      ctx.fillRect(-5, -half + 6, 10, 8);
+      ctx.fillStyle = "#3a3520";
+      ctx.fillRect(-5, -half + 7, 10, 3);
+      // Belt
+      ctx.fillStyle = "#4a3520";
+      ctx.fillRect(-5, -half + 13, 10, 1);
+      // Legs & boots
+      ctx.fillStyle = ec;
+      ctx.fillRect(-4, -half + 14, 3, 3);
+      ctx.fillRect(1, -half + 14, 3, 3);
+      ctx.fillStyle = "#1a1a1a";
+      ctx.fillRect(-4, -half + 16, 3, 2);
+      ctx.fillRect(1, -half + 16, 3, 2);
+
+      ctx.restore();
+
+      // Gun barrel aimed at player
+      const barrelLen = 12;
+      ctx.strokeStyle = "#444";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(e.x + Math.cos(angle) * (half + 1), e.y + Math.sin(angle) * (half + 1));
+      ctx.lineTo(e.x + Math.cos(angle) * (half + barrelLen), e.y + Math.sin(angle) * (half + barrelLen));
+      ctx.stroke();
+    }
+
+    function drawTankEnemy(e: Enemy, p: { x: number; y: number }) {
+      const half = e.size / 2;
+      const angle = Math.atan2(p.y - e.y, p.x - e.x);
+
+      ctx.save();
+      ctx.translate(e.x, e.y);
+
+      // Tracks
+      ctx.fillStyle = "#2a2a1a";
+      ctx.fillRect(-half, half - 10, e.size, 10);
+      ctx.fillStyle = "#1a1a0a";
+      ctx.fillRect(-half - 2, half - 12, e.size + 4, 4);
+      for (let i = 0; i < 4; i++) {
+        ctx.beginPath();
+        ctx.arc(-half + 6 + i * ((e.size - 12) / 3), half - 5, 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // Hull
+      ctx.fillStyle = "#5a6438";
+      ctx.fillRect(-half + 4, -4, e.size - 8, 16);
+      ctx.fillStyle = "#4a5428";
+      ctx.fillRect(-half + 2, 6, e.size - 4, 8);
+      // Turret
+      ctx.fillStyle = "#6a7448";
+      ctx.fillRect(-8, -12, 16, 12);
+      ctx.fillStyle = "#5a6438";
+      ctx.fillRect(-6, -10, 12, 8);
+      // Marking
+      ctx.fillStyle = "#ffffff88";
+      ctx.font = "bold 5px monospace";
+      ctx.fillText("ARVN", -9, 3);
+
+      ctx.restore();
+
+      // Barrel (rotates toward player)
+      const barrelLen = 22;
+      ctx.strokeStyle = "#3a3a2a";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(e.x, e.y - 6);
+      ctx.lineTo(e.x + Math.cos(angle) * barrelLen, e.y - 6 + Math.sin(angle) * barrelLen);
+      ctx.stroke();
+      ctx.fillStyle = "#2a2a1a";
+      ctx.fillRect(
+        e.x + Math.cos(angle) * barrelLen - 2,
+        e.y - 6 + Math.sin(angle) * barrelLen - 2,
+        4, 4
+      );
     }
 
     function drawExplosion(ex: number, ey: number, frame: number) {
@@ -555,6 +816,84 @@ export default function ShooterArena({
           ctx.fillRect(obs.x + obs.w - 3, obs.y - 4, 3, obs.h + 8);
           ctx.fillRect(obs.x + obs.w / 2, obs.y - 4, 3, obs.h + 8);
           break;
+
+        case "palace": {
+          // Dinh Độc Lập — main building
+          const px = obs.x, py = obs.y, pw = obs.w, ph = obs.h;
+          // Base building
+          ctx.fillStyle = "#e8dcc8";
+          ctx.fillRect(px, py + 10, pw, ph - 10);
+          // Roof/top floor
+          ctx.fillStyle = "#d4c8b0";
+          ctx.fillRect(px + 20, py, pw - 40, 15);
+          // Roof line
+          ctx.fillStyle = "#baa888";
+          ctx.fillRect(px - 5, py + 8, pw + 10, 4);
+          // Windows (grid)
+          ctx.fillStyle = "#4a6a8a";
+          const winW = 10, winH = 8, gap = 18;
+          for (let row = 0; row < 2; row++) {
+            for (let col = 0; col < Math.floor((pw - 20) / gap); col++) {
+              ctx.fillRect(px + 15 + col * gap, py + 18 + row * 20, winW, winH);
+            }
+          }
+          // Main entrance door
+          ctx.fillStyle = "#5a3a1a";
+          ctx.fillRect(px + pw / 2 - 12, py + ph - 25, 24, 25);
+          ctx.fillStyle = "#4a2a0a";
+          ctx.fillRect(px + pw / 2 - 1, py + ph - 25, 2, 25);
+          // Columns
+          ctx.fillStyle = "#c8bca0";
+          ctx.fillRect(px + pw / 2 - 30, py + 12, 4, ph - 12);
+          ctx.fillRect(px + pw / 2 + 26, py + 12, 4, ph - 12);
+          // Flag pole on top
+          ctx.fillStyle = "#888";
+          ctx.fillRect(px + pw / 2 - 1, py - 15, 2, 18);
+          // Vietnamese flag
+          const ft = Date.now() * 0.003;
+          ctx.fillStyle = "#DA251D";
+          ctx.beginPath();
+          ctx.moveTo(px + pw / 2 + 1, py - 15);
+          ctx.lineTo(px + pw / 2 + 14 + Math.sin(ft) * 2, py - 11);
+          ctx.lineTo(px + pw / 2 + 1, py - 7);
+          ctx.fill();
+          ctx.fillStyle = "#FFD700";
+          ctx.fillRect(px + pw / 2 + 5, py - 13, 2, 2);
+          // Shadow
+          ctx.fillStyle = "#00000015";
+          ctx.fillRect(px, py + ph, pw, 6);
+          break;
+        }
+
+        case "gate": {
+          // Trụ cổng Dinh Độc Lập
+          const gx = obs.x, gy = obs.y, gw = obs.w, gh = obs.h;
+          // Pillar
+          ctx.fillStyle = "#d4c8b0";
+          ctx.fillRect(gx, gy, gw, gh);
+          // Pillar cap
+          ctx.fillStyle = "#baa888";
+          ctx.fillRect(gx - 2, gy, gw + 4, 5);
+          ctx.fillRect(gx - 2, gy + gh - 3, gw + 4, 3);
+          // Iron fence sections extending from gate
+          ctx.strokeStyle = "#444";
+          ctx.lineWidth = 2;
+          for (let i = 0; i < 5; i++) {
+            const fenceX = gx + gw + 4 + i * 6;
+            ctx.beginPath();
+            ctx.moveTo(fenceX, gy + 5);
+            ctx.lineTo(fenceX, gy + gh);
+            ctx.stroke();
+          }
+          // Top rail
+          ctx.strokeStyle = "#555";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(gx + gw, gy + 5);
+          ctx.lineTo(gx + gw + 34, gy + 5);
+          ctx.stroke();
+          break;
+        }
       }
     }
 
@@ -646,6 +985,55 @@ export default function ShooterArena({
           ctx.fillStyle = "#9a8a40";
           ctx.fillRect(dec.x + 8, dec.y + 5, 2, 5);
           break;
+
+        case "tank_active": {
+          // Xe tăng T-54 số 843 — active, tiến về phía Dinh Độc Lập
+          const tx = dec.x, ty = dec.y;
+          const tt = Date.now() * 0.001;
+          // Tracks
+          ctx.fillStyle = "#2a2a1a";
+          ctx.fillRect(tx - 22, ty + 8, 44, 12);
+          ctx.fillRect(tx - 24, ty + 6, 48, 4);
+          // Track wheels
+          ctx.fillStyle = "#1a1a0a";
+          for (let i = 0; i < 5; i++) {
+            ctx.beginPath();
+            ctx.arc(tx - 18 + i * 9, ty + 14, 3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          // Hull
+          ctx.fillStyle = "#4a5a30";
+          ctx.fillRect(tx - 18, ty - 2, 36, 12);
+          ctx.fillStyle = "#3a4a20";
+          ctx.fillRect(tx - 20, ty + 4, 40, 6);
+          // Turret
+          ctx.fillStyle = "#5a6a38";
+          ctx.fillRect(tx - 10, ty - 8, 20, 10);
+          ctx.fillStyle = "#4a5a28";
+          ctx.fillRect(tx - 8, ty - 6, 16, 6);
+          // Barrel (pointing up/forward)
+          ctx.fillStyle = "#3a3a2a";
+          ctx.fillRect(tx - 2, ty - 22, 4, 16);
+          ctx.fillStyle = "#2a2a1a";
+          ctx.fillRect(tx - 1, ty - 24, 2, 4);
+          // Number 843
+          ctx.fillStyle = "#FFD700";
+          ctx.font = "bold 7px monospace";
+          ctx.fillText("843", tx - 8, ty + 3);
+          // Red star on turret
+          ctx.fillStyle = "#DA251D";
+          ctx.fillRect(tx - 2, ty - 5, 4, 3);
+          // Exhaust smoke
+          ctx.fillStyle = "#55555540";
+          ctx.beginPath();
+          ctx.arc(tx, ty + 22 + Math.sin(tt) * 2, 5 + Math.sin(tt * 2) * 2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "#44444425";
+          ctx.beginPath();
+          ctx.arc(tx + 3, ty + 28 + Math.sin(tt + 1) * 3, 7, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+        }
       }
     }
 
@@ -734,7 +1122,6 @@ export default function ShooterArena({
       const bonusScore = (u["damage_up"] || 0) * 50;
 
       // ---- Input (with obstacle collision) ----
-      const obstacles = levelData.map?.obstacles || [];
       const oldX = p.x;
       const oldY = p.y;
 
@@ -793,71 +1180,133 @@ export default function ShooterArena({
         return b.x > -10 && b.x < AW + 10 && b.y > -10 && b.y < AH + 10;
       });
 
-      // ---- Move enemies toward player (with obstacle avoidance) ----
+      // ---- Move enemy bullets ----
+      s.enemyBullets = s.enemyBullets.filter((b) => {
+        b.x += b.dx;
+        b.y += b.dy;
+        for (const obs of obstacles) {
+          if (obs.type === "crater" || obs.type === "wire") continue;
+          if (b.x > obs.x && b.x < obs.x + obs.w && b.y > obs.y && b.y < obs.y + obs.h) return false;
+        }
+        return b.x > -10 && b.x < AW + 10 && b.y > -10 && b.y < AH + 10;
+      });
+
+      // ---- Enemy bullet -> player collision ----
+      for (const b of s.enemyBullets) {
+        const bSize = b.fromTank ? TANK_BULLET_SIZE : ENEMY_BULLET_SIZE;
+        const dx = b.x - p.x;
+        const dy = b.y - p.y;
+        if (Math.sqrt(dx * dx + dy * dy) < PLAYER_SIZE / 2 + bSize) {
+          b.x = -999;
+          setHp((h) => Math.max(0, h - 1));
+          s.hitFlash = 10;
+          s.explosions.push({ id: s.nextId++, x: p.x, y: p.y, frame: 0 });
+        }
+      }
+      s.enemyBullets = s.enemyBullets.filter((b) => b.x > -10);
+
+      // ---- Move enemies (type-specific AI) ----
+      const now = Date.now();
       for (const e of s.enemies) {
+        if (e.hp <= 0) continue;
         const dx = p.x - e.x;
         const dy = p.y - e.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist > 1) {
-          const newX = e.x + (dx / dist) * ENEMY_SPEED;
-          const newY = e.y + (dy / dist) * ENEMY_SPEED;
+
+        // --- Movement ---
+        if (e.type === "fortified") {
+          // Stay near anchor, don't chase
+          if (e.anchorX !== undefined && e.anchorY !== undefined) {
+            const adx = e.anchorX - e.x;
+            const ady = e.anchorY - e.y;
+            const anchorDist = Math.sqrt(adx * adx + ady * ady);
+            if (anchorDist > FORTIFIED_ANCHOR_RANGE) {
+              e.x += (adx / anchorDist) * e.speed;
+              e.y += (ady / anchorDist) * e.speed;
+            }
+          }
+        } else if (dist > 1) {
+          // Soldiers & tanks: move toward player
+          const newX = e.x + (dx / dist) * e.speed;
+          const newY = e.y + (dy / dist) * e.speed;
           let blocked = false;
           for (const obs of obstacles) {
             if (obs.type === "crater" || obs.type === "wire") continue;
-            const half = ENEMY_SIZE / 2;
-            if (
-              newX + half > obs.x && newX - half < obs.x + obs.w &&
-              newY + half > obs.y && newY - half < obs.y + obs.h
-            ) {
+            const half = e.size / 2;
+            if (newX + half > obs.x && newX - half < obs.x + obs.w &&
+                newY + half > obs.y && newY - half < obs.y + obs.h) {
               blocked = true;
               break;
             }
           }
           if (blocked) {
-            // Try to go around: pick perpendicular direction
-            const perpX = e.x + (dy / dist) * ENEMY_SPEED * 1.5;
-            const perpY = e.y + (-dx / dist) * ENEMY_SPEED * 1.5;
+            const perpX = e.x + (dy / dist) * e.speed * 1.5;
+            const perpY = e.y + (-dx / dist) * e.speed * 1.5;
             let perpBlocked = false;
             for (const obs of obstacles) {
               if (obs.type === "crater" || obs.type === "wire") continue;
-              const half = ENEMY_SIZE / 2;
-              if (
-                perpX + half > obs.x && perpX - half < obs.x + obs.w &&
-                perpY + half > obs.y && perpY - half < obs.y + obs.h
-              ) {
+              const half = e.size / 2;
+              if (perpX + half > obs.x && perpX - half < obs.x + obs.w &&
+                  perpY + half > obs.y && perpY - half < obs.y + obs.h) {
                 perpBlocked = true;
                 break;
               }
             }
-            if (!perpBlocked) {
-              e.x = perpX;
-              e.y = perpY;
-            }
+            if (!perpBlocked) { e.x = perpX; e.y = perpY; }
           } else {
             e.x = newX;
             e.y = newY;
           }
         }
-        if (dist < PLAYER_SIZE / 2 + ENEMY_SIZE / 2 - 4) {
+
+        // --- Contact damage (soldiers only, tanks crush) ---
+        const contactDist = PLAYER_SIZE / 2 + e.size / 2 - 4;
+        if (e.type !== "fortified" && dist < contactDist) {
           e.hp = 0;
           s.killed++;
           setHp((h) => Math.max(0, h - 1));
+          s.hitFlash = 10;
           s.explosions.push({ id: s.nextId++, x: e.x, y: e.y, frame: 0 });
+        }
+
+        // --- Enemy shooting ---
+        if (e.shootCooldown > 0 && dist < ENEMY_SHOOT_RANGE && e.hp > 0) {
+          if (now - e.lastShot >= e.shootCooldown) {
+            e.lastShot = now;
+            const shootDx = (dx / dist) * e.bulletSpeed;
+            const shootDy = (dy / dist) * e.bulletSpeed;
+            // Slight inaccuracy
+            const inaccuracy = (Math.random() - 0.5) * 0.15;
+            const cosI = Math.cos(inaccuracy);
+            const sinI = Math.sin(inaccuracy);
+            s.enemyBullets.push({
+              id: s.nextId++,
+              x: e.x,
+              y: e.y,
+              dx: shootDx * cosI - shootDy * sinI,
+              dy: shootDx * sinI + shootDy * cosI,
+              fromTank: e.type === "tank",
+            });
+          }
         }
       }
 
-      // ---- Bullet-enemy collision ----
+      // ---- Bullet-enemy collision (multi-HP support) ----
       for (const b of s.bullets) {
         for (const e of s.enemies) {
           if (e.hp <= 0) continue;
           const dx = b.x - e.x;
           const dy = b.y - e.y;
-          if (Math.sqrt(dx * dx + dy * dy) < ENEMY_SIZE / 2 + BULLET_SIZE) {
-            e.hp = 0;
-            s.killed++;
+          if (Math.sqrt(dx * dx + dy * dy) < e.size / 2 + BULLET_SIZE) {
+            e.hp--;
             b.x = -999;
-            setScore((sc) => sc + 50 + bonusScore);
-            s.explosions.push({ id: s.nextId++, x: e.x, y: e.y, frame: 0 });
+            if (e.hp <= 0) {
+              s.killed++;
+              const typeConfig = ENEMY_TYPES[e.type];
+              setScore((sc) => sc + typeConfig.scoreValue + bonusScore);
+              s.explosions.push({ id: s.nextId++, x: e.x, y: e.y, frame: 0 });
+            }
+            break;
           }
         }
       }
@@ -884,7 +1333,7 @@ export default function ShooterArena({
       // Obstacles
       for (const obs of obstacles) drawObstacle(obs);
 
-      // Bullets
+      // Bullets (player)
       ctx.fillStyle = "#FFD700";
       for (const b of s.bullets) {
         ctx.fillRect(b.x - BULLET_SIZE / 2, b.y - BULLET_SIZE / 2, BULLET_SIZE, BULLET_SIZE);
@@ -893,8 +1342,17 @@ export default function ShooterArena({
         ctx.fillStyle = "#FFD700";
       }
 
+      // Bullets (enemy — red/orange)
+      for (const b of s.enemyBullets) {
+        const bSize = b.fromTank ? TANK_BULLET_SIZE : ENEMY_BULLET_SIZE;
+        ctx.fillStyle = b.fromTank ? "#ff4400" : "#ff2222";
+        ctx.fillRect(b.x - bSize / 2, b.y - bSize / 2, bSize, bSize);
+        ctx.fillStyle = b.fromTank ? "#ff440055" : "#ff222255";
+        ctx.fillRect(b.x - b.dx * 2 - 1, b.y - b.dy * 2 - 1, bSize - 1, bSize - 1);
+      }
+
       // Enemies
-      for (const e of s.enemies) drawEnemy(e.x, e.y);
+      for (const e of s.enemies) drawEnemyByType(e);
 
       // Explosions
       for (const ex of s.explosions) drawExplosion(ex.x, ex.y, ex.frame);
@@ -924,6 +1382,13 @@ export default function ShooterArena({
       // Weather effects (on top of everything)
       drawWeather();
 
+      // Hit flash (red overlay when player takes damage)
+      if (s.hitFlash > 0) {
+        ctx.fillStyle = `rgba(255, 0, 0, ${s.hitFlash * 0.03})`;
+        ctx.fillRect(0, 0, AW, AH);
+        s.hitFlash--;
+      }
+
       // HUD on canvas
       ctx.fillStyle = "#ffffff88";
       ctx.font = "9px 'Press Start 2P', monospace";
@@ -937,7 +1402,7 @@ export default function ShooterArena({
       running = false;
       cancelAnimationFrame(s.frameId);
     };
-  }, [waveNum, levelData, onWaveCleared, setHp, setScore, shoot]);
+  }, [waveNum, levelData, levelIndex, onWaveCleared, setHp, setScore, shoot]);
 
   return (
     <div ref={containerRef} className="w-full h-full">
