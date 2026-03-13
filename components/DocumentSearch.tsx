@@ -63,8 +63,8 @@ export default function DocumentSearch() {
                 </div>
                 <h3 className="font-serif-heading font-bold text-lg text-[#2C2A29] leading-tight group-hover:text-[#DA251D] transition-colors">{doc.title}</h3>
                 <div className="mt-4 pt-4 border-t border-[#D1C2A5] text-right">
-                  <Link href="#" className="font-sans text-sm font-bold text-[#DA251D] flex items-center justify-end gap-1">
-                    Xem hồ sơ <span className="text-lg">→</span>
+                  <Link href="/noi-dung-chinh" className="font-sans text-sm font-bold text-[#DA251D] flex items-center justify-end gap-1">
+                    Xem trong bài học <span className="text-lg">→</span>
                   </Link>
                 </div>
               </div>
