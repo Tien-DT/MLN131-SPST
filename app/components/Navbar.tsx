@@ -62,48 +62,46 @@ export default function Navbar() {
           opacity: { duration: showMasthead ? 0.3 : 0.15 }
         }}
       >
-        <div className="container mx-auto py-6 px-4 border-b border-black/40 relative">
+        <div className="container-custom py-6 px-4 border-b-2 border-[#D1C2A5] relative">
           <div className="flex flex-col md:flex-row items-center justify-between text-center relative z-10">
             {/* Thay đổi Label trái */}
-            <p className="text-xs uppercase tracking-widest mb-3 md:mb-0 font-medium">Chương 3.1</p>
+            <p className="font-sans text-xs uppercase tracking-widest mb-3 md:mb-0 font-bold text-[#5C554E]">Kỷ nguyên Độc lập</p>
 
             {/* Centered Title */}
             <Link href="/" className="md:absolute md:left-1/2 md:transform md:-translate-x-1/2 group mb-3 md:mb-0">
-              <h1 className="font-bold text-3xl sm:text-4xl md:text-5xl tracking-wider uppercase text-center inline-block relative">
-                <span className="text-black">KIẾN THIẾT & </span>
-                <span className="text-[#A61F2B]">BẢO VỆ</span>
-                <span className="absolute -top-2 -right-2 text-[#A61F2B] text-xs">®</span>
+              <h1 className="font-serif-heading font-bold text-3xl sm:text-4xl md:text-5xl tracking-wider uppercase text-center inline-block relative">
+                <span className="text-[#2C2A29]">KÝ ỨC </span>
+                <span className="text-[#DA251D]">THỐNG NHẤT</span>
+                <span className="absolute -top-2 -right-3 text-[#DA251D] text-sm">★</span>
               </h1>
             </Link>
 
-            <p className="text-xs uppercase tracking-widest font-medium">1975 – 1986</p>
+            <p className="font-sans text-xs uppercase tracking-widest font-bold text-[#5C554E]">1975 – 1981</p>
           </div>
         </div>
       </motion.div>
 
       {/* Main navbar content */}
       <motion.div 
-        className="container mx-auto px-4 lg:px-6 relative z-10"
+        className="container-custom relative z-10"
         animate={{ 
           y: showMasthead ? 0 : 5,
         }}
         transition={{ duration: 0.35, ease: [0.1, 0.9, 0.2, 1] }}
       >
-        <div className="flex justify-between items-center h-16 border-b border-black/20">
+        <div className="flex justify-between items-center h-16 border-b-2 border-[#2C2A29]">
           <div className="hidden md:flex items-center">
-            <div className="w-16 h-[1px] bg-black/60"></div>
+            <div className="w-16 h-[2px] bg-[#2C2A29]"></div>
             <motion.div
-              className="ml-4"
+              className="ml-4 bg-[#DA251D] px-2 py-1"
               animate={{
                 opacity: showMasthead ? 0 : 1,
                 x: showMasthead ? -20 : 0,
               }}
             >
               <Link href="/" className="group">
-                <h1 className="font-bold text-lg tracking-wider uppercase inline-block relative whitespace-nowrap">
-                  <span className="text-black">KIẾN THIẾT </span>
-                  <span className="text-[#A61F2B]">& BẢO VỆ</span>
-                  <span className="absolute -top-1 -right-1 text-[#A61F2B] text-[8px]">®</span>
+                <h1 className="font-serif-heading font-bold text-lg tracking-wider uppercase inline-block relative whitespace-nowrap text-[#F5E6D3]">
+                  KÝ ỨC THỐNG NHẤT
                 </h1>
               </Link>
             </motion.div>
@@ -113,55 +111,48 @@ export default function Navbar() {
           <div className="hidden md:flex items-center justify-center space-x-8 mx-auto">
             {[
               { name: "Trang chủ", path: ROUTES.HOME },
-              { name: "Nội dung học tập", path: ROUTES.NOIDUNG },
-              { name: "Video bài giảng", path: ROUTES.ONTAP },
-              { name: "Tạo Quiz", path: ROUTES.QUIZ_HOST },
+              { name: "Nội dung", path: ROUTES.NOIDUNG },
+              { name: "Tư liệu", path: ROUTES.ONTAP },
+              { name: "Quiz Lịch sử", path: ROUTES.QUIZ_HOST },
               { name: "Tham gia", path: ROUTES.QUIZ_JOIN },
-              { name: "Thành viên", path: ROUTES.THANHVIEN }
+              { name: "Về dự án", path: ROUTES.THANHVIEN }
             ].map((item, index) => (
-              <Link
-                key={item.name}
-                href={item.path}
-                className={`group relative px-2 py-1 transition-colors font-medium tracking-widest text-xs ${
-                  pathname === item.path ? 'text-[#A61F2B]' : 'text-black hover:text-[#A61F2B]'
-                }`}
-              >
-                <span className="relative">
-                  {item.name}
-                  <span className={`absolute -bottom-1 left-0 h-[1px] bg-[#A61F2B] transition-all duration-300 ${
-                    pathname === item.path ? 'w-full' : 'w-0 group-hover:w-full'
-                  }`}></span>
-                </span>
+              <div key={item.name} className="relative flex items-center">
+                <Link
+                  href={item.path}
+                  className={`group relative px-2 py-1 transition-colors font-sans font-bold tracking-widest text-xs uppercase ${
+                    pathname === item.path ? 'text-[#DA251D]' : 'text-[#2C2A29] hover:text-[#DA251D]'
+                  }`}
+                >
+                  <span className="relative">
+                    {item.name}
+                    <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#DA251D] transition-all duration-300 ${
+                      pathname === item.path ? 'w-full' : 'w-0 group-hover:w-full'
+                    }`}></span>
+                  </span>
+                </Link>
                 {index < 5 && (
-                  <span className="absolute -right-4 top-1/2 transform -translate-y-1/2 text-black/40">/</span>
+                  <span className="ml-8 text-[#D1C2A5] font-serif-heading font-bold">/</span>
                 )}
-              </Link>
+              </div>
             ))}
           </div>
 
           {/* Right side elements */}
           <div className="hidden md:flex items-center space-x-4">
             <div className="flex flex-col items-end mr-2">
-                <span className="text-[10px] font-bold text-black/40 leading-none">VIỆT NAM</span>
-                <span className="text-[10px] font-bold text-[#A61F2B] leading-none">2045</span>
+                <span className="text-[10px] font-sans font-bold text-[#5C554E] leading-none tracking-widest">VIỆT NAM</span>
+                <span className="text-[10px] font-sans font-bold text-[#DA251D] leading-none tracking-widest mt-1">DÂN CHỦ</span>
             </div>
-            <div className="flex items-center">
-              <div className="w-8 h-5 flex items-center justify-center border border-black/10">
-                <Image
-                  src="/image.png"
-                  alt="Vietnamese Emblem"
-                  width={32}
-                  height={20}
-                  className="object-contain"
-                />
-              </div>
+            <div className="w-8 h-6 bg-[#DA251D] flex items-center justify-center border-2 border-[#2C2A29]">
+               <span className="text-[#F4D03F] text-xs">★</span>
             </div>
           </div>
 
           {/* Mobile menu button */}
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden flex items-center justify-center p-2 text-black/80 hover:text-[#A61F2B]"
+            className="md:hidden flex items-center justify-center p-2 text-[#2C2A29] hover:text-[#DA251D]"
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -175,28 +166,28 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white/95 backdrop-blur-md border-t border-black/10 shadow-lg"
+            className="md:hidden bg-[#FAF3EB] border-t-2 border-[#2C2A29] shadow-lg"
           >
-            <div className="container mx-auto px-4 py-6">
+            <div className="container-custom py-6">
               <div className="space-y-0">
                 {[
                   { name: "Trang chủ", path: ROUTES.HOME },
-                  { name: "Nội dung học tập", path: ROUTES.NOIDUNG },
-                  { name: "Ôn tập", path: ROUTES.ONTAP },
-                  { name: "Tạo Quiz", path: ROUTES.QUIZ_HOST },
+                  { name: "Nội dung", path: ROUTES.NOIDUNG },
+                  { name: "Tư liệu", path: ROUTES.ONTAP },
+                  { name: "Quiz Lịch sử", path: ROUTES.QUIZ_HOST },
                   { name: "Tham gia", path: ROUTES.QUIZ_JOIN },
-                  { name: "Thành viên & Báo cáo", path: ROUTES.THANHVIEN }
+                  { name: "Về dự án", path: ROUTES.THANHVIEN }
                 ].map((item) => (
                   <Link
                     key={item.name}
                     href={item.path}
-                    className={`flex items-center py-4 border-b border-black/5 font-medium ${
-                      pathname === item.path ? 'text-[#A61F2B]' : 'text-black'
+                    className={`flex items-center py-4 border-b border-[#D1C2A5] font-sans font-bold ${
+                      pathname === item.path ? 'text-[#DA251D]' : 'text-[#2C2A29]'
                     }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <span className="mr-3 text-[#A61F2B]">—</span>
-                    <span className="uppercase text-xs tracking-widest">{item.name}</span>
+                    <span className="mr-3 text-[#DA251D]">—</span>
+                    <span className="uppercase text-sm tracking-widest">{item.name}</span>
                   </Link>
                 ))}
               </div>

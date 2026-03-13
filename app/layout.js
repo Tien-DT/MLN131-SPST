@@ -1,26 +1,21 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
 import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import ChatBox from './components/ChatBox'
-
-const inter = Inter({ subsets: ['latin', 'vietnamese'] })
+import AIChatbot from '../components/AIChatbot'
 
 export const metadata = {
-  title: 'Đường lối cách mạng 1930–1945',
-  description: 'Website học tập về đường lối cách mạng của Đảng Cộng sản Việt Nam giai đoạn 1930–1945',
+  title: 'Ký ức Thống nhất | 1975 - 1981',
+  description: 'Giai đoạn Đảng lãnh đạo cả nước xây dựng chủ nghĩa xã hội và bảo vệ Tổ quốc',
 }
 
 export default function RootLayout({ children }) {
   return (
     <html lang="vi">
-      <body className={inter.className}>
+      <body>
         <Navbar />
-        <main className="pt-[140px] md:pt-[120px] min-h-screen">
+        <main className="pt-[80px] min-h-screen">
           {children}
         </main>
-        <Footer />
-        <ChatBox />
+        <AIChatbot />
       </body>
     </html>
   )
