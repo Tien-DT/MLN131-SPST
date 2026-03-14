@@ -91,8 +91,10 @@ export default function GamePage() {
   // Upgrade system
   const [upgradeCounts, setUpgradeCounts] = useState<Record<string, number>>({});
   const [upgradeChoices, setUpgradeChoices] = useState<Upgrade[]>([]);
-  // Track what happens after upgrade: "next-wave" or "level-complete"
-  const afterUpgradeRef = useRef<"next-wave" | "level-complete">("next-wave");
+  // Track what happens after upgrade: "next-wave" or "level-complete" or "resume-combat"
+  const afterUpgradeRef = useRef<"next-wave" | "level-complete" | "resume-combat">("next-wave");
+  // Track whether quiz was triggered by wave clear or ammo empty
+  const quizSourceRef = useRef<"wave-clear" | "ammo-empty">("wave-clear");
 
   useEffect(() => {
     if (hp <= 0 && screen === "combat") {
@@ -145,12 +147,14 @@ export default function GamePage() {
 
   const onWaveCleared = useCallback(() => {
     setAmmoQuizUsed(false);
+    quizSourceRef.current = "wave-clear";
     setScreen("quiz");
   }, []);
 
   const onAmmoEmpty = useCallback(() => {
     setAmmoQuizUsed((used) => {
       if (used) return true;
+      quizSourceRef.current = "ammo-empty";
       setScreen("quiz");
       return true;
     });
@@ -166,13 +170,18 @@ export default function GamePage() {
       setAmmo((a) => a + 5);
     }
 
-    const isLastWave = waveIdx + 1 >= totalQ;
-
-    // Go to upgrade screen
-    if (isLastWave) {
-      afterUpgradeRef.current = "level-complete";
+    // Determine what happens after upgrade
+    if (quizSourceRef.current === "ammo-empty") {
+      // Ammo empty quiz: always resume combat (enemies still alive)
+      afterUpgradeRef.current = "resume-combat";
     } else {
-      afterUpgradeRef.current = "next-wave";
+      // Wave cleared quiz: advance to next wave or complete level
+      const isLastWave = waveIdx + 1 >= totalQ;
+      if (isLastWave) {
+        afterUpgradeRef.current = "level-complete";
+      } else {
+        afterUpgradeRef.current = "next-wave";
+      }
     }
 
     // Generate 3 random upgrade choices
@@ -204,6 +213,10 @@ export default function GamePage() {
     // Move to next state
     if (afterUpgradeRef.current === "level-complete") {
       setScreen("level-complete");
+    } else if (afterUpgradeRef.current === "resume-combat") {
+      // Return to same wave (enemies still alive, just got ammo from quiz)
+      setAmmoQuizUsed(false);
+      setScreen("combat");
     } else {
       setWaveIdx((w) => w + 1);
       setAmmoQuizUsed(false);
