@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import type { GameQuestion, LevelData, WeaponType, Upgrade } from "../data";
-import { WEAPONS, UPGRADES } from "../data";
+import { WEAPONS, UPGRADES, WAVES_PER_LEVEL } from "../data";
 import { PixelHeart, PixelStar, PixelCharacter } from "./PixelArt";
 
 /* ═══════════════════════════════════════════════════════════════════ */

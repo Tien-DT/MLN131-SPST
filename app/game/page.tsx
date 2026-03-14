@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { GAME_LEVELS, WEAPONS, UPGRADES } from "./data";
-import type { GameScreen, Upgrade } from "./data";
+import { GAME_LEVELS, WEAPONS, UPGRADES, WAVES_PER_LEVEL } from "./data";
+import type { GameScreen, Upgrade, GameQuestion } from "./data";
 import { PixelHeart } from "./components/PixelArt";
 import ShooterArena from "./components/ShooterArena";
 import {
@@ -96,6 +96,11 @@ export default function GamePage() {
   // Track whether quiz was triggered by wave clear or ammo empty
   const quizSourceRef = useRef<"wave-clear" | "ammo-empty">("wave-clear");
 
+  // Quiz randomization — pick from pool without repeating
+  const [currentQuestion, setCurrentQuestion] = useState<GameQuestion | null>(null);
+  const [quizRetry, setQuizRetry] = useState(0);
+  const usedQuestionsRef = useRef<Set<number>>(new Set());
+
   useEffect(() => {
     if (hp <= 0 && screen === "combat") {
       setScreen("game-over");
@@ -103,7 +108,19 @@ export default function GamePage() {
   }, [hp, screen]);
 
   const levelData = GAME_LEVELS[level];
-  const totalQ = levelData.questions.length;
+  const totalQ = WAVES_PER_LEVEL;
+
+  // Pick a random question from the pool, avoiding repeats
+  function pickQuestion(): GameQuestion {
+    const pool = levelData.questions;
+    const unused = pool.map((_, i) => i).filter((i) => !usedQuestionsRef.current.has(i));
+    // If all used, reset
+    const candidates = unused.length > 0 ? unused : pool.map((_, i) => i);
+    if (unused.length === 0) usedQuestionsRef.current.clear();
+    const idx = candidates[Math.floor(Math.random() * candidates.length)];
+    usedQuestionsRef.current.add(idx);
+    return pool[idx];
+  }
 
   // Compute current weapon stats from upgrades
   const extraBullets = upgradeCounts["extra_bullet"] || 0;
@@ -135,6 +152,9 @@ export default function GamePage() {
     setAmmoQuizUsed(false);
     setUpgradeCounts({});
     setUpgradeChoices([]);
+    setCurrentQuestion(null);
+    setQuizRetry(0);
+    usedQuestionsRef.current.clear();
     setScreen("tutorial");
   }
 
@@ -142,23 +162,28 @@ export default function GamePage() {
     setWaveIdx(0);
     setCorrectCount(0);
     setAmmoQuizUsed(false);
+    usedQuestionsRef.current.clear();
     setScreen("combat");
   }
 
   const onWaveCleared = useCallback(() => {
     setAmmoQuizUsed(false);
     quizSourceRef.current = "wave-clear";
+    setCurrentQuestion(pickQuestion());
+    setQuizRetry(0);
     setScreen("quiz");
-  }, []);
+  }, [level]);
 
   const onAmmoEmpty = useCallback(() => {
     setAmmoQuizUsed((used) => {
       if (used) return true;
       quizSourceRef.current = "ammo-empty";
+      setCurrentQuestion(pickQuestion());
+      setQuizRetry(0);
       setScreen("quiz");
       return true;
     });
-  }, []);
+  }, [level]);
 
   function onQuizAnswer(correct: boolean) {
     if (correct) {
@@ -166,31 +191,41 @@ export default function GamePage() {
       setAmmo((a) => a + 10);
       setScore((s) => s + 100);
       setCorrectCount((c) => c + 1);
-    } else {
-      setAmmo((a) => a + 5);
-    }
 
-    // Determine what happens after upgrade
-    if (quizSourceRef.current === "ammo-empty") {
-      // Ammo empty quiz: always resume combat (enemies still alive)
-      afterUpgradeRef.current = "resume-combat";
-    } else {
-      // Wave cleared quiz: advance to next wave or complete level
-      const isLastWave = waveIdx + 1 >= totalQ;
-      if (isLastWave) {
-        afterUpgradeRef.current = "level-complete";
+      // Correct answer → upgrade screen
+      if (quizSourceRef.current === "ammo-empty") {
+        afterUpgradeRef.current = "resume-combat";
       } else {
-        afterUpgradeRef.current = "next-wave";
+        const isLastWave = waveIdx + 1 >= totalQ;
+        afterUpgradeRef.current = isLastWave ? "level-complete" : "next-wave";
+      }
+
+      setUpgradeCounts((prev) => {
+        const choices = pickUpgradeChoices(prev, 3);
+        setUpgradeChoices(choices);
+        return prev;
+      });
+      setScreen("upgrade");
+    } else {
+      // Wrong answer
+      if (quizSourceRef.current === "ammo-empty") {
+        // Ammo empty + wrong → no ammo, show NEW question (must answer correctly)
+        setCurrentQuestion(pickQuestion());
+        setQuizRetry((r) => r + 1);
+        // Stay on quiz screen — new question will render via key change
+      } else {
+        // Wave clear + wrong → no upgrade, skip directly to next state
+        setAmmo((a) => a + 5); // small consolation ammo
+        const isLastWave = waveIdx + 1 >= totalQ;
+        if (isLastWave) {
+          setScreen("level-complete");
+        } else {
+          setWaveIdx((w) => w + 1);
+          setAmmoQuizUsed(false);
+          setScreen("combat");
+        }
       }
     }
-
-    // Generate 3 random upgrade choices
-    setUpgradeCounts((prev) => {
-      const choices = pickUpgradeChoices(prev, 3);
-      setUpgradeChoices(choices);
-      return prev;
-    });
-    setScreen("upgrade");
   }
 
   function onUpgradePick(upgradeId: string) {
@@ -231,6 +266,7 @@ export default function GamePage() {
       setLevel((l) => l + 1);
       setAmmo(30);
       setAmmoQuizUsed(false);
+      usedQuestionsRef.current.clear();
       setScreen("shop");
     }
   }
@@ -247,6 +283,9 @@ export default function GamePage() {
     setAmmoQuizUsed(false);
     setUpgradeCounts({});
     setUpgradeChoices([]);
+    setCurrentQuestion(null);
+    setQuizRetry(0);
+    usedQuestionsRef.current.clear();
     setScreen("title");
   }
 
@@ -364,11 +403,12 @@ export default function GamePage() {
               </motion.div>
             )}
 
-            {screen === "quiz" && (
+            {screen === "quiz" && currentQuestion && (
               <QuizScreen
-                key={`quiz-${level}-${waveIdx}`}
-                question={levelData.questions[waveIdx]}
+                key={`quiz-${level}-${waveIdx}-${quizRetry}`}
+                question={currentQuestion}
                 onAnswer={onQuizAnswer}
+                isAmmoEmpty={quizSourceRef.current === "ammo-empty"}
               />
             )}
 
