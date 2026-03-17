@@ -118,9 +118,9 @@ function Page() {
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             {/* Masthead Header */}
-            <div className="flex items-center justify-between border-b-2 border-[#2C2A29] pb-4 mb-8">
+            <div className="relative flex items-center justify-between border-b-2 border-[#2C2A29] pb-4 mb-8">
               <span className="text-[10px] font-bold uppercase tracking-[.3em] text-[#2C2A29] font-sans">Số đặc biệt: 1975-1986</span>
-              <span className="text-xl font-serif-heading font-black text-[#DA251D] uppercase tracking-tighter">KIẾN THIẾT QUỐC GIA</span>
+              <span className="absolute left-1/2 -translate-x-1/2 text-xl font-serif-heading font-black text-[#DA251D] uppercase tracking-tighter">KIẾN THIẾT QUỐC GIA</span>
               <span className="text-[10px] font-bold uppercase tracking-[.3em] text-[#2C2A29] font-sans">Chương 3.1</span>
             </div>
 
