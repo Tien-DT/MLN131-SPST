@@ -351,7 +351,7 @@ export default function GamePage() {
             ← THOÁT
           </Link>
           <span className="pixel-font text-[11px] sm:text-[13px] text-[#FFD700]">
-            KÝ ỨC THỐNG NHẤT — XÂY DỰNG & BẢO VỆ TỔ QUỐC
+            NHÀ NƯỚC PHÁP QUYỀN XÃ HỘI CHỦ NGHĨA VIỆT NAM — XÂY DỰNG & BẢO VỆ TỔ QUỐC
           </span>
           <span className="pixel-font text-[11px] sm:text-[13px] text-[#555]">v2.0</span>
         </div>

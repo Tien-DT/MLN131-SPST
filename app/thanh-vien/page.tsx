@@ -56,7 +56,7 @@ export default function ThanhVienPage() {
           </h1>
           <div className="w-16 h-1 bg-[#DA251D] mx-auto mb-4"></div>
           <p className="font-serif-body text-[#5C554E] text-base max-w-2xl mx-auto italic">
-            Danh sách thành viên phát triển "Ký ức Thống nhất" và các công cụ Trí tuệ Nhân tạo tham gia hỗ trợ dự án.
+            Danh sách thành viên phát triển "Nhà nước Pháp quyền Xã hội Chủ nghĩa Việt Nam" và các công cụ Trí tuệ Nhân tạo tham gia hỗ trợ dự án.
           </p>
         </div>
 

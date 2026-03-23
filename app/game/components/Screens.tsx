@@ -65,7 +65,7 @@ export function TitleScreen({ onStart }: { onStart: () => void }) {
         className="pixel-font text-xl sm:text-2xl md:text-3xl text-[#FFD700] mb-3 leading-relaxed crt-glow"
         style={{ textShadow: "3px 3px 0px #8B1923, 6px 6px 0px #1a1a2e" }}
       >
-        KÝ ỨC THỐNG NHẤT
+        NHÀ NƯỚC PHÁP QUYỀN XÃ HỘI CHỦ NGHĨA VIỆT NAM
       </motion.h1>
       <motion.h2
         initial={{ y: -30, opacity: 0 }}
