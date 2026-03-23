@@ -1,6 +1,7 @@
 import './globals.css'
 import Navbar from './components/Navbar'
 import AIChatbot from '../components/AIChatbot'
+import ThemeProvider from './components/ThemeProvider'
 
 export const metadata = {
   title: 'Ký ức Thống nhất | 1975 - 1981',
@@ -11,11 +12,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="vi">
       <body>
-        <Navbar />
-        <main className="pt-[80px] min-h-screen">
-          {children}
-        </main>
-        <AIChatbot />
+        <ThemeProvider>
+          <Navbar />
+          <main className="pt-[80px] min-h-screen">
+            {children}
+          </main>
+          <AIChatbot />
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -1,12 +1,14 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTheme } from '@/app/components/ThemeProvider';
 
 export default function HeroVintage() {
+  const { isDarkMode } = useTheme();
   return (
-    <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden border-b-4 border-[#2C2A29]">
+    <section className={`relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden border-b-4 transition-colors duration-500 ${isDarkMode ? 'border-[#DA251D]/40' : 'border-[#2C2A29]'}`}>
       {/* Background Decor */}
-      <div className="absolute inset-0 bg-[#F5E6D3] z-0">
+      <div className="absolute inset-0 z-0 bg-[var(--bg-color)]">
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%221%22/%3E%3C/svg%3E")' }}></div>
       </div>
       
@@ -17,16 +19,16 @@ export default function HeroVintage() {
           transition={{ duration: 0.8, ease: 'easeOut' }}
         >
           {/* Badge */}
-          <div className="inline-block border border-[#2C2A29] px-4 py-1 mb-8">
+          <div className={`inline-block border px-4 py-1 mb-8 transition-colors ${isDarkMode ? 'border-[#DA251D]' : 'border-[#2C2A29]'}`}>
             <span className="font-sans text-sm font-bold tracking-widest uppercase text-[#DA251D]">Giai đoạn 1975 - 1981</span>
           </div>
           
           {/* Main Title */}
-          <h1 className="text-hero mb-6 text-[#2C2A29]">
+          <h1 className="text-hero mb-6 text-[var(--text-primary)]">
             Ký ức <span className="text-[#DA251D]">Thống nhất</span>
           </h1>
           
-          <h2 className="text-2xl md:text-3xl font-serif-body italic text-[#5C554E] mb-12 max-w-2xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-serif-body italic mb-12 max-w-2xl mx-auto text-[var(--text-secondary)]">
             Hành trình xây dựng Chủ nghĩa xã hội và bảo vệ biên cương Tổ quốc từ những bước đi đột phá đầu tiên.
           </h2>
         </motion.div>
@@ -53,10 +55,10 @@ export default function HeroVintage() {
       </div>
 
       {/* Retro decorative corners */}
-      <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-[#2C2A29] opacity-50"></div>
-      <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-[#2C2A29] opacity-50"></div>
-      <div className="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-[#2C2A29] opacity-50"></div>
-      <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-[#2C2A29] opacity-50"></div>
+      <div className={`absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 transition-colors duration-500 ${isDarkMode ? 'border-[#DA251D] opacity-100' : 'border-[#2C2A29] opacity-50'}`}></div>
+      <div className={`absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 transition-colors duration-500 ${isDarkMode ? 'border-[#DA251D] opacity-100' : 'border-[#2C2A29] opacity-50'}`}></div>
+      <div className={`absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 transition-colors duration-500 ${isDarkMode ? 'border-[#DA251D] opacity-100' : 'border-[#2C2A29] opacity-50'}`}></div>
+      <div className={`absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 transition-colors duration-500 ${isDarkMode ? 'border-[#DA251D] opacity-100' : 'border-[#2C2A29] opacity-50'}`}></div>
     </section>
   );
 }

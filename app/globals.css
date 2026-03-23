@@ -7,17 +7,27 @@
 /* Design System for "Ký ức Thống nhất (1975-1981)" - Retro/Vintage Style */
 
 :root {
-  /* Color Palette - Vintage */
-  --color-bg: #F5E6D3; /* vintage-paper */
-  --color-white: #FFFFFF;
-  --color-text-primary: #2C2A29; /* vintage-dark */
-  --color-text-secondary: #5C554E;
-  --color-accent: #DA251D; /* flag-red */
-  --color-accent-dark: #B51B15;
-  --color-military: #4A5D23; /* military-green */
-  --color-military-dark: #38471A;
-  --color-gold: #F4D03F; /* rice-yellow */
-  --color-border: #D1C2A5; /* vintage-border */
+  /* Color Palette - Vintage (Light) */
+  --bg-color: #F5E6D3;
+  --bg-paper: #FAF3EB;
+  --text-primary: #2C2A29;
+  --text-secondary: #5C554E;
+  --accent-color: #DA251D;
+  --accent-glow: rgba(218, 37, 29, 0.1);
+  --border-color: #D1C2A5;
+  --selection-bg: #F4D03F;
+}
+
+.dark {
+  /* Color Palette - Investigation (Dark) */
+  --bg-color: #0A0A0A;
+  --bg-paper: #141414;
+  --text-primary: #E8D9C5;
+  --text-secondary: #A0968A;
+  --accent-color: #FF2E2E; /* Brighter red for dark background */
+  --accent-glow: rgba(255, 46, 46, 0.2);
+  --border-color: #2C2A29;
+  --selection-bg: #FF2E2E;
 }
 
 @layer base {
@@ -30,7 +40,9 @@
   }
 
   body {
-    @apply text-[#2C2A29] antialiased bg-[#F5E6D3];
+    @apply antialiased transition-colors duration-500;
+    color: var(--text-primary);
+    background-color: var(--bg-color);
     /* Nền giấy cũ có chút nhiễu nhẹ (Noise) */
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
     font-family: 'Lora', serif; /* Font chữ có chân gợi nhớ báo cũ */
@@ -39,7 +51,8 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply text-[#2C2A29] font-bold;
+    @apply font-bold transition-colors duration-500;
+    color: var(--text-primary);
     font-family: 'Playfair Display', serif; /* Font tiêu đề sang trọng, hoài cổ */
     line-height: 1.3;
   }
@@ -150,17 +163,17 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #F5E6D3;
-  border-left: 1px solid #D1C2A5;
+  background: var(--bg-color);
+  border-left: 1px solid var(--border-color);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4A5D23;
-  border: 2px solid #F5E6D3;
+  background: var(--text-secondary);
+  border: 2px solid var(--bg-color);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #38471A;
+  background: var(--accent-color);
 }
 
 /* Selection */

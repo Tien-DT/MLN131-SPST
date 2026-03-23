@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import { useTheme } from '@/app/components/ThemeProvider';
 
 const events = [
   {
@@ -91,6 +92,7 @@ const events = [
 ];
 
 export default function InteractiveTimeline() {
+  const { isDarkMode } = useTheme();
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -100,13 +102,13 @@ export default function InteractiveTimeline() {
   const pathLength = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <section id="timeline" className="py-24 bg-[#FAF3EB] border-b-4 border-[#2C2A29] relative" ref={containerRef}>
+    <section id="timeline" className={`py-24 border-b-4 transition-colors duration-500 relative ${isDarkMode ? 'bg-[#0A0A0A] border-[#DA251D]/30' : 'bg-[#FAF3EB] border-[#2C2A29]'}`} ref={containerRef}>
       <div className="container-custom">
         <div className="text-center mb-16 fade-in">
-          <h2 className="text-section-title text-[#2C2A29]">
+          <h2 className="text-section-title text-[var(--text-primary)]">
             Dòng thời gian Kỷ nguyên mới
           </h2>
-          <p className="font-serif-body text-lg text-[#5C554E] max-w-2xl mx-auto italic">
+          <p className="font-serif-body text-lg text-[var(--text-secondary)] max-w-2xl mx-auto italic">
             Cuộn xuống để lần theo những bước đi lịch sử từ 1975 đến trước thềm Đổi Mới 1986.
           </p>
         </div>
@@ -133,18 +135,18 @@ export default function InteractiveTimeline() {
                 `}
               >
                 {/* Node */}
-                <div className="absolute left-[12px] md:left-1/2 w-5 h-5 rounded-full bg-[#FAF3EB] border-4 border-[#2C2A29] transform -translate-x-1/2 z-10"></div>
+                <div className={`absolute left-[12px] md:left-1/2 w-5 h-5 rounded-full border-4 transform -translate-x-1/2 z-10 transition-colors ${isDarkMode ? 'bg-[#000000] border-[#DA251D]' : 'bg-[#FAF3EB] border-[#2C2A29]'}`}></div>
                 
                 {/* Content Card */}
                 <div className="w-full pl-12 md:pl-0 md:w-5/12 ml-4 md:ml-0">
-                  <div className={`vintage-box p-6 hover:-translate-y-1 border-l-8 ${event.color}`}>
+                  <div className={`vintage-box p-6 hover:-translate-y-1 border-l-8 transition-colors duration-500 ${event.color} ${isDarkMode ? 'bg-[#141414] shadow-[4px_4px_0px_0px_var(--accent-color)]' : 'bg-[#FAF3EB]'}`}>
                     <span className="inline-block py-1 px-3 bg-[#2C2A29] text-[#F5E6D3] font-sans font-bold text-lg mb-3">
                       {event.year}
                     </span>
-                    <h3 className="font-serif-heading text-xl md:text-2xl font-bold mb-2 text-[#2C2A29]">
+                    <h3 className="font-serif-heading text-xl md:text-2xl font-bold mb-2 text-[var(--text-primary)]">
                       {event.title}
                     </h3>
-                    <p className="text-[#5C554E] font-serif-body text-sm md:text-base leading-relaxed">
+                    <p className="text-[var(--text-secondary)] font-serif-body text-sm md:text-base leading-relaxed">
                       {event.desc}
                     </p>
                   </div>
@@ -153,11 +155,11 @@ export default function InteractiveTimeline() {
                 {/* Image Card */}
                 <div className="hidden md:block md:w-5/12">
                   {event.image && (
-                    <div className="vintage-box p-2 bg-[#FAF3EB] border-4 border-[#2C2A29] rotate-1 hover:-rotate-1 transition-transform duration-300">
+                    <div className={`vintage-box p-2 border-4 rotate-1 hover:-rotate-1 transition-all duration-500 ${isDarkMode ? 'bg-[#000000] border-[#DA251D]' : 'bg-[#FAF3EB] border-[#2C2A29]'}`}>
                       <img 
                         src={event.image} 
                         alt={event.title} 
-                        className="w-full h-[200px] object-cover border-2 border-[#5C554E] filter sepia-[0.3]"
+                        className={`w-full h-[200px] object-cover border-2 transition-all duration-700 ${isDarkMode ? 'border-[#DA251D]/40 grayscale brightness-75 contrast-125' : 'border-[#5C554E] sepia-[0.3]'}`}
                       />
                     </div>
                   )}

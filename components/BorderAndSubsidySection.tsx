@@ -13,6 +13,7 @@ import {
   Zap,
   ArrowRight
 } from 'lucide-react';
+import { useTheme } from '@/app/components/ThemeProvider';
 
 interface EventSlide {
   title: string;
@@ -266,6 +267,7 @@ interface EventDetailModalProps {
 }
 
 function EventDetailModal({ event, isOpen, onClose }: EventDetailModalProps) {
+  const { isDarkMode } = useTheme();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -302,27 +304,27 @@ function EventDetailModal({ event, isOpen, onClose }: EventDetailModalProps) {
               initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 30 }}
-              className="bg-[#FAF3EB] w-full max-w-7xl rounded-lg border-4 border-[#2C2A29] shadow-[12px_12px_0px_0px_rgba(44,42,41,1)] overflow-hidden pointer-events-auto flex flex-col h-[90vh] lg:h-[80vh]"
+              className={`w-full max-w-7xl rounded-lg border-4 shadow-[12px_12px_0px_0px_var(--text-primary)] overflow-hidden pointer-events-auto flex flex-col h-[90vh] lg:h-[80vh] transition-colors duration-500 ${isDarkMode ? 'bg-[#0A0A0A] border-[#DA251D]' : 'bg-[#FAF3EB] border-[#2C2A29]'}`}
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-4 lg:px-6 py-4 border-b-4 border-[#2C2A29] bg-[#E3D6C1] flex-shrink-0">
+              <div className={`flex items-center justify-between px-4 lg:px-6 py-4 border-b-4 flex-shrink-0 transition-colors duration-500 ${isDarkMode ? 'bg-[#1C1C1C] border-[#DA251D]' : 'bg-[#E3D6C1] border-[#2C2A29]'}`}>
                 <div className="flex items-center gap-3 lg:gap-4">
                   <div 
-                    className="w-10 h-10 flex items-center justify-center text-white border-2 border-[#2C2A29] shadow-[2px_2px_0px_0px_rgba(44,42,41,1)] flex-shrink-0"
+                    className={`w-10 h-10 flex items-center justify-center text-white border-2 shadow-[2px_2px_0px_0px_var(--text-primary)] flex-shrink-0 transition-colors ${isDarkMode ? 'border-[#DA251D]' : 'border-[#2C2A29]'}`}
                     style={{ background: event.accent }}
                   >
                     <Shield size={20} />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-sm lg:text-2xl font-serif-heading font-black text-[#2C2A29] uppercase tracking-wider leading-tight truncate">{event.title}</h3>
-                    <p className="text-[10px] font-sans font-bold text-[#5C554E] uppercase tracking-[0.1em]">Tư liệu lịch sử Việt Nam</p>
+                    <h3 className={`text-sm lg:text-2xl font-serif-heading font-black uppercase tracking-wider leading-tight truncate transition-colors ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>{event.title}</h3>
+                    <p className={`text-[10px] font-sans font-bold uppercase tracking-[0.1em] transition-colors ${isDarkMode ? 'text-[#E8D9C5]/40' : 'text-[#5C554E]'}`}>Tư liệu lịch sử Việt Nam</p>
                   </div>
                 </div>
                 <button 
                   onClick={onClose}
-                  className="p-1 lg:p-2 hover:bg-white/50 rounded-full transition-colors border-2 border-transparent hover:border-[#2C2A29] flex-shrink-0"
+                  className={`p-1 lg:p-2 rounded-full transition-colors border-2 border-transparent transition-all ${isDarkMode ? 'hover:bg-white/10 hover:border-[#DA251D]' : 'hover:bg-white/50 hover:border-[#2C2A29]'}`}
                 >
-                  <X size={24} className="text-[#2C2A29]" />
+                  <X size={24} className={isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'} />
                 </button>
               </div>
 
@@ -338,12 +340,12 @@ function EventDetailModal({ event, isOpen, onClose }: EventDetailModalProps) {
                     className="flex flex-col lg:flex-row w-full h-full overflow-hidden"
                   >
                     {/* Left Side: Image container */}
-                    <div className="w-full lg:w-1/2 h-[200px] lg:h-full relative bg-[#1A1A1A] border-b-2 lg:border-b-0 lg:border-r-4 border-[#2C2A29] flex-shrink-0">
+                    <div className={`w-full lg:w-1/2 h-[200px] lg:h-full relative bg-[#1A1A1A] border-b-2 lg:border-b-0 lg:border-r-4 transition-colors duration-500 ${isDarkMode ? 'border-[#DA251D]' : 'border-[#2C2A29]'} flex-shrink-0`}>
                       <Image
                         src={slide.image}
                         alt={slide.title}
                         fill
-                        className="object-cover opacity-90"
+                        className={`object-cover transition-all duration-700 ${isDarkMode ? 'opacity-70 grayscale contrast-125 brightness-75' : 'opacity-90'}`}
                         priority={true}
                         sizes="(max-width: 1400px) 100vw, 50vw"
                       />
@@ -351,30 +353,30 @@ function EventDetailModal({ event, isOpen, onClose }: EventDetailModalProps) {
                       
                       {/* Caption overlay */}
                       <div className="absolute bottom-4 left-4 right-4 lg:bottom-8 lg:left-8 lg:right-8">
-                        <p className="text-[#FAF3EB] text-[10px] lg:text-sm italic font-serif-body leading-relaxed border-l-4 border-[#F4D03F] pl-4">
+                        <p className={`text-[#FAF3EB] text-[10px] lg:text-sm italic font-serif-body leading-relaxed border-l-4 border-[#F4D03F] pl-4 transition-colors`}>
                           {slide.imageCaption}
                         </p>
                       </div>
                     </div>
 
                     {/* Right Side: Text content with vertical scroll */}
-                    <div className="flex-1 overflow-y-auto bg-[#FAF3EB] p-4 lg:p-8 custom-scrollbar">
+                    <div className={`flex-1 overflow-y-auto p-4 lg:p-8 custom-scrollbar transition-colors duration-500 ${isDarkMode ? 'bg-[#0A0A0A]' : 'bg-[#FAF3EB]'}`}>
                       <div className="max-w-3xl mx-auto space-y-5 lg:space-y-6">
                         {/* Slide Title & Tag */}
                         <div className="space-y-4">
                           <div className="flex items-center gap-3">
-                            <span className="px-2 py-0.5 bg-[#2C2A29] text-white text-[10px] font-sans font-bold uppercase tracking-[0.2em]">
+                            <span className={`px-2 py-0.5 text-white text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-colors ${isDarkMode ? 'bg-[#DA251D]' : 'bg-[#2C2A29]'}`}>
                               {slide.highlight}
                             </span>
-                            <div className="flex-1 h-[1px] bg-[#D1C2A5]" />
-                            <span className="text-[10px] font-black text-[#5C554E] uppercase tracking-widest">Giai đoạn {currentSlide + 1}</span>
+                            <div className={`flex-1 h-[1px] transition-colors ${isDarkMode ? 'bg-[#DA251D]/20' : 'bg-[#D1C2A5]'}`} />
+                            <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isDarkMode ? 'text-[#E8D9C5]/30' : 'text-[#5C554E]'}`}>Giai đoạn {currentSlide + 1}</span>
                           </div>
 
-                          <h4 className="text-xl lg:text-4xl font-serif-heading font-extrabold text-[#2C2A29] leading-tight uppercase tracking-tight">
+                          <h4 className={`text-xl lg:text-4xl font-serif-heading font-extrabold leading-tight uppercase tracking-tight transition-colors ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>
                             {slide.title}
                           </h4>
 
-                          <div className="flex items-center gap-2 text-[#5C554E] font-bold text-xs lg:text-base bg-[#E3D6C1]/30 p-2 border-l-4 border-[#DA251D]">
+                          <div className={`flex items-center gap-2 font-bold text-xs lg:text-base p-2 border-l-4 transition-colors ${isDarkMode ? 'text-[#E8D9C5]/60 bg-[#DA251D]/10 border-[#DA251D]' : 'text-[#5C554E] bg-[#E3D6C1]/30 border-[#DA251D]'}`}>
                             <Calendar size={18} className="text-[#DA251D]" /> {slide.subtitle}
                           </div>
                         </div>
@@ -382,20 +384,20 @@ function EventDetailModal({ event, isOpen, onClose }: EventDetailModalProps) {
                         {/* Narrative Content */}
                         <div className="space-y-4 lg:space-y-6">
                           {slide.content.map((p, i) => (
-                            <p key={i} className="text-sm lg:text-lg font-serif-body text-[#2C2A29] leading-relaxed text-justify opacity-95">
+                            <p key={i} className={`text-sm lg:text-lg font-serif-body leading-relaxed text-justify opacity-95 transition-colors ${isDarkMode ? 'text-[#E8D9C5]/80' : 'text-[#2C2A29]'}`}>
                               {p}
                             </p>
                           ))}
                         </div>
 
                         {/* Key Points Box */}
-                        <div className="bg-white border-2 border-[#2C2A29] p-4 lg:p-8 shadow-[6px_6px_0px_0px_rgba(44,42,41,1)] mt-8">
-                          <h5 className="font-sans font-black uppercase text-[10px] lg:text-xs tracking-[0.2em] mb-4 flex items-center gap-2 text-[#2C2A29]">
+                        <div className={`p-4 lg:p-8 shadow-[6px_6px_0px_0px_var(--text-primary)] mt-8 border-2 transition-colors duration-500 ${isDarkMode ? 'bg-[#000000] border-[#DA251D]' : 'bg-white border-[#2C2A29]'}`}>
+                          <h5 className={`font-sans font-black uppercase text-[10px] lg:text-xs tracking-[0.2em] mb-4 flex items-center gap-2 transition-colors ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>
                             <Zap size={16} className="text-[#F4D03F] fill-current" /> Điểm cốt lõi trích yếu
                           </h5>
                           <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
                             {slide.bullets.map((b, i) => (
-                              <li key={i} className="flex gap-3 lg:gap-4 items-start text-xs lg:text-[16px] font-serif-body font-bold text-[#2C2A29]">
+                              <li key={i} className={`flex gap-3 lg:gap-4 items-start text-xs lg:text-[16px] font-serif-body font-bold transition-colors ${isDarkMode ? 'text-[#E8D9C5]/70' : 'text-[#2C2A29]'}`}>
                                 <ArrowRight size={18} className="mt-0.5 flex-shrink-0" style={{ color: event.accent }} />
                                 <span className="leading-relaxed">{b}</span>
                               </li>
@@ -409,25 +411,25 @@ function EventDetailModal({ event, isOpen, onClose }: EventDetailModalProps) {
               </div>
 
               {/* Footer Navigation Bar */}
-              <div className="flex items-center justify-between px-4 lg:px-6 py-3 border-t-4 border-[#2C2A29] bg-[#E3D6C1] flex-shrink-0">
+              <div className={`flex items-center justify-between px-4 lg:px-6 py-3 border-t-4 flex-shrink-0 transition-colors duration-500 ${isDarkMode ? 'bg-[#1C1C1C] border-[#DA251D]' : 'bg-[#E3D6C1] border-[#2C2A29]'}`}>
                 <button 
                   onClick={prevSlide}
                   aria-label="Previous slide"
-                  className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white border-2 border-[#2C2A29] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(44,42,41,1)] hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_0px_rgba(44,42,41,1)] active:translate-y-[1px] active:shadow-none transition-all group"
+                  className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full border-2 flex items-center justify-center shadow-[3px_3px_0px_0px_var(--text-primary)] hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_0px_var(--text-primary)] active:translate-y-[1px] active:shadow-none transition-all group ${isDarkMode ? 'bg-[#1C1C1C] border-[#DA251D]' : 'bg-white border-[#2C2A29]'}`}
                 >
-                  <ChevronLeft size={22} className="text-[#2C2A29] group-hover:-translate-x-0.5 transition-transform" />
+                  <ChevronLeft size={22} className={`${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'} group-hover:-translate-x-0.5 transition-transform`} />
                 </button>
 
-                <div className="bg-white/90 backdrop-blur-sm px-5 py-1.5 rounded-full border-2 border-[#2C2A29] text-[10px] lg:text-xs font-black font-sans uppercase tracking-[0.3em] text-[#2C2A29] shadow-sm">
+                <div className={`backdrop-blur-sm px-5 py-1.5 rounded-full border-2 text-[10px] lg:text-xs font-black font-sans uppercase tracking-[0.3em] shadow-sm transition-colors ${isDarkMode ? 'bg-[#000000]/80 border-[#DA251D] text-[#DA251D]' : 'bg-white/90 border-[#2C2A29] text-[#2C2A29]'}`}>
                   Slide {currentSlide + 1} / {event.slides.length}
                 </div>
 
                 <button 
                   onClick={nextSlide}
                   aria-label="Next slide"
-                  className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-[#2C2A29] text-white border-2 border-[#2C2A29] flex items-center justify-center shadow-[3px_3px_0px_0px_rgba(227,214,193,1)] hover:translate-y-[-2px] hover:shadow-[0px_6px_16px_rgba(0,0,0,0.3)] active:translate-y-[1px] active:shadow-none transition-all group"
+                  className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full border-2 flex items-center justify-center shadow-[3px_3px_0px_0px_var(--bg-color)] hover:translate-y-[-2px] hover:shadow-[0px_6px_16px_rgba(0,0,0,0.3)] active:translate-y-[1px] active:shadow-none transition-all group ${isDarkMode ? 'bg-[#DA251D] border-[#DA251D]' : 'bg-[#2C2A29] border-[#2C2A29]'}`}
                 >
-                  <ChevronRight size={22} className="group-hover:translate-x-0.5 transition-transform" />
+                  <ChevronRight size={22} className="group-hover:translate-x-0.5 transition-transform text-white" />
                 </button>
               </div>
             </motion.div>
@@ -439,16 +441,17 @@ function EventDetailModal({ event, isOpen, onClose }: EventDetailModalProps) {
 }
 
 export default function BorderAndSubsidySection() {
+  const { isDarkMode } = useTheme();
   const [activeEvent, setActiveEvent] = useState<EventDetail | null>(null);
   
   return (
-    <section className="bg-[#4A5D23] py-24 border-b-4 border-[#2C2A29] relative overflow-hidden">
+    <section className={`py-24 border-b-4 relative overflow-hidden transition-colors duration-500 ${isDarkMode ? 'bg-[#051A05] border-[#DA251D]/30' : 'bg-[#4A5D23] border-[#2C2A29]'}`}>
       {/* Texture overlay */}
       <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
       
       <div className="container-custom relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-section-title text-[#F5E6D3] after:bg-[#F4D03F]">
+          <h2 className={`text-section-title after:bg-[#F4D03F] transition-colors ${isDarkMode ? 'text-[#DA251D]' : 'text-[#F5E6D3]'}`}>
             Bảo vệ Tổ Quốc & Xây dựng CNXH
           </h2>
         </div>
@@ -456,12 +459,12 @@ export default function BorderAndSubsidySection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           
           {/* Border Defense Map Concept */}
-          <div className="vintage-box p-8 relative">
-            <h3 className="text-2xl font-serif-heading text-[#2C2A29] border-b-2 border-[#D1C2A5] pb-4 mb-6">
+          <div className={`vintage-box p-8 relative transition-colors duration-500 ${isDarkMode ? 'bg-[#141414] border-[#DA251D]' : 'bg-[#FAF3EB]'}`}>
+            <h3 className={`text-2xl font-serif-heading border-b-2 transition-colors duration-500 pb-4 mb-6 ${isDarkMode ? 'text-[#E8D9C5] border-[#DA251D]/20' : 'text-[#2C2A29] border-[#D1C2A5]'}`}>
               Hai Cuộc Chiến Tranh Bảo Vệ Biên Giới
             </h3>
             
-            <div className="relative aspect-[3/4] sm:aspect-[4/5] bg-[#E8D9C5] border-2 border-[#2C2A29] p-4 flex flex-col items-center justify-center overflow-hidden shadow-inner">
+            <div className={`relative aspect-[3/4] sm:aspect-[4/5] border-2 p-4 flex flex-col items-center justify-center overflow-hidden shadow-inner transition-colors duration-500 ${isDarkMode ? 'bg-[#0A0A0A] border-[#DA251D]/30' : 'bg-[#E8D9C5] border-[#2C2A29]'}`}>
               {/* Vùng Lãnh Thổ (Bản Đồ) */}
               <div className="absolute inset-0 pointer-events-none flex items-center justify-center p-4">
                 <div className="relative w-full h-full">
@@ -469,7 +472,7 @@ export default function BorderAndSubsidySection() {
                     src="/images/vietnam_map.svg"
                     alt="Bản đồ Việt Nam" 
                     fill 
-                    className="object-contain drop-shadow-[4px_4px_0px_rgba(44,42,41,0.5)] opacity-90"
+                    className={`object-contain transition-all duration-700 ${isDarkMode ? 'opacity-40 grayscale contrast-150 brightness-50' : 'opacity-90 drop-shadow-[4px_4px_0px_rgba(44,42,41,0.5)]'}`}
                   />
                 </div>
               </div>
@@ -532,35 +535,35 @@ export default function BorderAndSubsidySection() {
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-between text-[#5C554E] text-xs font-serif-body italic">
+            <div className={`mt-6 flex items-center justify-between text-xs font-serif-body italic transition-colors ${isDarkMode ? 'text-[#E8D9C5]/40' : 'text-[#5C554E]'}`}>
               <p>* Bản đồ khái quát chủ quyền và các điểm nóng bảo vệ Tổ Quốc</p>
               <ArrowRight size={14} />
             </div>
           </div>
 
           {/* Subsidy Era Mini-interactive */}
-          <div className="vintage-box p-8 flex flex-col justify-between">
+          <div className={`vintage-box p-8 flex flex-col justify-between transition-colors duration-500 ${isDarkMode ? 'bg-[#141414] border-[#DA251D]' : 'bg-[#FAF3EB]'}`}>
             <div>
-              <h3 className="text-2xl font-serif-heading text-[#2C2A29] border-b-2 border-[#D1C2A5] pb-4 mb-6">
+              <h3 className={`text-2xl font-serif-heading border-b-2 transition-colors duration-500 pb-4 mb-6 ${isDarkMode ? 'text-[#E8D9C5] border-[#DA251D]/20' : 'text-[#2C2A29] border-[#D1C2A5]'}`}>
                 Ký ức Thời Bao Cấp
               </h3>
-              <p className="font-serif-body text-[#5C554E] mb-6 text-justify">
+              <p className={`font-serif-body mb-6 text-justify transition-colors ${isDarkMode ? 'text-[#E8D9C5]/60' : 'text-[#5C554E]'}`}>
                 Giai đoạn này đất nước đồng thời thực hiện hai nhiệm vụ chiến lược: Xây dựng CNXH và Bảo vệ Tổ quốc. Tuy nhiên, việc rập khuôn cơ chế kinh tế quan liêu, bao cấp trong thời gian dài đã đẩy nền kinh tế vào bế tắc trước khi Đảng dũng cảm tìm ra hướng Đổi Mới.
               </p>
               
               <div 
-                className="bg-[#E3D6C1] border-2 border-[#2C2A29] p-6 text-center transform scale-100 hover:scale-[1.02] hover:-rotate-1 transition-all cursor-pointer relative shadow-[4px_4px_0px_0px_rgba(44,42,41,1)] group"
+                className={`border-2 p-6 text-center transform scale-100 hover:scale-[1.02] hover:-rotate-1 transition-all cursor-pointer relative shadow-[4px_4px_0px_0px_rgba(44,42,41,1)] group ${isDarkMode ? 'bg-[#1C1C1C] border-[#DA251D]' : 'bg-[#E3D6C1] border-[#2C2A29]'}`}
                 onClick={() => setActiveEvent(HISTORICAL_EVENTS.subsidy)}
               >
-                <div className="absolute -top-3 -left-3 bg-[#DA251D] text-white p-2 border-2 border-[#2C2A29] shadow-[2px_2px_0px_0px_rgba(44,42,41,1)] group-hover:rotate-12 transition-transform">
+                <div className={`absolute -top-3 -left-3 text-white p-2 border-2 shadow-[2px_2px_0px_0px_rgba(44,42,41,1)] group-hover:rotate-12 transition-transform ${isDarkMode ? 'bg-[#DA251D] border-[#DA251D]' : 'bg-[#DA251D] border-[#2C2A29]'}`}>
                   <Calendar size={16} />
                 </div>
                 
-                <div className="border border-dashed border-[#5C554E] p-4 bg-[#FAF3EB]/50 group-hover:bg-[#FAF3EB] transition-colors relative">
-                  <h4 className="font-bold text-xl uppercase tracking-widest text-[#2C2A29] mb-2 border-b-2 border-[#2C2A29] inline-block pb-1">
+                <div className={`border border-dashed p-4 transition-colors relative ${isDarkMode ? 'border-[#DA251D]/40 bg-[#000000]/50 group-hover:bg-[#000000]' : 'border-[#5C554E] bg-[#FAF3EB]/50 group-hover:bg-[#FAF3EB]'}`}>
+                  <h4 className={`font-bold text-xl uppercase tracking-widest border-b-2 inline-block pb-1 transition-colors ${isDarkMode ? 'text-[#DA251D] border-[#DA251D]' : 'text-[#2C2A29] border-[#2C2A29]'}`}>
                     Hồ Sơ Bao Cấp
                   </h4>
-                  <p className="text-[11px] font-serif-body mb-6 italic text-[#5C554E]">
+                  <p className={`text-[11px] font-serif-body mb-6 italic transition-colors ${isDarkMode ? 'text-[#E8D9C5]/40' : 'text-[#5C554E]'}`}>
                     Nhấn vào để xem đầy đủ ký ức lịch sử giai đoạn 1975 - 1986
                   </p>
                   
@@ -589,8 +592,8 @@ export default function BorderAndSubsidySection() {
               </div>
             </div>
             
-            <div className="mt-8 pt-4 border-t-2 border-[#D1C2A5]">
-              <p className="text-xs italic text-[#5C554E] leading-relaxed">
+            <div className={`mt-8 pt-4 border-t-2 transition-all ${isDarkMode ? 'border-[#DA251D]/20' : 'border-[#D1C2A5]'}`}>
+              <p className={`text-xs italic leading-relaxed transition-colors ${isDarkMode ? 'text-[#E8D9C5]/60' : 'text-[#5C554E]'}`}>
                 <span className="font-black text-[#DA251D]">CHÚ Ý:</span> Cơ chế quan liêu, bao cấp từng là gông cùm trói buộc nền kinh tế, buộc bộ máy lãnh đạo từ Trung ương đến địa phương phải trăn trở thai nghén những tư duy mới để dọn đường cho Đổi Mới toàn diện.
               </p>
             </div>

@@ -1,84 +1,84 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useState, useEffect, Suspense } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import {
-  ChevronRight,
-  ChevronLeft,
-  Star,
   Shield,
-  Flag,
+  Info,
+  CheckCircle,
   Zap,
   BookOpen,
-  CheckCircle,
-  Circle,
-  Swords,
-  Vote,
-  Landmark,
-  Wheat,
-  TrendingUp,
-  Scale,
-  Award,
-  Target,
-  ArrowRight,
-  Sparkles,
   Trophy,
-  RotateCcw,
-  X,
-  Calendar,
-  MapPin,
-  Info,
-  Link as LinkIcon,
+  Scale,
+  Handshake,
+  Search,
+  AlertTriangle,
+  FileText,
+  UserCheck,
+  Folder,
+  Stamp,
+  ArrowRight,
+  Fingerprint,
+  Lock,
+  Eye,
+  Gavel,
+  Target
 } from "lucide-react";
 
-import { Milestone, PHASE_1, PHASE_2 } from "./data/milestones";
 import { quizData } from "./data/quiz";
-import { MilestoneCard } from "./components/MilestoneCard";
 import { InlineQuiz } from "./components/InlineQuiz";
-import { MilestoneDetailModal } from "./components/MilestoneDetailModal";
-import Museum3D from "./components/Museum3D";
 import { createQuestionSessionSeed, sampleQuestionsDeterministic } from "@/lib/pdfQuestionBank";
+import { useTheme } from "../components/ThemeProvider";
+import CorruptionWheel from "./components/CorruptionWheel";
 
 /* ═══════════════════════════════════════════════════════════════════ */
-/*  COMPONENTS                                                        */
+/*  REUSABLE UI COMPONENTS                                            */
 /* ═══════════════════════════════════════════════════════════════════ */
 
-/** Animated number counter */
-function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true });
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!isInView) return;
-    let start = 0;
-    const step = Math.ceil(value / 40);
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= value) { setCount(value); clearInterval(timer); }
-      else setCount(start);
-    }, 30);
-    return () => clearInterval(timer);
-  }, [isInView, value]);
-
-  return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
-}
-
-/** Section divider with gradient */
-function Divider({ color }: { color: string }) {
+/** Section Divider with an ink-line aesthetic */
+function InkDivider() {
+  const { isDarkMode } = useTheme();
   return (
-    <div className="flex items-center gap-4 my-16">
-      <div className="flex-1 h-[1px]" style={{ background: `linear-gradient(to right, transparent, ${color}40)` }} />
-      <div className="w-2 h-2 rounded-full" style={{ background: color }} />
-      <div className="flex-1 h-[1px]" style={{ background: `linear-gradient(to left, transparent, ${color}40)` }} />
+    <div className="relative h-24 flex items-center justify-center overflow-hidden">
+      <div className="absolute inset-0 flex items-center">
+        <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[var(--accent-color)]/20 to-transparent" />
+      </div>
+      <div className="relative z-10 px-6 py-2 border rounded-full shadow-inner scale-75 opacity-50 transition-colors duration-500 bg-[var(--bg-paper)] border-[var(--border-color)]">
+        <Fingerprint size={16} className="text-[var(--text-primary)]" />
+      </div>
     </div>
   );
 }
 
+/** Vintage Image Frame */
+function VintageFrame({ src, alt, caption }: { src: string; alt: string; caption?: string }) {
+  const { isDarkMode } = useTheme();
+  return (
+    <motion.div 
+      initial={{ opacity: 0, rotate: -2, scale: 0.95 }}
+      whileInView={{ opacity: 1, rotate: 0, scale: 1 }}
+      viewport={{ once: true }}
+      className={`relative p-3 shadow-[0_15px_40px_-20px_rgba(0,0,0,0.3)] border transition-colors duration-500 ${isDarkMode ? 'bg-[#1C1C1C] border-[#DA251D]/30' : 'bg-white border-[#2C2A29]/10'}`}
+    >
+      <div className={`relative aspect-[4/3] overflow-hidden grayscale-[0.3] sepia-[0.3] hover:grayscale-0 hover:sepia-0 transition-all duration-700 ${isDarkMode ? 'brightness-75 contrast-125' : ''}`}>
+        <Image src={src} alt={alt} fill className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+      </div>
+      {caption && (
+        <div className={`mt-4 text-center font-serif-body italic text-xs tracking-tight transition-colors ${isDarkMode ? 'text-[#DA251D]' : 'text-[#5C554E]'}`}>
+          — {caption} —
+        </div>
+      )}
+      {/* Decorative Tape */}
+      <div className={`absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-8 backdrop-blur-sm -rotate-2 opacity-50 transition-colors ${isDarkMode ? 'bg-[#DA251D]/20' : 'bg-[#D1C2A5]/40'}`} />
+    </motion.div>
+  );
+}
+
+
 /* ═══════════════════════════════════════════════════════════════════ */
-/*  PAGE                                                              */
+/*  MAIN PAGE                                                         */
 /* ═══════════════════════════════════════════════════════════════════ */
 
 export default function Wrapper() {
@@ -86,354 +86,310 @@ export default function Wrapper() {
 }
 
 function Page() {
-  const sp = useSearchParams();
-  const [tab, setTab] = useState<1 | 2 | 3 | 4>(1);
-  const [selectedMilestone, setSelectedMilestone] = useState<Milestone | null>(null);
-  const inlineQuizData = useMemo(
-    () => sampleQuestionsDeterministic(quizData, 10, createQuestionSessionSeed("noi-dung-chinh")),
-    []
-  );
+  const [isMounted, setIsMounted] = useState(false);
+  const [inlineQuizData, setInlineQuizData] = useState<any[]>([]);
+  const { isDarkMode } = useTheme();
+  
+  const { scrollYProgress } = useScroll();
+
+  const headerY = useTransform(scrollYProgress, [0, 0.2], [0, -50]);
+  const stampY = useTransform(scrollYProgress, [0, 1], [0, 150]);
+  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
   useEffect(() => {
-    const t = sp.get("topic");
-    if (t === "2") setTab(2);
-    else if (t === "3") setTab(3);
-    else setTab(1);
-  }, [sp]);
+    setIsMounted(true);
+    setInlineQuizData(sampleQuestionsDeterministic(quizData, 10, createQuestionSessionSeed("noi-dung-chinh")));
+  }, []);
 
   return (
-    <div className="min-h-screen bg-transparent overflow-hidden">
-
-      {/* Detail Modal */}
-      <MilestoneDetailModal
-        m={selectedMilestone}
-        isOpen={selectedMilestone !== null}
-        onClose={() => setSelectedMilestone(null)}
-      />
-
-      {/* ═══ HERO ═══ */}
-      <section className="relative pt-16 pb-24 overflow-hidden bg-[#F5E6D3] min-h-[600px] border-b-4 border-double border-[#2C2A29]">
-        {/* Decorative background textures */}
-        <div className="absolute inset-0 pointer-events-none opacity-40 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]" />
-        
-        {/* Newspaper Borders */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-[#2C2A29]" />
-        <div className="absolute top-2 left-0 right-0 h-[2px] bg-[#2C2A29]" />
-
-        <div className="relative max-w-4xl mx-auto px-6 text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            {/* Masthead Header */}
-            <div className="relative flex items-center justify-between border-b-2 border-[#2C2A29] pb-4 mb-8">
-              <span className="text-[10px] font-bold uppercase tracking-[.3em] text-[#2C2A29] font-sans">Số đặc biệt: 1975-1986</span>
-              <span className="absolute left-1/2 -translate-x-1/2 text-xl font-serif-heading font-black text-[#DA251D] uppercase tracking-tighter">KIẾN THIẾT QUỐC GIA</span>
-              <span className="text-[10px] font-bold uppercase tracking-[.3em] text-[#2C2A29] font-sans">Chương 3.1</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif-heading font-black text-[#2C2A29] leading-[0.95] mb-8 uppercase tracking-tight">
-              Hành trình<br />
-              <span className="text-[#DA251D] drop-shadow-[2px_2px_0px_#FAF3EB]">Bảo vệ Tổ quốc</span>
-            </h1>
-
-            <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-12">
-              <div className="flex-1 max-w-md border-y border-[#2C2A29]/20 py-4 italic text-lg font-serif-body text-[#5C554E] leading-relaxed">
-                "Đất nước bước ra khỏi khói lửa chiến tranh, đón nhận hòa bình và thống nhất. Nhưng hành trình quá độ lên CNXH mở đầu với vô vàn thách thức."
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Stamped Stats Interface */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4"
-          >
-            {[
-              { n: 11, s: " năm", l: "1975 – 1986", label: "Thời gian" },
-              { n: 3, s: " đột phá", l: "Tư duy kinh tế", label: "Bước tiến" },
-              { n: 23, s: " triệu", l: "Cử tri bầu cử", label: "Thống nhất" },
-              { n: 774, s: "%", l: "Lạm phát đỉnh", label: "Kinh tế" },
-            ].map((s, i) => (
-              <div 
-                key={i} 
-                className="relative bg-[#FAF3EB] border-2 border-[#2C2A29] p-4 flex flex-col items-center justify-center overflow-hidden group hover:bg-[#E8D9C5] transition-colors shadow-[4px_4px_0px_0px_#2C2A29]"
-              >
-                {/* Vintage Badge */}
-                <div className="absolute top-0 left-0 bg-[#2C2A29] text-[#FAF3EB] text-[8px] font-bold uppercase px-2 py-0.5">
-                  {s.label}
-                </div>
-                
-                <p className="text-3xl font-black text-[#DA251D] mt-2">
-                  <Counter value={s.n} suffix={s.s} />
-                </p>
-                <div className="w-full h-[1px] bg-[#2C2A29] my-2" />
-                <p className="text-[10px] text-[#2C2A29] font-bold uppercase tracking-wider">{s.l}</p>
-                
-                {/* Decorative textures overlay */}
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/pinstriped-suit.png')]" />
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══ NAV TABS ═══ */}
-      <div className="sticky top-[72px] z-30 bg-[#FAF3EB]/90 backdrop-blur-xl border-y border-[#2C2A29]/10 shadow-sm">
-        <div className="max-w-4xl mx-auto px-6 flex">
-          {([
-            { id: 1 as const, label: "1975 – 1981", sub: "Bước chuyển mình" },
-            { id: 2 as const, label: "1982 – 1986", sub: "Vượt khủng hoảng" },
-            { id: 3 as const, label: "Tổng kết", sub: "11 năm nhìn lại" },
-            { id: 4 as const, label: "Không gian 3D", sub: "Bảo tàng ký ức" },
-          ]).map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`flex-1 py-5 md:py-6 text-center relative transition-all duration-300 ${tab === t.id ? "text-[#DA251D] scale-105" : "text-[#5C554E] hover:text-[#2C2A29]"}`}
-            >
-              <span className="text-[11px] md:text-[13px] uppercase tracking-[0.2em] font-black block font-sans mb-1">{t.label}</span>
-              <span className="text-[13px] md:text-[16px] font-bold font-serif-heading italic">{t.sub}</span>
-              {tab === t.id && (
-                <motion.div layoutId="tab-indicator" className="absolute bottom-0 left-[10%] right-[10%] h-[3px] bg-[#DA251D] rounded-full" />
-              )}
-            </button>
-          ))}
-        </div>
+    <motion.div 
+      animate={{ 
+        backgroundColor: "var(--bg-color)",
+        color: "var(--text-primary)"
+      }}
+      className="min-h-screen selection:bg-[#DA251D]/20 selection:text-[#DA251D]"
+    >
+      {/* ── BACKGROUND LAYERS ── */}
+      <div className="fixed inset-0 pointer-events-none z-50">
+        <div className="absolute inset-0 opacity-40 bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]" />
+        <div className="absolute inset-0 opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/notebook.png')]" />
+        <div className="absolute inset-0 shadow-[inset_0_0_150px_rgba(0,0,0,0.05)]" />
       </div>
 
-      {/* ═══ CONTENT ═══ */}
-      <AnimatePresence mode="wait">
-        {tab === 1 && (
-          <motion.section key="p1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-4xl mx-auto px-4 py-16">
-            {/* Newspaper Masthead for Phase 1 */}
-            <div className="relative mb-16 border-4 border-double border-[#2C2A29] p-8 bg-[#FAF3EB] shadow-[10px_10px_0px_0px_rgba(44,42,41,1)] overflow-hidden">
-               {/* Background Texture */}
-               <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/notebook.png')]" />
-               
-               <div className="relative z-10">
-                 <div className="flex flex-col md:flex-row items-center justify-between border-b-2 border-[#2C2A29] pb-4 mb-6">
-                    <span className="text-[11px] font-black uppercase tracking-[0.3em] text-[#DA251D]">Giai đoạn 1: 1975 — 1981</span>
-                    <span className="text-sm font-serif-heading italic font-bold text-[#5C554E]">Tập san Đặc biệt</span>
-                    <span className="text-[11px] font-black uppercase tracking-[0.3em] text-[#DA251D]">Kỳ I: Kiến thiết & Vệ quốc</span>
-                 </div>
+      {/* ── STICKY DECOR ── */}
+      <div className={`fixed top-24 left-8 pointer-events-none opacity-5 hidden lg:block ${isDarkMode ? 'invert brightness-200' : ''}`}>
+         <Stamp size={200} className="-rotate-12" />
+      </div>
+      <div className={`fixed bottom-24 right-8 pointer-events-none opacity-5 hidden lg:block ${isDarkMode ? 'invert brightness-200' : ''}`}>
+         <Fingerprint size={200} className="rotate-12" />
+      </div>
 
-                 <div className="text-center mb-10">
-                    <h2 className="text-5xl md:text-7xl font-serif-heading font-black text-[#2C2A29] mb-4 uppercase tracking-tighter leading-[0.85]">
-                       Bước Chuyển Mình<br />
-                       <span className="text-[#DA251D]">Đầu Tiên</span>
-                    </h2>
-                    <div className="w-32 h-[2px] bg-[#DA251D] mx-auto mb-6" />
-                    <p className="font-serif-body text-[#333] max-w-2xl mx-auto text-xl italic leading-relaxed">
-                       "Thống nhất non sông, bảo vệ biên giới, và những 'đốm lửa' đổi mới đầu tiên."
-                    </p>
-                 </div>
-
-                 {/* Timeline Summary Box */}
-                 <div className="grid grid-cols-2 md:grid-cols-5 gap-0 border-t-2 border-[#2C2A29]">
-                    {[
-                      { year: "1975", date: "30/4", event: "Giải phóng miền Nam" },
-                      { year: "1975", date: "Tháng 8", event: "Hội nghị TW 24" },
-                      { year: "1975", date: "Tháng 11", event: "Hiệp thương Bắc-Nam" },
-                      { year: "1976", date: "25/4", event: "Tổng tuyển cử lịch sử" },
-                      { year: "1976", date: "Đại hội IV", event: "Chiến lược xây dựng" },
-                    ].map((item, idx) => (
-                      <div key={idx} className={`p-4 flex flex-col items-center justify-center text-center ${idx !== 4 ? 'md:border-r border-b md:border-b-0 border-[#2C2A29]/20' : ''} hover:bg-[#DA251D]/5 transition-colors group`}>
-                         <div className="text-[10px] font-bold text-[#2C2A29] opacity-40 group-hover:opacity-100 mb-1">{item.year}</div>
-                         <div className="text-lg font-serif-heading font-black text-[#DA251D] leading-none mb-2">{item.date}</div>
-                         <div className="text-[9px] font-bold uppercase tracking-wider text-[#2C2A29] leading-tight">{item.event}</div>
-                      </div>
-                    ))}
-                 </div>
-               </div>
+      {/* ═══ HEADER ═══ */}
+      <header className="relative pt-32 pb-24 border-b-2 border-[#2C2A29] overflow-hidden">
+        <motion.div style={{ y: headerY }} className="max-w-5xl mx-auto px-6 relative z-10 text-center">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >
+            <div className="inline-block border-2 border-[#DA251D] px-6 py-1 mb-10 skew-x-[-10deg] shadow-[4px_4px_0px_0px_#2C2A29]">
+              <span className="text-[12px] font-black uppercase tracking-[0.5em] text-[#DA251D]">HỒ SƠ LIÊM CHÍNH NO. 03.1</span>
             </div>
-            <div className="space-y-12">
-              {PHASE_1.map((m, i) => <MilestoneCard key={i} m={m} index={i} onClick={() => setSelectedMilestone(m)} />)}
-            </div>
-          </motion.section>
-        )}
 
-        {tab === 2 && (
-          <motion.section key="p2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-3xl mx-auto px-4 py-16">
-            <div className="text-center mb-14">
-              <span className="inline-block px-3 py-1 rounded-full text-[10px] font-sans font-bold uppercase tracking-wider text-[#FAF3EB] bg-[#1a5276] mb-4">Giai đoạn 2</span>
-              <h2 className="text-3xl md:text-4xl font-serif-heading font-bold text-[#2C2A29] mb-3">Tìm Đường Vượt Khủng Hoảng</h2>
-              <p className="font-serif-body text-[#5C554E] max-w-lg mx-auto text-sm leading-relaxed">
-                Từ khủng hoảng kinh tế – xã hội đến ba bước đột phá thai nghén Đổi Mới.
+            <h1 className={`text-6xl sm:text-8xl md:text-9xl font-serif-heading font-black leading-[0.8] mb-12 uppercase tracking-tighter drop-shadow-sm transition-colors duration-500 ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>
+              <span className={`block mb-2 text-4xl md:text-5xl font-serif-body italic font-normal normal-case tracking-normal opacity-70 ${isDarkMode ? 'text-[#DA251D]' : 'text-[#5C554E]'}`}>Toàn tập về</span>
+              Phòng, Chống<br />
+              <span className="text-[#DA251D]">Tham Nhũng</span>
+            </h1>
+
+            <div className="max-w-xl mx-auto border-t-2 pt-8 mt-4 relative border-[var(--border-color)]">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 transition-colors duration-500 bg-[var(--bg-color)]">
+                 <Lock size={20} className="text-[var(--accent-color)] opacity-50" />
+              </div>
+              <p className="font-serif-body text-xl leading-relaxed italic opacity-80 text-[var(--text-primary)]">
+                "Kiến thức là vũ khí, liêm chính là lá chắn. <br className="hidden sm:block" /> Bảo vệ tương lai bằng hành động hôm nay."
               </p>
             </div>
-            <div className="space-y-12">
-              {PHASE_2.map((m, i) => <MilestoneCard key={i} m={m} index={i} onClick={() => setSelectedMilestone(m)} />)}
-            </div>
-          </motion.section>
-        )}
+          </motion.div>
+        </motion.div>
 
-        {tab === 3 && (
-          <motion.section key="p3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-5xl mx-auto px-6 py-16">
-            {/* Newspaper Header for Conclusion */}
-            <div className="text-center mb-16 border-b-2 border-[#2C2A29] pb-8">
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <div className="h-[1px] flex-1 bg-[#2C2A29]/30" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#DA251D]">SỐ ĐẶC BIỆT: TỔNG KẾT KỶ NGUYÊN</span>
-                <div className="h-[1px] flex-1 bg-[#2C2A29]/30" />
-              </div>
-              <h2 className="text-6xl md:text-8xl font-serif-heading font-black text-[#2C2A29] mb-4 uppercase tracking-tighter leading-[0.8]">
-                11 Năm<br />
-                <span className="text-[#DA251D]">Nhìn Lại</span>
-              </h2>
-              <div className="max-w-2xl mx-auto border-t border-[#2C2A29]/10 pt-4 italic font-serif-body text-[#5C554E] text-xl">
-                "Từ khói lửa chiến tranh đến bình minh Đổi mới — nền tảng cho một Việt Nam hùng cường năm 2026."
-              </div>
-            </div>
+        {/* Parallax background stamp */}
+        <motion.div 
+          style={{ y: stampY }}
+          className="absolute right-[5%] top-[20%] text-[200px] font-black text-[#2C2A29]/[0.02] select-none font-serif rotate-12 pointer-events-none"
+        >
+          PCTN
+        </motion.div>
+      </header>
 
-            {/* Key achievements - Column Layout */}
-            <div className="grid md:grid-cols-2 gap-12 mb-20 relative">
-              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[1px] bg-[#2C2A29]/20 -translate-x-1/2" />
-              
-              {[
-                { 
-                  icon: <Flag size={20} />, 
-                  title: "Thống nhất pháp lý và hành chính", 
-                  desc: "Sau 1975, thách thức lớn nhất không chỉ là địa lý mà là sự hòa hợp hai hệ thống hành chính khác biệt hoàn toàn. Tổng tuyển cử 25/4/1976 đã khai sinh nước CHXHCN Việt Nam, thống nhất quốc kỳ, quốc hiệu và đặc biệt là hệ thống luật pháp xuyên suốt từ Bắc vào Nam. Bài học về sự tập trung thống nhất này chính là nền tảng để năm 2026, Việt Nam thực hiện thành công 'Chính phủ số', nơi dữ liệu dân cư được số hóa đồng bộ, không còn ranh giới hành chính rườm rà." 
-                },
-                { 
-                  icon: <Shield size={20} />, 
-                  title: "Bảo vệ chủ quyền trong vòng vây", 
-                  desc: "Giai đoạn 1975-1986 là thời điểm thử thách cực độ của quốc phòng. Vừa cầm súng bảo vệ biên giới Tây Nam và phía Bắc năm 1979, vừa chịu lệnh cấm vận nghiệt ngã. Tinh thần độc lập, tự chủ thời bấy giờ đã hun đúc nên chiến lược 'Ngoại giao Cây tre' lừng lẫy của năm 2026 — giúp Việt Nam giữ vững chủ quyền Biển Đảo (Hoàng Sa, Trường Sa) và duy trì hòa bình, là điểm đến an toàn nhất khu vực cho dòng vốn công nghệ cao." 
-                },
-                { 
-                  icon: <Sparkles size={20} />, 
-                  title: "Khởi nguồn tư duy kinh tế thị trường", 
-                  desc: "Những 'đốm lửa' từ Khoán 100 năm 1981 hay việc bù giá vào lương tại Long An đã dũng cảm xé rào cơ chế cũ. Đó là sự thừa nhận quy luật giá trị khách quan sau thời gian dài duy ý chí. Tinh thần 'xé rào' đó đang tiếp nối mạnh mẽ ở năm 2026 thông qua các 'Sandbox' pháp lý cho AI và Blockchain, đưa Việt Nam từ một nước thiếu đói năm 1986 trở thành mắt xích không thể thiếu trong chuỗi cung ứng bán dẫn toàn cầu." 
-                },
-                { 
-                  icon: <Star size={20} />, 
-                  title: "Bản lề lịch sử cho Đại hội VI", 
-                  desc: "11 năm 'thai nghén' đầy đau thương và mất mát đã tôi luyện nên một thế hệ lãnh đạo dám nhìn thẳng vào sự thật. Đại hội VI (12/1986) không phải là sự ngẫu nhiên, mà là kết quả tất yếu của trí tuệ tập thể. Bước sang năm 2026, chúng ta đang đứng trước vận hội mới — 'Kỷ nguyên vươn mình' của dân tộc, nơi sức mạnh nội lực từ công cuộc 'Đốt lò' làm trong sạch bộ máy đã tạo ra niềm tin tuyệt đối để toàn dân đồng lòng phấn đấu vì mục tiêu nước phát triển." 
-                },
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="space-y-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full border border-[#DA251D] flex items-center justify-center text-[#DA251D] shrink-0">
-                      {item.icon}
-                    </div>
-                    <h3 className="font-serif-heading font-black text-2xl text-[#2C2A29] uppercase tracking-tighter leading-none">{item.title}</h3>
-                  </div>
-                  <p className="font-serif-body text-[#333] text-[15px] leading-relaxed text-justify indent-8">
-                    {item.desc}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
+      {/* ═══ DOSSIER BODY ═══ */}
+      <main className="max-w-5xl mx-auto px-6 py-24 relative">
+        
+        {/* SECTION 1: DEFINITION */}
+        <section className="grid lg:grid-cols-2 gap-16 items-center mb-40">
+           <div>
+             <div className="flex items-center gap-4 mb-10">
+               <span className="text-[#DA251D] font-black text-2xl">01/</span>
+               <h2 className={`text-4xl font-serif-heading font-black uppercase tracking-tighter ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>Tham nhũng là gì?</h2>
+             </div>
+             
+             <div className="relative mb-12">
+               <div className="absolute -left-6 top-0 bottom-0 w-1.5 bg-[#DA251D]" />
+               <p className={`text-2xl font-serif-body leading-relaxed italic pl-6 ${isDarkMode ? 'text-[#E8D9C5]/90' : 'text-[#2C2A29]'}`}>
+                 "Hành vi của người có chức vụ, quyền hạn đã lợi dụng chức vụ, quyền hạn đó vì vụ lợi."
+               </p>
+               <div className={`mt-4 pl-6 text-sm font-bold uppercase tracking-widest ${isDarkMode ? 'text-[#DA251D]' : 'text-[#5C554E]'}`}>— Luật Phòng, chống tham nhũng Việt Nam</div>
+             </div>
 
-            {/* Link to 2026 - Modern Newspaper Section */}
-            <div className="grid md:grid-cols-3 gap-8 mb-20">
-              <div className="col-span-full border-t-4 border-[#2C2A29] pt-2 mb-4">
-                <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#2C2A29]">PHÂN TÍCH CHUYÊN SÂU: VIỆT NAM 2026</span>
-              </div>
-              
-              {[
-                { 
-                  label: "CÔNG NGHỆ SỐ", 
-                  title: "Kế thừa 'Khoán' số", 
-                  desc: "Nếu năm 1981 ta 'khoán' sản phẩm đến tay người lao động, thì năm 2026 ta 'khoán' trách nhiệm số hóa đến từng công dân. Toàn bộ hạ tầng dữ liệu quốc gia là thành quả của sự thống nhất bền vững suốt 50 năm qua." 
-                },
-                { 
-                  label: "NĂNG LƯỢNG XANH", 
-                  title: "Nền kinh tế tuần hoàn", 
-                  desc: "Từ bài học tiết kiệm thời bao cấp, Việt Nam 2026 chuyển mình mạnh mẽ thành trung tâm năng lượng tái tạo của ASEAN, hiện thực hóa cam kết Net Zero bằng trí tuệ và công nghệ xanh." 
-                },
-                { 
-                  label: "QUẢN TRỊ QUỐC GIA", 
-                  title: "Minh bạch là sức mạnh", 
-                  desc: "Phương châm 'Dân biết, dân bàn, dân làm, dân kiểm tra' từ thời kỳ tiền Đổi mới đã được nâng tầm bởi công nghệ giám sát trực tuyến, giúp bộ máy chính trị 2026 sạch và mạnh hơn bao giờ hết." 
-                },
-              ].map((box, i) => (
-                <div key={i} className="bg-[#FAF3EB] border border-[#2C2A29]/20 p-6 flex flex-col items-center text-center shadow-inner group hover:border-[#DA251D] transition-colors">
-                  <span className="text-[9px] font-bold text-[#DA251D] tracking-widest mb-3">{box.label}</span>
-                  <h4 className="font-serif-heading font-black text-lg text-[#2C2A29] mb-3 uppercase tracking-tight">{box.title}</h4>
-                  <p className="font-serif-body text-xs text-[#5C554E] leading-loose">{box.desc}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Lessons - Editorial Box */}
-            <div className="bg-[#E8D9C5] border-2 border-[#2C2A29] p-8 md:p-12 mb-16 relative shadow-[10px_10px_0px_0px_#2C2A29]">
-              <div className="absolute -top-4 left-10 bg-[#DA251D] text-[#FAF3EB] px-8 py-1.5 text-sm font-bold uppercase tracking-[0.2em] shadow-lg skew-x-[-12deg]">
-                Bài học cho tương lai
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-12 mt-4">
+             <div className="space-y-8">
                 {[
-                  { tag: "Tư duy", text: "Thực tiễn là thước đo duy nhất của chân lý. Năm 2026, mọi chính sách đều phải dựa trên dữ liệu thực và nhu cầu thực của nhân dân." },
-                  { tag: "Ý chí", text: "Khó khăn là động lực cho sự sáng tạo. Cuộc khủng hoảng 1985 đã cho thấy người Việt càng bị dồn vào đường cùng càng bứt phá mạnh mẽ." },
-                  { tag: "Chiến lược", text: "Nội lực là quyết định, ngoại lực là quan trọng. Giữ vững chủ quyền để hội nhập sâu rộng là kim chỉ nam từ 1975 đến nay." },
-                  { tag: "Công tác cán bộ", text: "Dũng cảm nhận sai và sửa sai là phẩm chất của một Đảng mạnh. Đây là bài học sống còn để duy trì niềm tin bền vững đến 2026." },
+                  { l: "CHỦ THỂ", t: "Người có chức vụ trong khu vực công hoặc tư nhân.", i: <UserCheck size={18} /> },
+                  { l: "HÀNH VI", t: "Lợi dụng, lạm dụng quyền hạn được giao phó.", i: <Gavel size={18} /> },
+                  { l: "MỤC ĐÍCH", t: "Mưu cầu lợi ích bất chính (vật chất hoặc tinh thần).", i: <Target size={18} /> },
                 ].map((item, i) => (
-                  <div key={i} className="space-y-2">
-                    <span className="inline-block text-[10px] font-black uppercase text-[#DA251D] underline decoration-2 underline-offset-4">{item.tag}</span>
-                    <p className="text-[14px] font-serif-body text-[#2C2A29] leading-relaxed text-justify italic">{item.text}</p>
-                  </div>
+                  <motion.div 
+                    key={i}
+                    whileHover={{ x: 10 }}
+                    className="flex gap-5 items-start p-4 hover:bg-[#DA251D]/5 transition-colors rounded-r-lg"
+                  >
+                    <div className="mt-1 text-[#DA251D]">{item.i}</div>
+                    <div>
+                      <h4 className="font-serif-heading font-black text-[#2C2A29] text-sm uppercase tracking-wider mb-1">{item.l}</h4>
+                      <p className="text-sm font-serif-body text-[#5C554E] leading-relaxed">{item.t}</p>
+                    </div>
+                  </motion.div>
                 ))}
+             </div>
+           </div>
+
+           <div className="relative">
+              <VintageFrame 
+                src="/images/anti-corruption/definition.png" 
+                alt="Definition Vintage" 
+                caption="Biểu tượng Công lý & Pháp luật"
+              />
+              <div className="absolute -bottom-6 -right-6 scale-75 opacity-20 pointer-events-none">
+                 <Stamp size={160} />
               </div>
+           </div>
+        </section>
+
+        <InkDivider />
+
+        {/* SECTION 2: CORRUPTION WHEEL */}
+        <section className="mb-40 relative">
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none py-20 grayscale">
+            <Image src="/images/anti-corruption/behaviors.png" alt="Bg decor" fill className="object-cover" />
+          </div>
+
+          <div className="relative z-10">
+            <div className="text-center mb-10">
+              <span className="text-[#DA251D] font-black text-xs uppercase tracking-[0.5em] mb-4 block">Mini Game · Nhận Diện Hành Vi</span>
+              <h2 className={`text-5xl md:text-7xl font-serif-heading font-black uppercase tracking-tighter mb-6 ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>Vòng quay tham nhũng</h2>
+              <div className={`w-24 h-1 mx-auto mb-6 ${isDarkMode ? 'bg-[#DA251D]' : 'bg-[#2C2A29]'}`} />
+              <p className="max-w-2xl mx-auto font-serif-body text-lg italic opacity-70">
+                Lật mở từng hồ sơ vi phạm và đối mặt với sự thật pháp lý qua vòng quay mô phỏng. Sẵn sàng thử thách kiến thức của bạn?
+              </p>
             </div>
 
-            {/* Pull quote - Stamped Style */}
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              className="relative py-16 px-10 border-4 border-double border-[#2C2A29] text-center rounded-sm bg-[#FAF3EB] overflow-hidden"
-            >
-              <div className="absolute inset-0 opacity-[0.1] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/pinstriped-suit.png')]" />
-              <div className="absolute -left-10 -top-10 text-[120px] font-black text-[#2C2A29]/5 select-none font-serif">"</div>
+            <CorruptionWheel />
+          </div>
+        </section>
+
+        <InkDivider />
+
+        {/* SECTION 3: CITIZEN ACTION */}
+        <section className="mb-40">
+           <div className={`p-12 md:p-20 relative overflow-hidden shadow-[20px_20px_0px_0px_var(--accent-color)] transition-colors duration-500 ${isDarkMode ? 'bg-[#000000] border border-[#DA251D]/20' : 'bg-[#1C1C1C] text-[#FAF3EB]'}`}>
+              <div className="absolute top-0 right-0 w-[400px] h-full opacity-30 grayscale sepia">
+                <Image src="/images/anti-corruption/action.png" alt="Action Unity" fill className="object-cover" />
+              </div>
               
-              <div className="relative z-10">
-                <div className="text-[#DA251D] mb-8">
-                  <Trophy size={48} className="mx-auto" />
+              <div className="relative z-10 lg:w-[450px]">
+                <h2 className="text-4xl md:text-5xl font-serif-heading font-black uppercase tracking-tighter mb-10 leading-[0.9]">
+                  Hành động của <span className="text-[#DA251D]">Cá nhân</span>
+                </h2>
+                
+                <div className="grid gap-10">
+                  {[
+                    { t: "Hiểu biết về quyền", d: "Chủ động tìm hiểu về quyền tiếp cận thông tin, quyền tố cáo và quyền được bảo vệ pháp lý.", i: <Eye size={22} /> },
+                    { t: "Dũng cảm lên tiếng", d: "Từ chối mọi hình thức 'hối lộ' và kiên quyết tố cáo các hành vi sai phạm đến cơ quan chức năng.", i: <Zap size={22} /> },
+                    { t: "Sống liêm chính", d: "Đề cao các giá trị đạo đức, sự minh bạch trong lối sống hằng ngày và trong giáo dục gia đình.", i: <Shield size={22} /> },
+                    { t: "Tham gia sáng kiến", d: "Ủng hộ và tham gia tích cực các chương trình giáo dục, truyền thông về PCTN tại cộng đồng.", i: <Handshake size={22} /> },
+                  ].map((item, i) => (
+                    <motion.div 
+                       key={i}
+                       initial={{ opacity: 0, x: -30 }}
+                       whileInView={{ opacity: 1, x: 0 }}
+                       viewport={{ once: true }}
+                       className="flex gap-6 group"
+                    >
+                      <div className="shrink-0 w-12 h-12 bg-[#FAF3EB] text-[#1C1C1C] rounded-full flex items-center justify-center group-hover:bg-[#DA251D] group-hover:text-white transition-all">
+                        {item.i}
+                      </div>
+                      <div className="pt-2">
+                        <h3 className="text-xl font-serif-heading font-black mb-2 uppercase tracking-tight">{item.t}</h3>
+                        <p className="text-sm font-serif-body opacity-70 leading-relaxed text-justify">{item.d}</p>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-                <h4 className="text-3xl md:text-5xl font-serif-heading font-black text-[#2C2A29] uppercase tracking-tighter mb-6 px-4 leading-[0.9]">
-                  "Nhìn thẳng vào sự thật, đánh giá đúng sự thật, nói rõ sự thật."
-                </h4>
-                <div className="w-24 h-[3px] bg-[#DA251D] mx-auto mb-6" />
-                <p className="text-sm font-bold uppercase tracking-[0.4em] text-[#5C554E] max-w-lg mx-auto leading-relaxed">
-                  Phương châm Đại hội VI (12/1986) — Ngọn đuốc soi đường cho Việt Nam vươn mình trong thế kỷ 21.
+              </div>
+           </div>
+        </section>
+
+        <InkDivider />
+
+        {/* SECTION 4: WHISTLEBLOWING */}
+        <section className="mb-40 grid lg:grid-cols-2 gap-16 items-start">
+           <div className="order-2 lg:order-1">
+              <motion.div 
+                initial={{ opacity: 0, rotate: 1 }}
+                whileInView={{ opacity: 1, rotate: 0 }}
+                viewport={{ once: true }}
+                className={`p-10 relative border-2 transition-colors duration-500 shadow-[8px_8px_0px_0px_var(--text-primary)] ${isDarkMode ? 'bg-[#141414] border-[#DA251D]/30' : 'bg-white border-[#2C2A29]'}`}
+              >
+                <div className="absolute top-4 right-4 text-[#DA251D] scale-150 rotate-12 opacity-10">
+                   <AlertTriangle size={64} />
+                </div>
+                
+                <h2 className="text-4xl font-serif-heading font-black text-[#2C2A29] uppercase tracking-tighter mb-8 bg-[#DA251D] text-white px-4 py-1 inline-block">Hướng dẫn tố cáo</h2>
+                
+                <div className="space-y-10">
+                  <div>
+                    <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#DA251D] mb-4">Hình thức thực hiện</h4>
+                    <ul className="space-y-4">
+                      {["Gửi đơn trực tiếp hoặc qua bưu điện.", "Tố cáo trực tiếp tại cơ quan chức năng.", "Qua đường dây nóng hoặc cổng thông tin điện tử."].map((li, i) => (
+                        <li key={i} className={`flex gap-3 text-sm font-serif-body font-bold transition-colors ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>
+                          <ArrowRight size={16} className="shrink-0 text-[#DA251D]" /> {li}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className={`p-6 border-l-4 transition-colors duration-500 ${isDarkMode ? 'bg-[#000000] border-[#DA251D]' : 'bg-[#FAF3EB] border-[#2C2A29]'}`}>
+                     <h4 className={`text-xs font-black uppercase tracking-[0.3em] mb-3 ${isDarkMode ? 'text-[#DA251D]' : 'text-[#2C2A29]'}`}>Quyền của bạn</h4>
+                     <p className={`text-sm font-serif-body leading-relaxed transition-colors ${isDarkMode ? 'text-[#E8D9C5]/80' : 'text-[#5C554E]'}`}>
+                       Được giữ bí mật danh tính (họ tên, địa chỉ, bút tích) và yêu cầu bảo vệ an toàn tính mạng, tài sản khi cần thiết.
+                     </p>
+                  </div>
+
+                  <div className="p-6 bg-[#1C1C1C] text-[#FAF3EB]">
+                     <h4 className="text-xs font-black uppercase tracking-[0.3em] text-[#DA251D] mb-3">Nghĩa vụ quan trọng</h4>
+                     <p className="text-sm font-serif-body leading-relaxed opacity-80">
+                       Phải tố cáo trung thực, cung cấp đầy đủ chứng cứ và chịu trách nhiệm pháp lý về tính xác thực của thông tin.
+                     </p>
+                  </div>
+                </div>
+              </motion.div>
+           </div>
+
+           <div className="order-1 lg:order-2 space-y-8">
+              <VintageFrame 
+                src="/images/anti-corruption/whistleblowing.png" 
+                alt="Whistleblowing Guide" 
+                caption="Kênh thông tin An toàn & Bảo mật"
+              />
+              <div className={`p-8 border-2 border-double transition-colors duration-500 ${isDarkMode ? 'border-[#DA251D]/40 bg-[#000000]' : 'border-[#2C2A29] bg-[#E8D9C5]/20'}`}>
+                <p className={`text-sm font-serif-body leading-relaxed text-justify transition-colors ${isDarkMode ? 'text-[#E8D9C5]/60' : 'text-[#5C554E]'}`}>
+                  "Sự im lặng trước cái xấu là đồng khỏa với sự suy đồi. Hãy dùng quyền công dân của mình để xây dựng một xã hội minh bạch thông qua các kênh tố cáo chính thống."
                 </p>
               </div>
-              
-              <div className="absolute -right-10 -bottom-10 text-[120px] font-black text-[#2C2A29]/5 select-none font-serif">"</div>
-            </motion.div>
-          </motion.section>
-        )}
+           </div>
+        </section>
 
-        {tab === 4 && (
-          <motion.section key="p4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-4xl mx-auto px-4 py-16">
-            <Museum3D />
-          </motion.section>
-        )}
-      </AnimatePresence>
-
-      <Divider color="#DA251D" />
-
-      {/* ═══ QUIZ ═══ */}
-      <section id="quiz-on-tap" className="scroll-mt-28 max-w-2xl mx-auto px-4 pb-24">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#DA251D] to-[#e74c3c] text-[#F5E6D3] shadow-lg mb-4">
-            <Trophy size={28} />
+        {/* ═══ QUIZ ═══ */}
+        <section id="quiz-on-tap" className="scroll-mt-40 bg-[#1C1C1C] rounded-sm p-8 md:p-16 mb-24 shadow-[20px_20px_0px_0px_#DA251D]">
+          <div className="text-center mb-16 underline decoration-[#DA251D] decoration-4 underline-offset-8">
+            <h2 className="text-5xl md:text-7xl font-serif-heading font-black text-white uppercase tracking-tighter">Bài thi liêm chính</h2>
           </div>
-          <h2 className="text-3xl md:text-4xl font-serif-heading font-black text-[#2C2A29] mb-2">Quiz Ôn Tập</h2>
-          <p className="font-serif-body text-sm text-[#5C554E]">10 câu trắc nghiệm — Chương 3.1 (1975 – 1986)</p>
+          
+          <div className={`rounded-sm p-6 md:p-10 border shadow-inner transition-colors duration-500 ${isDarkMode ? 'bg-[#141414] border-white/5' : 'bg-[#FAF3EB] border-white/10'}`}>
+            {inlineQuizData.length > 0 ? (
+              <InlineQuiz data={inlineQuizData} />
+            ) : (
+              <div className="flex flex-col items-center py-24 animate-pulse">
+                <div className="w-14 h-14 border-4 border-[#DA251D] border-t-transparent rounded-full animate-spin mb-6" />
+                <p className="font-serif-body text-[#DA251D] font-bold tracking-widest uppercase text-xs">Phân tích hồ sơ trắc nghiệm...</p>
+              </div>
+            )}
+          </div>
+        </section>
+
+      </main>
+
+      {/* ═══ FOOTER ═══ */}
+      <footer className={`relative pt-40 pb-20 border-t-2 transition-colors duration-500 overflow-hidden ${isDarkMode ? 'border-[#DA251D]/30 bg-[#000000]' : 'border-[#2C2A29] bg-[#E8D9C5]/20'}`}>
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+           <div className="text-[180px] font-black text-[#2C2A29]/5 select-none font-serif leading-none -mb-10">"</div>
+           <h4 className={`text-4xl md:text-6xl font-serif-heading font-black uppercase tracking-tighter mb-12 leading-[0.8] max-w-3xl mx-auto transition-colors duration-500 ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>
+             Liêm chính là nền tảng của <span className="text-[#DA251D]">Thịnh vượng</span>
+           </h4>
+           <div className={`w-24 h-[1px] mx-auto mb-12 ${isDarkMode ? 'bg-[#E8D9C5]/20' : 'bg-[#DA251D]'}`} />
+           
+           <div className={`grid grid-cols-3 gap-8 max-w-lg mx-auto mb-20 ${isDarkMode ? 'opacity-20' : 'opacity-40'}`}>
+              <div className="flex flex-col items-center gap-2">
+                 <Lock size={20} />
+                 <span className="text-[8px] font-black uppercase tracking-widest">Secure</span>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                 <Shield size={20} />
+                 <span className="text-[8px] font-black uppercase tracking-widest">Verified</span>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                 <Scale size={20} />
+                 <span className="text-[8px] font-black uppercase tracking-widest">Justified</span>
+              </div>
+           </div>
+
+           <p className="text-[10px] font-black uppercase tracking-[0.8em] text-[#5C554E] border-t border-[#2C2A29]/10 pt-10">SỨ MỆNH — KIÊM QUYẾT & KIÊN TRÌ — 2026</p>
         </div>
-        <div className="bg-[#FAF3EB] rounded-sm p-6 md:p-8 border-2 border-[#D1C2A5] shadow-[6px_6px_0px_0px_rgba(44,42,41,1)]">
-          <InlineQuiz data={inlineQuizData} />
+        
+        {/* Large Decorative Text background */}
+        <div className="absolute left-[-10%] bottom-[-5%] text-[300px] font-black text-[#2C2A29]/[0.02] select-none font-serif pointer-events-none">
+          TRUTH
         </div>
-      </section>
-    </div>
+      </footer>
+    </motion.div>
   );
 }
