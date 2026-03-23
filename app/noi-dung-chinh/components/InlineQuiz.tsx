@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RotateCcw, ChevronRight } from "lucide-react";
 import { QuizItem } from "../data/quiz";
+import { useTheme } from "../../components/ThemeProvider";
 
 export function InlineQuiz({ data }: { data: QuizItem[] }) {
+  const { isDarkMode } = useTheme();
   const [idx, setIdx] = useState(0);
   const [pick, setPick] = useState<number | null>(null);
   const [score, setScore] = useState(0);
@@ -46,7 +48,7 @@ export function InlineQuiz({ data }: { data: QuizItem[] }) {
               cy="70"
               r="62"
               fill="none"
-              stroke="#e5e5e5"
+              stroke={isDarkMode ? "#333" : "#e5e5e5"}
               strokeWidth="8"
             />
             <motion.circle
@@ -71,12 +73,12 @@ export function InlineQuiz({ data }: { data: QuizItem[] }) {
             >
               {pct}%
             </span>
-            <span className="text-xs text-[#585858] font-medium">
+            <span className={`text-xs font-medium ${isDarkMode ? 'text-white/60' : 'text-[#585858]'}`}>
               {score}/{data.length}
             </span>
           </div>
         </div>
-        <p className="text-lg font-bold text-[#1C1C1C] mb-1">
+        <p className={`text-lg font-bold mb-1 ${isDarkMode ? 'text-white' : 'text-[#1C1C1C]'}`}>
           {pct >= 90
             ? "Xuất sắc!"
             : pct >= 70
@@ -85,7 +87,7 @@ export function InlineQuiz({ data }: { data: QuizItem[] }) {
             ? "Khá ổn!"
             : "Cố gắng thêm!"}
         </p>
-        <p className="text-sm text-[#585858] mb-8">
+        <p className={`text-sm mb-8 ${isDarkMode ? 'text-white/60' : 'text-[#585858]'}`}>
           {pct >= 70
             ? "Bạn nắm vững kiến thức rồi."
             : "Hãy đọc lại nội dung và thử lại nhé."}
@@ -112,20 +114,20 @@ export function InlineQuiz({ data }: { data: QuizItem[] }) {
                 ? "bg-[#DA251D]"
                 : i === idx
                 ? "bg-[#DA251D]/60"
-                : "bg-black/10"
+                : isDarkMode ? "bg-white/10" : "bg-black/10"
             }`}
           />
         ))}
       </div>
-      <div className="flex justify-between items-center mb-6 bg-black/5 p-3 rounded-sm border border-black/5">
+      <div className={`flex justify-between items-center mb-6 p-3 rounded-sm border transition-colors duration-500 ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-black/5 border-black/5'}`}>
         <div className="flex flex-col">
-          <span className="text-[10px] uppercase font-bold text-[#585858] opacity-60">Tiến độ</span>
-          <span className="text-sm font-black text-[#2C2A29]">
+          <span className={`text-[10px] uppercase font-bold opacity-60 ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#585858]'}`}>Tiến độ</span>
+          <span className={`text-sm font-black transition-colors ${isDarkMode ? 'text-white' : 'text-[#2C2A29]'}`}>
             Câu {idx + 1} <span className="text-[#999] font-normal mx-1">/</span> {data.length}
           </span>
         </div>
         <div className="flex flex-col items-end">
-          <span className="text-[10px] uppercase font-bold text-[#585858] opacity-60">Kết quả</span>
+          <span className={`text-[10px] uppercase font-bold opacity-60 ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#585858]'}`}>Kết quả</span>
           <span className="text-sm font-black text-[#DA251D]">{score} đúng</span>
         </div>
       </div>
@@ -138,7 +140,7 @@ export function InlineQuiz({ data }: { data: QuizItem[] }) {
           exit={{ opacity: 0, x: -40 }}
           transition={{ duration: 0.3 }}
         >
-          <p className="text-lg md:text-xl font-serif-heading font-bold text-[#2C2A29] mb-5 leading-snug">
+          <p className={`text-lg md:text-xl font-serif-heading font-bold mb-5 leading-snug transition-colors ${isDarkMode ? 'text-white' : 'text-[#2C2A29]'}`}>
             {q.question}
           </p>
           <div className="grid gap-3">
@@ -148,13 +150,16 @@ export function InlineQuiz({ data }: { data: QuizItem[] }) {
               let cls =
                 "w-full text-left px-5 py-4 rounded-sm border-2 font-serif-body text-base font-bold transition-all flex items-center gap-4 cursor-pointer hover:-translate-y-1 shadow-[2px_2px_0px_0px_rgba(44,42,41,1)]";
               if (pick === null)
-                cls +=
-                  " border-[#D1C2A5] bg-white hover:bg-[#FAF3EB] hover:border-[#DA251D] text-[#5C554E]";
+                cls += isDarkMode 
+                  ? " border-white/10 bg-[#141414] hover:bg-white/5 hover:border-[#DA251D] text-white/90"
+                  : " border-[#D1C2A5] bg-white hover:bg-[#FAF3EB] hover:border-[#DA251D] text-[#5C554E]";
               else if (isCorrectOpt)
                 cls += " border-[#4A5D23] bg-[#eef5e6] text-[#4A5D23]";
               else if (isPicked)
                 cls += " border-[#DA251D] bg-[#fdf0f0] text-[#DA251D]";
-              else cls += " border-[#D1C2A5] bg-white text-[#999] opacity-70";
+              else cls += isDarkMode
+                ? " border-white/5 bg-[#141414] text-white/30 opacity-50"
+                : " border-[#D1C2A5] bg-white text-[#999] opacity-70";
               return (
                 <button
                   key={i}
@@ -163,9 +168,9 @@ export function InlineQuiz({ data }: { data: QuizItem[] }) {
                   disabled={pick !== null}
                 >
                   <span
-                    className={`flex-shrink-0 w-8 h-8 rounded-sm flex items-center justify-center text-sm font-bold border-2 ${
+                    className={`flex-shrink-0 w-8 h-8 rounded-sm flex items-center justify-center text-sm font-bold border-2 transition-colors ${
                       pick === null
-                        ? "bg-[#FAF3EB] text-[#2C2A29] border-[#D1C2A5]"
+                        ? isDarkMode ? "bg-white/5 text-white border-white/10" : "bg-[#FAF3EB] text-[#2C2A29] border-[#D1C2A5]"
                         : isCorrectOpt
                         ? "bg-[#4A5D23] text-white border-[#4A5D23]"
                         : isPicked

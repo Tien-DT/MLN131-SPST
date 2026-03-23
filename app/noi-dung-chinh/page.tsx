@@ -194,8 +194,8 @@ function Page() {
                   >
                     <div className="mt-1 text-[#DA251D]">{item.i}</div>
                     <div>
-                      <h4 className="font-serif-heading font-black text-[#2C2A29] text-sm uppercase tracking-wider mb-1">{item.l}</h4>
-                      <p className="text-sm font-serif-body text-[#5C554E] leading-relaxed">{item.t}</p>
+                      <h4 className={`font-serif-heading font-black text-sm uppercase tracking-wider mb-1 transition-colors ${isDarkMode ? 'text-white' : 'text-[#2C2A29]'}`}>{item.l}</h4>
+                      <p className={`text-sm font-serif-body leading-relaxed transition-colors ${isDarkMode ? 'text-[#E8D9C5]/80' : 'text-[#5C554E]'}`}>{item.t}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -246,7 +246,7 @@ function Page() {
               </div>
               
               <div className="relative z-10 lg:w-[450px]">
-                <h2 className="text-4xl md:text-5xl font-serif-heading font-black uppercase tracking-tighter mb-10 leading-[0.9]">
+                <h2 className="text-4xl md:text-5xl font-serif-heading font-black uppercase tracking-tighter mb-10 leading-[0.9] text-white">
                   Hành động của <span className="text-[#DA251D]">Cá nhân</span>
                 </h2>
                 
@@ -264,12 +264,12 @@ function Page() {
                        viewport={{ once: true }}
                        className="flex gap-6 group"
                     >
-                      <div className="shrink-0 w-12 h-12 bg-[#FAF3EB] text-[#1C1C1C] rounded-full flex items-center justify-center group-hover:bg-[#DA251D] group-hover:text-white transition-all">
+                      <div className="shrink-0 w-12 h-12 bg-[#FAF3EB] text-[#1C1C1C] rounded-full flex items-center justify-center group-hover:bg-[#DA251D] group-hover:text-white transition-all shadow-lg">
                         {item.i}
                       </div>
                       <div className="pt-2">
-                        <h3 className="text-xl font-serif-heading font-black mb-2 uppercase tracking-tight">{item.t}</h3>
-                        <p className="text-sm font-serif-body opacity-70 leading-relaxed text-justify">{item.d}</p>
+                        <h3 className={`text-xl font-serif-heading font-black mb-2 uppercase tracking-tight transition-colors ${isDarkMode ? 'text-white' : 'text-[#FAF3EB]'}`}>{item.t}</h3>
+                        <p className={`text-sm font-serif-body leading-relaxed text-justify transition-colors ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#FAF3EB]/80'}`}>{item.d}</p>
                       </div>
                     </motion.div>
                   ))}
