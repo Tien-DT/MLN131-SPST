@@ -452,150 +452,33 @@ export default function BorderAndSubsidySection() {
       <div className="container-custom relative z-10">
         <div className="text-center mb-16">
           <h2 className={`text-section-title after:bg-[#F4D03F] transition-colors ${isDarkMode ? 'text-[#DA251D]' : 'text-[#F5E6D3]'}`}>
-            Bảo vệ Tổ Quốc & Xây dựng CNXH
+            Khái niệm và bản chất của Nhà nước pháp quyền XHCN Việt Nam
           </h2>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           
-          {/* Border Defense Map Concept */}
+          {/* Concept Card */}
           <div className={`vintage-box p-8 relative transition-colors duration-500 ${isDarkMode ? 'bg-[#141414] border-[#DA251D]' : 'bg-[#FAF3EB]'}`}>
             <h3 className={`text-2xl font-serif-heading border-b-2 transition-colors duration-500 pb-4 mb-6 ${isDarkMode ? 'text-[#E8D9C5] border-[#DA251D]/20' : 'text-[#2C2A29] border-[#D1C2A5]'}`}>
-              Hai Cuộc Chiến Tranh Bảo Vệ Biên Giới
+              Khái niệm
             </h3>
-            
-            <div className={`relative aspect-[3/4] sm:aspect-[4/5] border-2 p-4 flex flex-col items-center justify-center overflow-hidden shadow-inner transition-colors duration-500 ${isDarkMode ? 'bg-[#0A0A0A] border-[#DA251D]/30' : 'bg-[#E8D9C5] border-[#2C2A29]'}`}>
-              {/* Vùng Lãnh Thổ (Bản Đồ) */}
-              <div className="absolute inset-0 pointer-events-none flex items-center justify-center p-4">
-                <div className="relative w-full h-full">
-                  <Image 
-                    src="/images/vietnam_map.svg"
-                    alt="Bản đồ Việt Nam" 
-                    fill 
-                    className={`object-contain transition-all duration-700 ${isDarkMode ? 'opacity-40 grayscale contrast-150 brightness-50' : 'opacity-90 drop-shadow-[4px_4px_0px_rgba(44,42,41,0.5)]'}`}
-                  />
-                </div>
-              </div>
-              
-              {/* Pulsing dots for borders */}
-              {/* Biên Giới Phía Bắc */}
-              <div className="absolute top-[18%] right-[42%] z-10 group">
-                <button 
-                  className="w-8 h-8 md:w-10 md:h-10 bg-[#DA251D] rounded-full border-2 border-white cursor-pointer hover:scale-125 transition-transform shadow-lg relative flex items-center justify-center"
-                  onClick={() => setActiveEvent(HISTORICAL_EVENTS.north)}
-                >
-                  <span className="absolute inset-0 rounded-full animate-ping bg-[#DA251D] opacity-75"></span>
-                  <MapPin size={18} className="text-white" />
-                </button>
-                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#FAF3EB] text-[#2C2A29] text-[10px] md:text-xs font-black px-2 py-1 border-2 border-[#2C2A29] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-[2px_2px_0px_0px_rgba(44,42,41,1)]">
-                  PHÍA BẮC (1979-1989)
-                </div>
-              </div>
-
-              {/* Biên Giới Tây Nam */}
-              <div className="absolute bottom-[30%] left-[30%] z-10 group">
-                <button 
-                  className="w-8 h-8 md:w-10 md:h-10 bg-[#1a5276] rounded-full border-2 border-white cursor-pointer hover:scale-125 transition-transform shadow-lg relative flex items-center justify-center"
-                  onClick={() => setActiveEvent(HISTORICAL_EVENTS.south)}
-                >
-                  <span className="absolute inset-0 rounded-full animate-ping bg-[#1a5276] opacity-75"></span>
-                  <MapPin size={18} className="text-white" />
-                </button>
-                <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-[#FAF3EB] text-[#2C2A29] text-[10px] md:text-xs font-black px-2 py-1 border-2 border-[#2C2A29] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-[2px_2px_0px_0px_rgba(44,42,41,1)]">
-                  TÂY NAM (1977-1979)
-                </div>
-              </div>
-
-              {/* Quần Đảo Hoàng Sa */}
-              <div className="absolute top-[48%] right-[25%] z-10 group">
-                <div 
-                  className="w-4 h-4 bg-[#F4D03F] rounded-full border-2 border-[#2C2A29] cursor-help hover:scale-125 transition-transform shadow-lg relative flex items-center justify-center"
-                >
-                  <span className="absolute inset-0 rounded-full animate-ping bg-[#F4D03F] opacity-75"></span>
-                </div>
-                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#FAF3EB] text-[#2C2A29] text-[10px] font-black px-2 py-1 border-2 border-[#2C2A29] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-[2px_2px_0px_0px_rgba(44,42,41,1)]">
-                  QUẦN ĐẢO HOÀNG SA
-                </div>
-              </div>
-
-              {/* Quần Đảo Trường Sa */}
-              <div className="absolute bottom-[20%] right-[15%] z-10 group">
-                <div 
-                  className="w-4 h-4 bg-[#F4D03F] rounded-full border-2 border-[#2C2A29] cursor-help hover:scale-125 transition-transform shadow-lg relative flex items-center justify-center"
-                >
-                  <span className="absolute inset-0 rounded-full animate-ping bg-[#F4D03F] opacity-75"></span>
-                </div>
-                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#FAF3EB] text-[#2C2A29] text-[10px] font-black px-2 py-1 border-2 border-[#2C2A29] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-[2px_2px_0px_0px_rgba(44,42,41,1)]">
-                  QUẦN ĐẢO TRƯỜNG SA
-                </div>
-              </div>
-
-              <div className="absolute top-4 right-4 bg-[#DA251D] text-white text-[9px] font-sans font-black px-2 py-1 flex items-center gap-1 shadow-[2px_2px_0px_0px_rgba(44,42,41,1)]">
-                <Zap size={10} /> CLICK CHẤM ĐỂ XEM CHI TIẾT
-              </div>
-            </div>
-
-            <div className={`mt-6 flex items-center justify-between text-xs font-serif-body italic transition-colors ${isDarkMode ? 'text-[#E8D9C5]/40' : 'text-[#5C554E]'}`}>
-              <p>* Bản đồ khái quát chủ quyền và các điểm nóng bảo vệ Tổ Quốc</p>
-              <ArrowRight size={14} />
-            </div>
+            <p className={`font-serif-body text-justify leading-relaxed transition-colors ${isDarkMode ? 'text-[#E8D9C5]/70' : 'text-[#5C554E]'}`}>
+              Nhà nước pháp quyền XHCN Việt Nam là Nhà nước của Nhân dân, do Nhân dân, vì Nhân dân, dưới sự lãnh đạo của Đảng Cộng sản Việt Nam. Nhà nước quản lý xã hội bằng Hiến pháp và pháp luật, lấy lợi ích hợp pháp của người dân làm trọng tâm.
+            </p>
           </div>
 
           {/* Subsidy Era Mini-interactive */}
           <div className={`vintage-box p-8 flex flex-col justify-between transition-colors duration-500 ${isDarkMode ? 'bg-[#141414] border-[#DA251D]' : 'bg-[#FAF3EB]'}`}>
             <div>
               <h3 className={`text-2xl font-serif-heading border-b-2 transition-colors duration-500 pb-4 mb-6 ${isDarkMode ? 'text-[#E8D9C5] border-[#DA251D]/20' : 'text-[#2C2A29] border-[#D1C2A5]'}`}>
-                Ký ức Thời Bao Cấp
+                Bản chất biện chứng
               </h3>
-              <p className={`font-serif-body mb-6 text-justify transition-colors ${isDarkMode ? 'text-[#E8D9C5]/60' : 'text-[#5C554E]'}`}>
-                Giai đoạn này đất nước đồng thời thực hiện hai nhiệm vụ chiến lược: Xây dựng CNXH và Bảo vệ Tổ quốc. Tuy nhiên, việc rập khuôn cơ chế kinh tế quan liêu, bao cấp trong thời gian dài đã đẩy nền kinh tế vào bế tắc trước khi Đảng dũng cảm tìm ra hướng Đổi Mới.
-              </p>
-              
-              <div 
-                className={`border-2 p-6 text-center transform scale-100 hover:scale-[1.02] hover:-rotate-1 transition-all cursor-pointer relative shadow-[4px_4px_0px_0px_rgba(44,42,41,1)] group ${isDarkMode ? 'bg-[#1C1C1C] border-[#DA251D]' : 'bg-[#E3D6C1] border-[#2C2A29]'}`}
-                onClick={() => setActiveEvent(HISTORICAL_EVENTS.subsidy)}
-              >
-                <div className={`absolute -top-3 -left-3 text-white p-2 border-2 shadow-[2px_2px_0px_0px_rgba(44,42,41,1)] group-hover:rotate-12 transition-transform ${isDarkMode ? 'bg-[#DA251D] border-[#DA251D]' : 'bg-[#DA251D] border-[#2C2A29]'}`}>
-                  <Calendar size={16} />
-                </div>
-                
-                <div className={`border border-dashed p-4 transition-colors relative ${isDarkMode ? 'border-[#DA251D]/40 bg-[#000000]/50 group-hover:bg-[#000000]' : 'border-[#5C554E] bg-[#FAF3EB]/50 group-hover:bg-[#FAF3EB]'}`}>
-                  <h4 className={`font-bold text-xl uppercase tracking-widest border-b-2 inline-block pb-1 transition-colors ${isDarkMode ? 'text-[#DA251D] border-[#DA251D]' : 'text-[#2C2A29] border-[#2C2A29]'}`}>
-                    Hồ Sơ Bao Cấp
-                  </h4>
-                  <p className={`text-[11px] font-serif-body mb-6 italic transition-colors ${isDarkMode ? 'text-[#E8D9C5]/40' : 'text-[#5C554E]'}`}>
-                    Nhấn vào để xem đầy đủ ký ức lịch sử giai đoạn 1975 - 1986
-                  </p>
-                  
-                  {/* Decorative tickets */}
-                  <div className="flex gap-4 justify-center mt-2 relative">
-                    <div className="w-16 h-20 bg-[#F5E6D3] border-2 border-[#2C2A29] flex flex-col items-center justify-center font-bold text-[#DA251D] shadow-[2px_2px_0px_0px_rgba(44,42,41,1)] -rotate-6">
-                      <span className="text-[10px] uppercase">GẠO</span>
-                      <span className="text-xs">13kg</span>
-                    </div>
-                    <div className="w-16 h-20 bg-[#F5E6D3] border-2 border-[#2C2A29] flex flex-col items-center justify-center font-bold text-[#2C2A29] shadow-[2px_2px_0px_0px_rgba(44,42,41,1)] rotate-3 z-10">
-                      <span className="text-[10px] uppercase">VẢI</span>
-                      <span className="text-xs">5m</span>
-                    </div>
-                    <div className="w-16 h-20 bg-[#F5E6D3] border-2 border-[#2C2A29] flex flex-col items-center justify-center font-bold text-[#4A5D23] shadow-[2px_2px_0px_0px_rgba(44,42,41,1)] -rotate-3">
-                      <span className="text-[10px] uppercase">THỊT</span>
-                      <span className="text-xs">0.5kg</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-8">
-                    <span className="inline-flex items-center gap-2 px-5 py-2 bg-[#2C2A29] text-white text-[11px] font-sans font-black uppercase tracking-widest group-hover:bg-[#DA251D] transition-colors shadow-[2px_2px_0px_0px_rgba(218,37,29,0.3)]">
-                      Mở Tư Liệu Đọc Trang Trực Tuyến <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className={`mt-8 pt-4 border-t-2 transition-all ${isDarkMode ? 'border-[#DA251D]/20' : 'border-[#D1C2A5]'}`}>
-              <p className={`text-xs italic leading-relaxed transition-colors ${isDarkMode ? 'text-[#E8D9C5]/60' : 'text-[#5C554E]'}`}>
-                <span className="font-black text-[#DA251D]">CHÚ Ý:</span> Cơ chế quan liêu, bao cấp từng là gông cùm trói buộc nền kinh tế, buộc bộ máy lãnh đạo từ Trung ương đến địa phương phải trăn trở thai nghén những tư duy mới để dọn đường cho Đổi Mới toàn diện.
-              </p>
+              <ul className={`font-serif-body mb-6 list-disc pl-6 space-y-2 text-justify transition-colors ${isDarkMode ? 'text-[#E8D9C5]/60' : 'text-[#5C554E]'}`}>
+                <li><span className="font-bold">Tính nhân dân sâu sắc:</span> Pháp luật là biểu hiện của ý chí và nguyện vọng của đại đa số nhân dân. Dân chủ vừa là bản chất, vừa là điều kiện tiền đề; nếu không có dân chủ thực sự, pháp quyền sẽ trở thành "pháp trị" khô cứng.</li>
+                <li><span className="font-bold">Tính tối thượng của pháp luật đi đôi với công bằng:</span> Nhà nước đặt mình dưới pháp luật. Pháp luật mang tính nhân đạo, bảo vệ các nhóm yếu thế và hướng tới mục tiêu "dân giàu, nước mạnh, dân chủ, công bằng, văn minh".</li>
+                <li><span className="font-bold">Sự lãnh đạo của Đảng Cộng sản:</span> Đây là đặc trưng riêng biệt đảm bảo Nhà nước đi đúng quỹ đạo xã hội chủ nghĩa. Đảng dẫn dắt xã hội bằng chủ trương và nêu gương đạo đức, không đứng trên pháp luật.</li>
+              </ul>
             </div>
           </div>
           

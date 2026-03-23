@@ -61,7 +61,7 @@ export const PHASE_1: Milestone[] = [
     image: "/images/hoi_nghi_tw24.png",
     imageCaption: "Hội nghị Trung ương 24 khóa III đã đưa ra quyết sách then chốt về việc thống nhất đất nước.",
     detailContent: [
-      "Tháng 8/1975, Ban Chấp hành Trung ương Đảng khóa III tiến hành Hội nghị lần thứ 24. Hội nghị nhận định rằng, sau khi giải phóng, nước ta vẫn tồn tại hai chính quyền: Chính phủ Việt Nam Dân chủ Cộng hòa (miền Bắc) và Chính phủ Cách mạng lâm thời Cộng hòa miền Nam Việt Nam (miền Nam).",
+      "Tháng 8/1975, Ban Chấp hành Trung ương Đảng khóa III tiến hành Hội nghị lần thứ 24. Hội nghị nhận định rằng, sau khi giải phóng, nước ta vẫn tồn tại hai chính quyền: Nhà nước Pháp quyền Xã hội Chủ nghĩa Việt Nam (miền Bắc) và Chính phủ Cách mạng lâm thời Cộng hòa miền Nam Việt Nam (miền Nam).",
       "Hội nghị chủ trương: Hoàn thành thống nhất nước nhà và đưa cả nước tiến nhanh, tiến mạnh, tiến vững chắc lên chủ nghĩa xã hội. Đây không chỉ là nhu cầu chính trị mà là quy luật khách quan của cách mạng.",
       "Theo đó, miền Bắc tiếp tục xây dựng, phát triển CNXH và hoàn thiện quan hệ sản xuất XHCN. Đồng thời, miền Nam vừa tiến hành cải tạo, vừa xây dựng chủ nghĩa xã hội.",
       "Thống nhất đất nước về mặt Nhà nước càng sớm sẽ càng phát huy sức mạnh mới của dân tộc, đồng thời ngăn ngừa và phá tan triệt để các âm mưu chia rẽ của các thế lực phản động trong và ngoài nước."
@@ -86,7 +86,7 @@ export const PHASE_1: Milestone[] = [
     image: "/images/hoi_nghi_hiep_thuong.png",
     imageCaption: "Quang cảnh trang nghiêm của Hội nghị Hiệp thương chính trị tổ chức tại Sài Gòn.",
     detailContent: [
-      "Quá trình chuẩn bị cho sự hợp nhất về mặt Nhà nước diễn ra hết sức khẩn trương và dân chủ. Ngày 27/10/1975, Ủy ban Thường vụ Quốc hội Việt Nam Dân chủ Cộng hòa đã cử đoàn đại biểu 25 thành viên do Chủ tịch Trường Chinh làm Trưởng đoàn.",
+      "Quá trình chuẩn bị cho sự hợp nhất về mặt Nhà nước diễn ra hết sức khẩn trương và dân chủ. Ngày 27/10/1975, Ủy ban Thường vụ Quốc hội Nhà nước Pháp quyền Xã hội Chủ nghĩa Việt Nam đã cử đoàn đại biểu 25 thành viên do Chủ tịch Trường Chinh làm Trưởng đoàn.",
       "Chỉ ít ngày sau, ngày 05-06/11/1975, Ủy ban Trung ương Mặt trận Dân tộc giải phóng miền Nam Việt Nam cũng cử đoàn 25 đại biểu do đồng chí Phạm Hùng lãnh đạo.",
       "Từ ngày 15 đến 21/11/1975, Hội nghị Hiệp thương chính trị giữa hai đoàn đại biểu Bắc - Nam đã diễn ra tại Sài Gòn. Hội nghị thảo luận sôi nổi và đạt được sự nhất trí tuyệt đối.",
       "Hội nghị khẳng định sự cần thiết tất yếu của việc thống nhất về mặt Nhà nước thông qua một cuộc Tổng tuyển cử chung trong cả nước. Nguyên tắc bầu cử được thống nhất là: dân chủ, phổ thông, bình đẳng, trực tiếp và bỏ phiếu kín."

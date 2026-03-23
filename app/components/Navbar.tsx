@@ -65,21 +65,14 @@ export default function Navbar() {
           opacity: { duration: showMasthead ? 0.3 : 0.15 }
         }}
       >
-        <div className={`container-custom py-4 md:py-6 px-4 border-b-2 relative transition-colors duration-500 ${isDarkMode ? 'border-[#DA251D]/20' : 'border-[#D1C2A5]'}`}>
-          <div className="flex flex-col md:flex-row items-center justify-between text-center relative z-10 gap-3 md:gap-0">
-            {/* Thay đổi Label trái */}
-            <p className={`font-sans text-xs md:text-sm uppercase tracking-widest font-bold min-w-[120px] md:text-left transition-colors ${isDarkMode ? 'text-[#E8D9C5]/40' : 'text-[#5C554E]'}`}>Kỷ nguyên Độc lập</p>
-
-            {/* Centered Title */}
-            <Link href="/" className="md:absolute md:left-1/2 md:transform md:-translate-x-1/2 group">
-              <h1 className="font-serif-heading font-bold text-3xl sm:text-4xl md:text-6xl tracking-wider uppercase text-center inline-block relative whitespace-nowrap">
-                <span className={`transition-colors duration-500 ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>KÝ ỨC </span>
-                <span className="text-[#DA251D]">THỐNG NHẤT</span>
-                <span className="absolute -top-2 -right-3 text-[#DA251D] text-sm md:text-base">★</span>
+        <div className={`container-custom py-4 md:py-5 px-4 border-b-2 relative transition-colors duration-500 ${isDarkMode ? 'border-[#DA251D]/20' : 'border-[#D1C2A5]'}`}>
+          <div className="flex items-center justify-center text-center relative z-10">
+            <Link href="/" className="group max-w-6xl">
+              <h1 className="font-serif-heading font-bold text-xl sm:text-2xl md:text-4xl lg:text-5xl tracking-wide uppercase text-center inline-block relative leading-tight">
+                <span className={`block transition-colors duration-500 ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>NHÀ NƯỚC PHÁP QUYỀN</span>
+                <span className="block text-[#DA251D]">XÃ HỘI CHỦ NGHĨA VIỆT NAM</span>
               </h1>
             </Link>
- 
-            <p className={`font-sans text-xs md:text-sm uppercase tracking-widest font-bold min-w-[120px] md:text-right transition-colors ${isDarkMode ? 'text-[#E8D9C5]/40' : 'text-[#5C554E]'}`}>1975 – 1981</p>
           </div>
         </div>
       </motion.div>
@@ -93,7 +86,7 @@ export default function Navbar() {
         transition={{ duration: 0.35, ease: [0.1, 0.9, 0.2, 1] }}
       >
         <div className={`flex justify-between items-center h-20 border-b-2 transition-colors duration-500 ${isDarkMode ? 'border-[#DA251D]/20' : 'border-[#2C2A29]'}`}>
-          <div className="hidden lg:flex items-center">
+          <div className="hidden xl:flex items-center">
             <div className={`w-8 xl:w-16 h-[2px] transition-colors ${isDarkMode ? 'bg-[#DA251D]/30' : 'bg-[#2C2A29]'}`}></div>
             <motion.div
               className="ml-2 xl:ml-4 bg-[#DA251D] px-3 py-1.5"
@@ -103,8 +96,8 @@ export default function Navbar() {
               }}
             >
               <Link href="/" className="group">
-                <h1 className="font-serif-heading font-bold text-lg xl:text-xl tracking-wider uppercase inline-block relative whitespace-nowrap text-[#F5E6D3]">
-                  KÝ ỨC THỐNG NHẤT
+                <h1 className="font-serif-heading font-bold text-sm xl:text-base tracking-wider uppercase inline-block relative whitespace-nowrap text-[#F5E6D3]">
+                  NHÀ NƯỚC PHÁP QUYỀN 
                 </h1>
               </Link>
             </motion.div>
@@ -142,7 +135,7 @@ export default function Navbar() {
           </div>
 
           {/* Right side elements */}
-          <div className="hidden md:flex items-center space-x-2 lg:space-x-6">
+          <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
             <button
               onClick={toggleTheme}
               className={`p-2 rounded-full transition-all duration-300 flex items-center justify-center border-2 ${
@@ -153,9 +146,9 @@ export default function Navbar() {
               {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
             </button>
 
-            <div className="flex flex-col items-end mr-1 lg:mr-2">
-                <span className={`text-[10px] lg:text-xs font-sans font-bold leading-none tracking-widest whitespace-nowrap ${isDarkMode ? 'text-[#E8D9C5]/60' : 'text-[#5C554E]'}`}>VIỆT NAM</span>
-                <span className="text-[10px] lg:text-xs font-sans font-bold text-[#DA251D] leading-none tracking-widest mt-1 whitespace-nowrap">DÂN CHỦ</span>
+            <div className="hidden lg:flex flex-col items-end mr-1 xl:mr-2">
+              <span className={`text-[9px] xl:text-[10px] font-sans font-bold leading-tight tracking-wide text-right whitespace-nowrap ${isDarkMode ? 'text-[#E8D9C5]/60' : 'text-[#5C554E]'}`}>NHÀ NƯỚC PHÁP QUYỀN</span>
+              <span className="text-[9px] xl:text-[10px] font-sans font-bold text-[#DA251D] leading-tight tracking-wide mt-1 text-right whitespace-nowrap">XHCN VIỆT NAM</span>
             </div>
             <div className="w-8 h-6 lg:w-10 lg:h-8 bg-[#DA251D] flex items-center justify-center border-2 border-[#2C2A29] flex-shrink-0">
                <span className="text-[#F4D03F] text-xs lg:text-sm">★</span>
@@ -169,7 +162,7 @@ export default function Navbar() {
                  <span className="text-[#F4D03F] text-[10px]">★</span>
               </div>
               {!showMasthead && (
-                <span className="font-serif-heading font-bold text-base text-[#2C2A29] uppercase">Ký ức Thống nhất</span>
+                <span className="font-serif-heading font-bold text-base text-[#2C2A29] uppercase">Nhà nước Pháp quyền Xã hội Chủ nghĩa Việt Nam</span>
               )}
             </div>
 

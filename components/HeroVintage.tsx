@@ -18,19 +18,17 @@ export default function HeroVintage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
         >
-          {/* Badge */}
-          <div className={`inline-block border px-4 py-1 mb-8 transition-colors ${isDarkMode ? 'border-[#DA251D]' : 'border-[#2C2A29]'}`}>
-            <span className="font-sans text-sm font-bold tracking-widest uppercase text-[#DA251D]">Giai đoạn 1975 - 1981</span>
-          </div>
-          
           {/* Main Title */}
           <h1 className="text-hero mb-6 text-[var(--text-primary)]">
-            Ký ức <span className="text-[#DA251D]">Thống nhất</span>
+            Nhà nước Pháp quyền <span className="text-[#DA251D]">Xã hội Chủ nghĩa Việt Nam</span>
           </h1>
-          
-          <h2 className="text-2xl md:text-3xl font-serif-body italic mb-12 max-w-2xl mx-auto text-[var(--text-secondary)]">
-            Hành trình xây dựng Chủ nghĩa xã hội và bảo vệ biên cương Tổ quốc từ những bước đi đột phá đầu tiên.
-          </h2>
+
+          <div className="mb-12 max-w-4xl mx-auto">
+            <h2 className="font-serif-heading text-xl md:text-2xl font-bold text-[var(--text-primary)] mb-4">Lời mở đầu</h2>
+            <p className="font-serif-body text-lg md:text-xl leading-relaxed text-[var(--text-secondary)]">
+             Xây dựng Nhà nước pháp quyền XHCN ở Việt Nam là kết quả của đổi mới tư duy chính trị, nhằm bảo đảm quyền làm chủ của nhân dân và lấy con người, doanh nghiệp làm trung tâm.
+             </p>
+          </div>
         </motion.div>
 
         <motion.div
@@ -43,7 +41,7 @@ export default function HeroVintage() {
             href="#timeline"
             className="red-box px-8 py-4 font-sans font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#2C2A29]"
           >
-            Khám phá Dòng thời gian
+            Sự phát triển tư duy lý luận.
           </a>
           <button
             onClick={() => document.getElementById('chat-bot-btn')?.click()}
