@@ -458,7 +458,7 @@ export default function CorruptionWheel() {
                             onClick={() => setIsModalOpen(false)}
                             className="bg-[#DA251D] text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-black text-[10px] sm:text-xs uppercase tracking-widest shadow-xl hover:bg-black transition-all active:scale-95"
                          >
-                            TIẾP TỤC KHÁM PHÁ
+                            TIẾP TỤC THAM NHŨNG
                          </button>
                       </div>
                     </div>
