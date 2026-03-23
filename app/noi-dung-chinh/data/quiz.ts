@@ -1,67 +1,10 @@
-export interface QuizItem {
-  question: string;
-  options: string[];
-  correctIndex: number;
-  explanation: string;
-}
+import { PDF_QUESTION_BANK, type SharedQuizQuestion } from '@/lib/pdfQuestionBank';
 
-export const quizData: QuizItem[] = [
-  // === THỐNG NHẤT ĐẤT NƯỚC (1-10) ===
-  { question: "Sau ngày 30/4/1975, nền hòa bình độc lập đã tạo ra điều gì cho cách mạng Việt Nam?", options: ["Sức mạnh quân sự", "'Sức mạnh tổng hợp' từ lòng dân", "Nền kinh tế công nghiệp", "Sự hỗ trợ của quốc tế"], correctIndex: 1, explanation: "Sự thống nhất đã tạo ra một 'Sức mạnh tổng hợp' vô cùng to lớn từ lòng dân." },
-  { question: "Hội nghị nào chốt chủ trương 'Hoàn thành thống nhất nước nhà về mặt Nhà nước'?", options: ["Hội nghị TW 24 (8/1975)", "Hội nghị TW 6 (8/1979)", "Đại hội IV (12/1976)", "Đại hội V (3/1982)"], correctIndex: 0, explanation: "Hội nghị TW 24 (8/1975) đã đưa ra quyết sách then chốt về mặt thống nhất Nhà nước." },
-  { question: "Hội nghị Hiệp thương chính trị Bắc - Nam (11/1975) diễn ra tại đâu?", options: ["Hà Nội", "Huế", "Sài Gòn", "Đà Nẵng"], correctIndex: 2, explanation: "Ngày 15 đến 21/11/1975, Hội nghị Hiệp thương chính trị hai đoàn Bắc-Nam họp tại Sài Gòn." },
-  { question: "Tổng tuyển cử bầu Quốc hội chung diễn ra vào ngày nào?", options: ["30/4/1975", "15/11/1975", "25/4/1976", "18/12/1986"], correctIndex: 2, explanation: "Ngày 25/04/1976 cuộc Tổng tuyển cử bầu Quốc hội chung đã diễn ra trên cả nước." },
-  { question: "Quốc hội khóa VI đã quyết định đổi tên nước thành gì?", options: ["Việt Nam Dân chủ Cộng hòa", "Cộng hòa Xã hội Chủ nghĩa Việt Nam", "Việt Nam Cộng hòa", "Liên bang Việt Nam"], correctIndex: 1, explanation: "Quốc hội khóa VI (7/1976) quyết định đổi tên nước thành nước Cộng hòa Xã hội Chủ nghĩa Việt Nam." },
-  { question: "Thành phố Sài Gòn được đổi tên thành gì sau ngày thống nhất?", options: ["Thành phố Thống Nhất", "Thành phố Hồ Chí Minh", "Thành phố Giải Phóng", "Thành phố Cách Mạng"], correctIndex: 1, explanation: "Sài Gòn - Gia Định được đổi tên thành Thành phố Hồ Chí Minh." },
-  { question: "Hội nghị Hiệp thương chính trị thống nhất hai miền Bắc - Nam diễn ra vào tháng/năm nào?", options: ["4/1975", "8/1975", "11/1975", "4/1976"], correctIndex: 2, explanation: "Hội nghị Hiệp thương diễn ra từ 15 đến 21/11/1975 tại Sài Gòn." },
-  { question: "Cuộc Tổng tuyển cử 25/4/1976 có bao nhiêu cử tri đi bỏ phiếu?", options: ["Khoảng 75%", "Khoảng 85%", "Khoảng 90%", "Hơn 98%"], correctIndex: 3, explanation: "Hơn 98% cử tri toàn quốc đã đi bỏ phiếu trong cuộc Tổng tuyển cử." },
-  { question: "Quốc hội khóa VI họp kỳ đầu tiên vào tháng/năm nào?", options: ["4/1976", "6/1976", "7/1976", "12/1976"], correctIndex: 2, explanation: "Quốc hội khóa VI họp phiên đầu tiên vào tháng 7/1976." },
-  { question: "Thủ đô của nước Việt Nam thống nhất được xác định là đâu?", options: ["Huế", "Sài Gòn", "Hà Nội", "Đà Nẵng"], correctIndex: 2, explanation: "Hà Nội được xác định là thủ đô của nước Cộng hòa Xã hội Chủ nghĩa Việt Nam." },
+export type QuizItem = SharedQuizQuestion;
 
-  // === ĐẠI HỘI ĐẢNG IV, V (11-18) ===
-  { question: "Nhiệm vụ trung tâm được nêu tại Đại hội IV của Đảng là gì?", options: ["Chống giặc ngoại xâm", "Xây dựng CNXH và bảo vệ Tổ quốc", "Cải tạo nông nghiệp", "Mở rộng quan hệ quốc tế"], correctIndex: 1, explanation: "Nhiệm vụ xuyên suốt là 'Đảng lãnh đạo cả nước xây dựng CNXH và bảo vệ Tổ quốc'." },
-  { question: "Đại hội lần thứ IV của Đảng diễn ra vào thời gian nào?", options: ["Tháng 6/1975", "Tháng 12/1976", "Tháng 3/1982", "Tháng 12/1986"], correctIndex: 1, explanation: "Đại hội IV họp vào tháng 12/1976 tại Hà Nội." },
-  { question: "Đại hội V (3/1982) xác định đâu là 'mặt trận hàng đầu'?", options: ["Giáo dục đào tạo", "Công nghiệp nặng", "Nông nghiệp", "Quốc phòng an ninh"], correctIndex: 2, explanation: "Đại hội V quyết định coi nông nghiệp là mặt trận hàng đầu." },
-  { question: "Kế hoạch 5 năm lần thứ nhất (sau thống nhất) kéo dài từ năm nào đến năm nào?", options: ["1975-1980", "1976-1980", "1976-1981", "1978-1983"], correctIndex: 2, explanation: "Kế hoạch 5 năm lần thứ nhất 1976-1981 tập trung xây dựng CNXH trên phạm vi cả nước." },
-  { question: "Đại hội IV chủ trương ưu tiên phát triển ngành nào?", options: ["Nông nghiệp", "Thương mại", "Công nghiệp nặng", "Dịch vụ"], correctIndex: 2, explanation: "Đại hội IV chủ trương ưu tiên phát triển công nghiệp nặng, đây là 1 trong những sai lầm chủ quan." },
-  { question: "Đại hội V xác nhận 2 nhiệm vụ chiến lược nào?", options: ["Xây dựng CNXH và bảo vệ Tổ quốc", "Công nghiệp hóa và ngoại giao", "Nông nghiệp và thương mại", "Giáo dục và y tế"], correctIndex: 0, explanation: "Hai nhiệm vụ chiến lược: Xây dựng CNXH và Bảo vệ Tổ quốc XHCN." },
-  { question: "Chỉ thị 100 (Khoán 100) ban hành năm nào?", options: ["1979", "1981", "1983", "1986"], correctIndex: 1, explanation: "Chỉ thị 100 của Ban Bí thư về khoán sản phẩm trong nông nghiệp ban hành năm 1981." },
-  { question: "Khoán 100 cho phép khoán sản phẩm đến đơn vị nào?", options: ["Hợp tác xã", "Xã", "Nhóm lao động và người lao động", "Huyện"], correctIndex: 2, explanation: "Khoán 100 cho phép khoán sản phẩm đến nhóm lao động và cá nhân người lao động." },
-
-  // === KINH TẾ BAO CẤP & ĐỔI MỚI (19-30) ===
-  { question: "Trong giai đoạn 1982-1986, nền kinh tế đối mặt với khó khăn gì lớn nhất?", options: ["Khủng hoảng kinh tế, lạm phát phi mã", "Động đất", "Bùng nổ dân số", "Thiếu lao động"], correctIndex: 0, explanation: "1982-1986 là thời kỳ khủng hoảng kinh tế trầm trọng nhất, lạm phát phi mã lên tới hơn 700%." },
-  { question: "Nghị quyết Hội nghị TW 8 (khóa V, 6/1985) bàn về vấn đề cốt lõi nào?", options: ["Khoán 100", "Khoán 10", "Giá - Lương - Tiền", "Kế hoạch 3 phần"], correctIndex: 2, explanation: "Nghị quyết TW 8 (khóa V) tập trung vào khâu đột phá Giá - Lương - Tiền." },
-  { question: "Kết luận của Bộ Chính trị (8/1986) thừa nhận thực tế gì?", options: ["Kinh tế tự cung tự cấp", "Nền kinh tế hàng hóa nhiều thành phần", "Kinh tế thị trường tự do", "Kinh tế tư bản chủ nghĩa"], correctIndex: 1, explanation: "Kết luận thẳng thắn thừa nhận nền kinh tế nước ta đan xen cấu trúc hàng hóa nhiều thành phần." },
-  { question: "Đại hội VI (12/1986) được gọi là Đại hội gì?", options: ["Đại hội Thống nhất", "Đại hội Đổi mới", "Đại hội Cải cách", "Đại hội Mở cửa"], correctIndex: 1, explanation: "Đại hội VI (12/1986) được gọi là Đại hội Đổi mới, mở ra thời kỳ Đổi mới toàn diện đất nước." },
-  { question: "Trong thời bao cấp, người dân mua lương thực bằng hình thức nào?", options: ["Tiền mặt tự do", "Tem phiếu", "Trao đổi hàng hóa", "Ngân hàng"], correctIndex: 1, explanation: "Thời bao cấp, mọi nhu yếu phẩm đều được phân phối qua hệ thống tem phiếu." },
-  { question: "Lạm phát cao nhất trong giai đoạn 1985-1986 lên tới bao nhiêu?", options: ["200%", "500%", "Trên 700%", "Trên 1000%"], correctIndex: 2, explanation: "Lạm phát phi mã lên tới hơn 700% trong giai đoạn 1985-1986." },
-  { question: "Cơ chế quản lý kinh tế nào gây ra nhiều khó khăn trong giai đoạn 1975-1986?", options: ["Kinh tế thị trường", "Tập trung quan liêu bao cấp", "Kinh tế hỗn hợp", "Kinh tế tư nhân"], correctIndex: 1, explanation: "Cơ chế tập trung quan liêu bao cấp đã gây ra khủng hoảng kinh tế - xã hội trầm trọng." },
-  { question: "Đại hội VI chủ trương đổi mới trên lĩnh vực nào trước tiên?", options: ["Chính trị", "Giáo dục", "Kinh tế", "Ngoại giao"], correctIndex: 2, explanation: "Đổi mới kinh tế được xác định là trọng tâm trước tiên, xóa bỏ cơ chế bao cấp." },
-  { question: "Phương châm nào được Đại hội VI đề ra?", options: ["Nhìn thẳng vào sự thật", "Tiến nhanh, tiến mạnh", "Tự lực cánh sinh", "Đoàn kết quốc tế"], correctIndex: 0, explanation: "Đại hội VI đề ra phương châm 'nhìn thẳng vào sự thật, đánh giá đúng sự thật, nói rõ sự thật'." },
-  { question: "Sự kiện đổi tiền năm 1985 gây ra hậu quả gì?", options: ["Kinh tế phát triển", "Ổn định vật giá", "Lạm phát tăng vọt, đời sống khó khăn hơn", "Thu hẹp khoảng cách giàu nghèo"], correctIndex: 2, explanation: "Đổi tiền 9/1985 thất bại, gây hỗn loạn thị trường và lạm phát tăng vọt." },
-  { question: "Trước Đại hội VI, ai là Tổng Bí thư Đảng?", options: ["Hồ Chí Minh", "Lê Duẩn", "Trường Chinh", "Nguyễn Văn Linh"], correctIndex: 2, explanation: "Trường Chinh giữ chức Tổng Bí thư trước Đại hội VI. Tại Đại hội VI, Nguyễn Văn Linh được bầu." },
-
-  // === BIÊN GIỚI PHÍA BẮC (31-40) ===
-  { question: "Cuộc chiến tranh biên giới phía Bắc bắt đầu vào ngày nào?", options: ["17/02/1979", "30/04/1975", "07/01/1979", "05/03/1979"], correctIndex: 0, explanation: "Ngày 17/02/1979, đối phương huy động hơn 60 vạn quân tấn công biên giới phía Bắc." },
-  { question: "Đối phương đã huy động bao nhiêu quân tấn công biên giới phía Bắc?", options: ["20 vạn", "40 vạn", "60 vạn", "80 vạn"], correctIndex: 2, explanation: "Hơn 60 vạn quân cùng hàng ngàn xe tăng đã được huy động." },
-  { question: "Tuyến biên giới phía Bắc bị tấn công dài bao nhiêu km?", options: ["600 km", "800 km", "1.000 km", "Hơn 1.200 km"], correctIndex: 3, explanation: "Toàn tuyến biên giới phía Bắc dài hơn 1.200 km bị tấn công đồng loạt." },
-  { question: "Lệnh Tổng động viên toàn quốc được ban bố vào ngày nào?", options: ["17/02/1979", "25/02/1979", "05/03/1979", "18/03/1979"], correctIndex: 2, explanation: "Ngày 05/03/1979, Chủ tịch nước công bố lệnh Tổng động viên toàn quốc." },
-  { question: "Quân xâm lược phía Bắc cơ bản rút về bên kia biên giới vào ngày nào?", options: ["05/03/1979", "10/03/1979", "18/03/1979", "30/04/1979"], correctIndex: 2, explanation: "Đến ngày 18/03/1979, quân địch cơ bản phải rút về bên kia biên giới." },
-  { question: "Mặt trận Vị Xuyên (Hà Giang) kéo dài từ năm nào đến năm nào?", options: ["1979-1985", "1980-1988", "1984-1989", "1985-1990"], correctIndex: 2, explanation: "Mặt trận Vị Xuyên kéo dài từ năm 1984 đến 1989." },
-  { question: "Mặt trận Vị Xuyên còn có tên gọi nào?", options: ["Cối xay thịt", "Lò vôi thế kỷ", "Cánh đồng chết", "Đồi máu"], correctIndex: 1, explanation: "Mặt trận Vị Xuyên được mệnh danh là 'lò vôi thế kỷ' vì sự khốc liệt." },
-  { question: "Cuộc chiến biên giới phía Bắc tập trung ác liệt nhất ở tỉnh nào?", options: ["Quảng Ninh, Hải Phòng", "Cao Bằng, Lạng Sơn, Lào Cai", "Hà Giang, Tuyên Quang", "Sơn La, Điện Biên"], correctIndex: 1, explanation: "Quân địch tập trung tấn công mạnh nhất vào Cao Bằng, Lạng Sơn và Lào Cai." },
-  { question: "Lực lượng quân tại chỗ của Việt Nam ở biên giới phía Bắc năm 1979 khoảng bao nhiêu?", options: ["1 vạn", "3 vạn", "5 vạn", "10 vạn"], correctIndex: 2, explanation: "Việt Nam chỉ có khoảng 5 vạn quân tại chỗ, đối mặt với 60 vạn quân địch." },
-  { question: "Cuộc xung đột biên giới phía Bắc hoàn toàn chấm dứt vào năm nào?", options: ["1979", "1985", "1989", "1991"], correctIndex: 2, explanation: "Cuộc chiến chỉ thực sự chấm dứt vào năm 1989, mở ra quá trình bình thường hóa quan hệ." },
-
-  // === BIÊN GIỚI TÂY NAM (41-50) ===
-  { question: "Tập đoàn nào ở Campuchia gây chiến tranh biên giới Tây Nam?", options: ["Lon Nol", "Pol Pot - Ieng Sary", "Norodom Sihanouk", "Hun Sen"], correctIndex: 1, explanation: "Tập đoàn phản động Pol Pot - Ieng Sary đã gây ra chiến tranh biên giới Tây Nam." },
-  { question: "Vụ thảm sát Ba Chúc (An Giang) xảy ra vào năm nào?", options: ["1975", "1977", "1978", "1979"], correctIndex: 2, explanation: "Vụ thảm sát tàn bạo tại Ba Chúc (An Giang) xảy ra năm 1978, hơn 3.100 người bị sát hại." },
-  { question: "Cuộc tổng phản công biên giới Tây Nam bắt đầu vào ngày nào?", options: ["30/04/1975", "23/12/1978", "07/01/1979", "17/02/1979"], correctIndex: 1, explanation: "Ngày 23/12/1978, Quân đội Việt Nam mở cuộc tổng phản công trên toàn tuyến Tây Nam." },
-  { question: "Thủ đô Phnom Penh được giải phóng vào ngày nào?", options: ["23/12/1978", "07/01/1979", "17/02/1979", "30/04/1979"], correctIndex: 1, explanation: "Ngày 07/01/1979, Quân tình nguyện Việt Nam tiến vào giải phóng thủ đô Phnom Penh." },
-  { question: "Quân tình nguyện Việt Nam tại Campuchia được gọi bằng tên gì?", options: ["Đội quân thép", "Đội quân nhà Phật", "Đội quân giải phóng", "Đội quân anh hùng"], correctIndex: 1, explanation: "Quân tình nguyện Việt Nam được coi là 'Đội quân nhà Phật', cứu giúp dân Campuchia." },
-  { question: "Việt Nam rút toàn bộ quân tình nguyện khỏi Campuchia vào năm nào?", options: ["1985", "1987", "1989", "1991"], correctIndex: 2, explanation: "Năm 1989, Việt Nam hoàn thành nghĩa vụ quốc tế và rút toàn bộ quân về nước." },
-  { question: "Khmer Đỏ đã chiếm đóng các đảo nào của Việt Nam?", options: ["Hoàng Sa, Trường Sa", "Thổ Chu, Phú Quốc", "Cát Bà, Cô Tô", "Phú Quý, Lý Sơn"], correctIndex: 1, explanation: "Khmer Đỏ xua quân đánh chiếm các đảo Thổ Chu, Phú Quốc của Việt Nam." },
-  { question: "Khmer Đỏ huy động bao nhiêu sư đoàn áp sát biên giới Tây Nam?", options: ["5 sư đoàn", "10 sư đoàn", "15 sư đoàn", "19 sư đoàn"], correctIndex: 3, explanation: "Khmer Đỏ huy động 19 sư đoàn bộ binh áp sát biên giới trước khi Việt Nam phản công." },
-  { question: "Chiến thắng biên giới Tây Nam có ý nghĩa gì với Campuchia?", options: ["Mở rộng lãnh thổ", "Lật đổ chế độ diệt chủng, cứu dân tộc Campuchia", "Thành lập liên minh quân sự", "Sáp nhập hai nước"], correctIndex: 1, explanation: "Chiến thắng đã lật đổ chế độ diệt chủng Khmer Đỏ, cứu hàng triệu người Campuchia." },
-  { question: "Các tỉnh biên giới Tây Nam bị Khmer Đỏ tấn công chủ yếu là?", options: ["Cà Mau, Bạc Liêu", "Tây Ninh, An Giang", "Đồng Nai, Bình Dương", "Long An, Tiền Giang"], correctIndex: 1, explanation: "Khmer Đỏ xâm nhập sâu vào lãnh thổ các tỉnh Tây Ninh, An Giang." },
-];
+export const quizData: QuizItem[] = PDF_QUESTION_BANK.map((item) => ({
+  id: item.id,
+  question: item.question,
+  options: [...item.options],
+  correctIndex: item.correctIndex,
+}));

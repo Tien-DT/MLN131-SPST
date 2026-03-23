@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import Image from "next/image";
@@ -34,11 +34,12 @@ import {
 } from "lucide-react";
 
 import { Milestone, PHASE_1, PHASE_2 } from "./data/milestones";
-import { QuizItem, quizData } from "./data/quiz";
+import { quizData } from "./data/quiz";
 import { MilestoneCard } from "./components/MilestoneCard";
 import { InlineQuiz } from "./components/InlineQuiz";
 import { MilestoneDetailModal } from "./components/MilestoneDetailModal";
 import Museum3D from "./components/Museum3D";
+import { createQuestionSessionSeed, sampleQuestionsDeterministic } from "@/lib/pdfQuestionBank";
 
 /* ═══════════════════════════════════════════════════════════════════ */
 /*  COMPONENTS                                                        */
@@ -88,6 +89,10 @@ function Page() {
   const sp = useSearchParams();
   const [tab, setTab] = useState<1 | 2 | 3 | 4>(1);
   const [selectedMilestone, setSelectedMilestone] = useState<Milestone | null>(null);
+  const inlineQuizData = useMemo(
+    () => sampleQuestionsDeterministic(quizData, 10, createQuestionSessionSeed("noi-dung-chinh")),
+    []
+  );
 
   useEffect(() => {
     const t = sp.get("topic");
@@ -426,7 +431,7 @@ function Page() {
           <p className="font-serif-body text-sm text-[#5C554E]">10 câu trắc nghiệm — Chương 3.1 (1975 – 1986)</p>
         </div>
         <div className="bg-[#FAF3EB] rounded-sm p-6 md:p-8 border-2 border-[#D1C2A5] shadow-[6px_6px_0px_0px_rgba(44,42,41,1)]">
-          <InlineQuiz data={quizData.slice(0, 10)} />
+          <InlineQuiz data={inlineQuizData} />
         </div>
       </section>
     </div>

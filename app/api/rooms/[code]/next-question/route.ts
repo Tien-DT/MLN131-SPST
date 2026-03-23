@@ -31,6 +31,7 @@ export async function POST(req: Request, ctx: ParamsPromise) {
       total: room.quiz.length,
       prompt: question.question,
       options: question.options,
+      correctIndex: question.correctIndex,
       deadline: room.questionDeadline,
       durationMs: room.questionDurationMs,
     };

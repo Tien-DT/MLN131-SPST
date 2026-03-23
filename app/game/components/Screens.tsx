@@ -272,7 +272,7 @@ export function LevelIntro({
           {levelData.emoji} {levelData.name}
         </h2>
         <p className="pixel-font text-[7px] sm:text-[9px] text-[#aaa] mb-2">
-          {levelData.questions.length} WAVE CHIẾN ĐẤU + QUIZ
+          {WAVES_PER_LEVEL} WAVE CHIẾN ĐẤU + QUIZ
         </p>
         <p className="pixel-font text-[6px] sm:text-[7px] text-[#666] mb-8">
           TIÊU DIỆT KẺ THÙ → TRẢ LỜI CÂU HỎI → NHẬN THƯỞNG
@@ -324,12 +324,6 @@ export function QuizScreen({
         className="p-6 sm:p-8 border-4 border-[#333] relative"
         style={{ background: "#12122a", boxShadow: "4px 4px 0px #000" }}
       >
-        <div className="absolute -top-3 left-4">
-          <span className="pixel-font text-[11px] px-3 py-1 bg-[#FFD700] text-[#1a1a2e]">
-            {question.era}
-          </span>
-        </div>
-
         <p className="pixel-font text-[14px] sm:text-[16px] text-white leading-relaxed mb-6 mt-3">
           {question.question}
         </p>
@@ -393,10 +387,7 @@ export function QuizScreen({
                 }}
               >
                 <p className="mb-2 text-[14px] sm:text-[16px]">
-                  {isCorrect ? "✦ CHÍNH XÁC! +1 HP, +10 ĐẠN, +100 ĐIỂM" : "✕ SAI RỒI! +5 ĐẠN"}
-                </p>
-                <p style={{ color: isCorrect ? "#a7c7b8" : "#cc8888" }}>
-                  {question.explanation}
+                  {isCorrect ? "CHINH XAC! +1 HP, +15 DAN, +100 DIEM" : "SAI ROI! NHAN CAU MOI DE THU LAI"}
                 </p>
               </div>
 

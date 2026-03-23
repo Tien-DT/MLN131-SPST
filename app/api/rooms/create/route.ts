@@ -20,7 +20,6 @@ export async function POST(req: Request) {
       question: q.question,
       options: q.options,
       correctIndex: q.correctIndex,
-      explanation: q.explanation,
     }));
 
     const roomCode = await generateRoomCode(adminDb);

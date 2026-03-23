@@ -198,7 +198,6 @@ export function InlineQuiz({ data }: { data: QuizItem[] }) {
                   <p className="font-bold mb-2 font-serif-heading text-lg">
                     {right ? "Chính xác!" : "Chưa đúng!"}
                   </p>
-                  <p>{q.explanation}</p>
                 </div>
                 <button
                   onClick={next}

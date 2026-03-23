@@ -1,10 +1,14 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { clientDb } from '@/lib/firebaseClient';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { QUESTIONS } from '../lib/questionBank';
 import type { QuizQuestion } from '@/lib/quizTypes';
+import {
+  PDF_QUESTION_BANK,
+  createQuestionSessionSeed,
+  sampleQuestionsDeterministic,
+} from '@/lib/pdfQuestionBank';
 
 interface QuestionEvent {
   question: {
@@ -12,6 +16,7 @@ interface QuestionEvent {
     total: number;
     prompt: string;
     options: string[];
+    correctIndex?: number;
     deadline?: number;
     durationMs?: number;
   };
@@ -23,7 +28,14 @@ interface LeaderboardEvent {
   playerCount: number;
 }
 
-const COLORS = ['bg-red-500', 'bg-blue-500', 'bg-yellow-500', 'bg-green-500'];
+function createRoomQuizPayload() {
+  const seed = createQuestionSessionSeed('quiz-room');
+  return sampleQuestionsDeterministic(PDF_QUESTION_BANK, 10, seed).map<QuizQuestion>((item) => ({
+    question: item.question,
+    options: [...item.options],
+    correctIndex: item.correctIndex,
+  }));
+}
 
 export default function HostView() {
   const [loading, setLoading] = useState(true);
@@ -45,11 +57,6 @@ export default function HostView() {
   const resultTriggeredRef = useRef(false);
   const rehydrateAttemptedRef = useRef(0);
   const lastQuestionIndexRef = useRef<number>(-1);
-
-  const quizPayload = useMemo<QuizQuestion[]>(
-    () => QUESTIONS.map((q) => ({ question: q.text, options: q.options, correctIndex: q.correctAnswerIndex })),
-    []
-  );
 
   const readJsonSafe = useCallback(async (res: Response) => {
     const text = await res.text();
@@ -101,10 +108,11 @@ export default function HostView() {
       pollRef.current = null;
     }
     try {
+      const quiz = createRoomQuizPayload();
       const res = await fetch('/api/rooms/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ quiz: quizPayload }),
+        body: JSON.stringify({ quiz }),
       });
       const data = await readJsonSafe(res);
       if (!res.ok) throw new Error(getErrorMessage(data, 'Không tạo được phòng'));
@@ -116,7 +124,7 @@ export default function HostView() {
       setError(err?.message || 'Không tạo được phòng');
       setLoading(false);
     }
-  }, [quizPayload, readJsonSafe, getErrorMessage]);
+  }, [readJsonSafe, getErrorMessage]);
 
   const rehydrateRoom = useCallback(
     async (code: string, secret: string) => {
@@ -236,6 +244,7 @@ export default function HostView() {
             total: room.quiz.length,
             prompt: q.question,
             options: q.options,
+            correctIndex: q.correctIndex,
             deadline: room.questionDeadline ?? undefined,
             durationMs: room.questionDurationMs ?? undefined,
           });
@@ -356,7 +365,7 @@ export default function HostView() {
   useEffect(() => {
     if (status !== 'in-progress' || timeLeft === null) return;
     if (timeLeft <= 0 && question) {
-      const correct = quizPayload[question.index]?.correctIndex ?? null;
+      const correct = typeof question.correctIndex === 'number' ? question.correctIndex : null;
       setCorrectIndex(correct);
       setShowingResult(true);
       if (!resultTriggeredRef.current) {
@@ -405,7 +414,7 @@ export default function HostView() {
       }
       setTimeLeft(0);
       if (question) {
-        const correct = quizPayload[question.index]?.correctIndex ?? null;
+        const correct = typeof question.correctIndex === 'number' ? question.correctIndex : null;
         setCorrectIndex(correct);
       }
       setShowingResult(true);
