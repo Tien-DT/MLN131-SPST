@@ -111,7 +111,7 @@ export function TitleScreen({ onStart }: { onStart: () => void }) {
         className="absolute bottom-6 pixel-font text-[6px] sm:text-[7px] text-[#555] text-center space-y-1"
       >
         <p>WASD: DI CHUYỂN • CHUỘT: NGẮM • CLICK/SPACE: BẮN</p>
-        <p>VNR202 — CHƯƠNG 3.1</p>
+        <p>MLN131</p>
       </motion.div>
     </motion.div>
   );
