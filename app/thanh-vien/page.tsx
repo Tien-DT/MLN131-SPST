@@ -35,13 +35,13 @@ const aiTools = [
     color: "text-purple-500",
     bg: "bg-purple-50",
   },
-  {
-    name: "Gemini AI",
-    description: "Hỗ trợ chức năng chat box AI của trang Web",
-    icon: Sparkles,
-    color: "text-yellow-500",
-    bg: "bg-yellow-50",
-  },
+  // {
+  //   name: "Gemini AI",
+  //   description: "Hỗ trợ chức năng chat box AI của trang Web",
+  //   icon: Sparkles,
+  //   color: "text-yellow-500",
+  //   bg: "bg-yellow-50",
+  // },
 ];
 
 export default function ThanhVienPage() {

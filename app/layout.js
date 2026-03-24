@@ -1,6 +1,5 @@
 import './globals.css'
 import Navbar from './components/Navbar'
-import AIChatbot from '../components/AIChatbot'
 import ThemeProvider from './components/ThemeProvider'
 
 export const metadata = {
@@ -17,7 +16,6 @@ export default function RootLayout({ children }) {
           <main className="pt-[200px] min-h-screen">
             {children}
           </main>
-          <AIChatbot />
         </ThemeProvider>
       </body>
     </html>

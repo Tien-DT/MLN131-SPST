@@ -35,20 +35,14 @@ export default function HeroVintage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-          className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center"
+          className="flex justify-center"
         >
           <a
             href="#timeline"
-            className="red-box px-8 py-4 font-sans font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#2C2A29]"
+            className="red-box px-12 py-5 font-sans font-bold uppercase tracking-wider text-lg hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#2C2A29]"
           >
             Sự phát triển tư duy lý luận.
           </a>
-          <button
-            onClick={() => document.getElementById('chat-bot-btn')?.click()}
-            className="vintage-box px-8 py-4 font-sans font-bold uppercase tracking-wider text-[#2C2A29] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#2C2A29]"
-          >
-            Hỏi Cố vấn AI
-          </button>
         </motion.div>
       </div>
 
