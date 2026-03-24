@@ -1521,17 +1521,28 @@ export default function ShooterArena({
 
       // Check player collision with solid obstacles (including ally tank)
       const playerObs = getDynamicObstacles();
-      for (const obs of playerObs) {
-        if (obs.type === "crater" || obs.type === "wire") continue; // non-blocking
-        const half = PLAYER_SIZE / 2;
-        if (
-          p.x + half > obs.x && p.x - half < obs.x + obs.w &&
-          p.y + half > obs.y && p.y - half < obs.y + obs.h
-        ) {
-          p.x = oldX;
-          p.y = oldY;
-          break;
+      const half = PLAYER_SIZE / 2;
+      const isPlayerColliding = (x: number, y: number) => {
+        for (const obs of playerObs) {
+          if (obs.type === "crater" || obs.type === "wire") continue; // non-blocking
+          if (
+            x + half > obs.x && x - half < obs.x + obs.w &&
+            y + half > obs.y && y - half < obs.y + obs.h
+          ) {
+            return true;
+          }
         }
+        return false;
+      };
+
+      const wasColliding = isPlayerColliding(oldX, oldY);
+      const isCollidingNow = isPlayerColliding(p.x, p.y);
+
+      // If player started inside an obstacle (responsive spawn edge case),
+      // allow movement so they can escape instead of getting permanently stuck.
+      if (isCollidingNow && !wasColliding) {
+        p.x = oldX;
+        p.y = oldY;
       }
 
       // Update aim angle live
