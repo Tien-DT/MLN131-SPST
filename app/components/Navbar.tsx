@@ -107,7 +107,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center justify-center space-x-4 lg:space-x-6 xl:space-x-8 mx-auto flex-wrap">
             {[
               { name: "Trang chủ", path: ROUTES.HOME },
-              { name: "Nội dung", path: ROUTES.NOIDUNG },
+              { name: "Tham nhũng", path: ROUTES.NOIDUNG },
               { name: "Tư liệu", path: ROUTES.ONTAP },
               { name: "Ôn Tập Quiz", path: ROUTES.QUIZ_JOIN },
               { name: "Mini Game", path: ROUTES.GAME },
@@ -190,7 +190,7 @@ export default function Navbar() {
               <div className="space-y-0">
                 {[
                   { name: "Trang chủ", path: ROUTES.HOME },
-                  { name: "Nội dung", path: ROUTES.NOIDUNG },
+                  { name: "Tham nhũng", path: ROUTES.NOIDUNG },
                   { name: "Tư liệu", path: ROUTES.ONTAP },
                   { name: "Tham gia", path: ROUTES.QUIZ_JOIN },
                   { name: "Mini Game", path: ROUTES.GAME },

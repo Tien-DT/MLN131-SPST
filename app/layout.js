@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
       <body>
         <ThemeProvider>
           <Navbar />
-          <main className="pt-[80px] min-h-screen">
+          <main className="pt-[200px] min-h-screen">
             {children}
           </main>
           <AIChatbot />

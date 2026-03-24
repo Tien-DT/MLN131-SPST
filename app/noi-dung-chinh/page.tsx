@@ -382,7 +382,7 @@ function Page() {
               </div>
            </div>
 
-           <p className="text-[10px] font-black uppercase tracking-[0.8em] text-[#5C554E] border-t border-[#2C2A29]/10 pt-10">SỨ MỆNH — KIÊM QUYẾT & KIÊN TRÌ — 2026</p>
+           <p className="text-[10px] font-black uppercase tracking-[0.8em] text-[#5C554E] border-t border-[#2C2A29]/10 pt-10">SỨ MỆNH — KIÊN QUYẾT & KIÊN TRÌ — 2026</p>
         </div>
         
         {/* Large Decorative Text background */}

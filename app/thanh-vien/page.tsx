@@ -7,8 +7,10 @@ import { Users, Bot, Sparkles, Code, Video, MessageSquare } from "lucide-react";
 const members = [
   { id: "1", name: "Trương Nguyễn Ngọc Thạch", role: "Member" },
   { id: "2", name: "Hoàng Hồng Quân", role: "Member" },
-  { id: "3", name: "Hoàng Minh Đạt", role: "Member" },
-  { id: "4", name: "Nguyễn Minh Tuấn", role: "Member" },
+  { id: "3", name: "Đào Trọng Tiến", role: "Member" },
+  { id: "4", name: "Phạm Thị Thanh Ngân", role: "Member" },
+  { id: "5", name: "Nguyễn Hồng Quân", role: "Member" },
+  { id: "6", name: "Nguyễn Tống Thanh An", role: "Member" },
 ];
 
 const aiTools = [

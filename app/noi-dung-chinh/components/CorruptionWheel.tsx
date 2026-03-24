@@ -407,7 +407,7 @@ export default function CorruptionWheel() {
                 </div>
 
                 {/* Content Side */}
-                <div className="lg:col-span-3 p-6 sm:p-8 lg:p-10 flex flex-col h-full bg-[var(--bg-color)]">
+                <div className="lg:col-span-3 p-6 sm:p-8 lg:p-10 flex flex-col h-full overflow-y-auto">
                     <div className="mb-4 sm:mb-6">
                        <div className="flex flex-wrap items-center gap-2 mb-2">
                           <span className="bg-[#DA251D] text-white px-2.5 py-0.5 text-[9px] font-black rounded-full uppercase tracking-tighter inline-block shadow-lg">
@@ -471,23 +471,23 @@ export default function CorruptionWheel() {
                           {result.penalty}
                          </p>
                       </div>
-
-                      {/* Footer Info Area */}
-                      <div className="pt-6 mt-auto flex flex-wrap gap-4 items-center justify-between border-t border-black/5 dark:border-white/10">
-                         <div className="flex items-center gap-2.5 opacity-30">
-                            <Fingerprint size={24} />
-                            <div className="flex flex-col">
-                               <span className="text-[7px] font-black uppercase">Case ID: 131-PC</span>
-                               <span className="text-[7px] font-mono">2026_X_VERIFY</span>
-                            </div>
-                         </div>
-                         <button 
-                            onClick={() => setIsModalOpen(false)}
-                            className="bg-[#DA251D] text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-black text-[10px] sm:text-xs uppercase tracking-widest shadow-xl hover:bg-black transition-all active:scale-95 group flex items-center gap-2"
-                         >
-                            TIẾP TỤC THAM NHŨNG
-                         </button>
-                      </div>
+                    </div>
+                    
+                    {/* Footer Info Area */}
+                    <div className="pt-6 flex flex-wrap gap-4 items-center justify-between border-t border-black/5 dark:border-white/10">
+                       <div className="flex items-center gap-2.5 opacity-30">
+                          <Fingerprint size={24} />
+                          <div className="flex flex-col">
+                             <span className="text-[7px] font-black uppercase">Case ID: 131-PC</span>
+                             <span className="text-[7px] font-mono">2026_X_VERIFY</span>
+                          </div>
+                       </div>
+                       <button 
+                          onClick={() => setIsModalOpen(false)}
+                          className="bg-[#DA251D] text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-black text-[10px] sm:text-xs uppercase tracking-widest shadow-xl hover:bg-black transition-all active:scale-95 group flex items-center gap-2"
+                       >
+                          TIẾP TỤC THAM NHŨNG
+                       </button>
                     </div>
                 </div>
               </div>
