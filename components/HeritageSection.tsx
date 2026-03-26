@@ -8,6 +8,38 @@ export default function HeritageSection() {
   const { isDarkMode } = useTheme();
   const [page, setPage] = useState(0);
 
+  const sixFeatures = [
+    {
+      title: 'Thứ nhất: Xây dựng nhà nước do nhân dân lao động làm chủ, đó là Nhà nước của dân, do dân, vì dân.',
+      content: ''
+    },
+    {
+      title: 'Thứ hai: Nhà nước được tổ chức và hoạt động dựa trên cơ sở của Hiến pháp và pháp luật.',
+      content: 'Trong tất cả các hoạt động của xã hội, pháp luật được đặt ở vị trí tối thượng để điều chỉnh các quan hệ xã hội.'
+    },
+    {
+      title: 'Thứ ba: Quyền lực nhà nước là thống nhất, có sự phân công rõ ràng, có cơ chế phối hợp nhịp nhàng và kiểm soát giữa các cơ quan: lập pháp, hành pháp và tư pháp.',
+      content: ''
+    },
+    {
+      title: 'Thứ tư: Nhà nước pháp quyền xã hội chủ nghĩa ở Việt Nam phải do Đảng Cộng sản Việt Nam lãnh đạo, phù hợp với Điều 4 Hiến pháp năm 2013.',
+      content: 'Hoạt động của Nhà nước được giám sát bởi nhân dân với phương châm: “Dân biết, dân bàn, dân làm, dân kiểm tra” thông qua các tổ chức, các cá nhân được nhân dân ủy nhiệm.'
+    },
+    {
+      title: 'Thứ năm: Nhà nước pháp quyền xã hội chủ nghĩa ở Việt Nam tôn trọng quyền con người, coi con người là chủ thể, là trung tâm của sự phát triển.',
+      content: 'Quyền dân chủ của nhân dân được thực hành một cách rộng rãi; “nhân dân có quyền bầu và bãi miễn những đại biểu không xứng đáng”; đồng thời tăng cường thực hiện sự nghiêm minh của pháp luật.'
+    },
+    {
+      title: 'Thứ sáu: Tổ chức và hoạt động của bộ máy nhà nước theo nguyên tắc tập trung dân chủ, có sự phân công, phân cấp, phối hợp và kiểm soát lẫn nhau, nhưng bảo đảm quyền lực nhà nước là thống nhất...',
+      content: ''
+    }
+  ];
+
+  const [sixPage, setSixPage] = useState(0);
+  const sixPageSize = 3;
+  const sixTotalPages = Math.ceil(sixFeatures.length / sixPageSize);
+  const sixCurrentItems = sixFeatures.slice(sixPage * sixPageSize, (sixPage + 1) * sixPageSize);
+
   const features = [
     {
       title: 'Sự lãnh đạo tuyệt đối của Đảng Cộng sản Việt Nam',
@@ -76,7 +108,69 @@ export default function HeritageSection() {
           </p>
         </div>
 
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto space-y-12">
+          {/* Sáu đặc trưng cơ bản */}
+          <div className={`relative border-4 border-double shadow-[8px_8px_0px_0px_var(--text-primary)] overflow-hidden transition-all duration-500 ${isDarkMode ? 'bg-[#0A0A0A] border-[#DA251D]' : 'bg-[#FAF3EB] border-[#2C2A29]'}`}>
+            <div className={`px-8 pt-6 pb-5 border-b-4 border-double transition-colors duration-500 ${isDarkMode ? 'bg-[#1C1C1C] border-[#DA251D]' : 'bg-[#F5E6D3] border-[#2C2A29]'}`}>
+              <h3 className={`text-2xl md:text-3xl font-serif-heading font-black uppercase leading-tight mb-2 transition-colors ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>
+                Sáu đặc trưng cơ bản
+              </h3>
+              <p className="font-serif-body text-sm italic text-[var(--text-secondary)]">
+                Đây là các đặc trưng cơ bản của Nhà nước pháp quyền xã hội chủ nghĩa Việt Nam.
+              </p>
+            </div>
+
+            <div className={`divide-y transition-colors ${isDarkMode ? 'divide-[#DA251D]/10' : 'divide-[#2C2A29]/15'}`}>
+              {sixCurrentItems.map((item, index) => (
+                <div key={item.title} className={`flex gap-5 px-8 py-6 transition-colors ${isDarkMode ? 'hover:bg-[#1C1C1C]' : 'hover:bg-[#F0E7D8]'}`}>
+                  <div className="shrink-0 pt-1">
+                    <div className={`border-2 overflow-hidden w-14 text-center shadow-[2px_2px_0px_0px_var(--text-primary)] transition-colors ${isDarkMode ? 'border-[#DA251D]' : 'border-[#2C2A29]'}`}>
+                      <div className={`text-[8px] font-bold uppercase tracking-wider px-1 py-0.5 transition-colors ${isDarkMode ? 'bg-[#DA251D] text-white' : 'bg-[#2C2A29] text-[#FAF3EB]'}`}>
+                        MỤC
+                      </div>
+                      <div className="font-serif-heading font-black text-lg text-[#DA251D] py-1 leading-none">
+                        {sixPage * sixPageSize + index + 1}
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className={`font-serif-heading font-black text-base md:text-lg leading-tight mb-1.5 transition-colors ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>
+                      {item.title}
+                    </h4>
+                    {item.content && (
+                      <p className={`font-serif-body text-sm leading-relaxed text-justify transition-colors ${isDarkMode ? 'text-[#E8D9C5]/70' : 'text-[#5C554E]'}`}>
+                        {item.content}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className={`px-8 py-4 border-t-2 flex items-center justify-between transition-colors duration-500 ${isDarkMode ? 'bg-[#1C1C1C] border-[#DA251D]/20' : 'bg-[#E8D9C5] border-[#2C2A29]/20'}`}>
+              <button
+                onClick={() => setSixPage((p) => Math.max(0, p - 1))}
+                disabled={sixPage === 0}
+                className={`inline-flex items-center gap-2 px-4 py-2 border-2 text-xs font-black uppercase tracking-widest transition-all ${sixPage === 0 ? 'opacity-40 cursor-not-allowed' : 'hover:-translate-x-0.5'} ${isDarkMode ? 'border-[#DA251D] text-[#E8D9C5]' : 'border-[#2C2A29] text-[#2C2A29]'}`}
+              >
+                <ChevronLeft size={14} /> Lùi
+              </button>
+
+              <div className={`font-serif-body text-xs italic transition-colors ${isDarkMode ? 'text-[#E8D9C5]/60' : 'text-[#5C554E]'}`}>
+                Trang {sixPage + 1}/{sixTotalPages}
+              </div>
+
+              <button
+                onClick={() => setSixPage((p) => Math.min(sixTotalPages - 1, p + 1))}
+                disabled={sixPage === sixTotalPages - 1}
+                className={`inline-flex items-center gap-2 px-4 py-2 border-2 text-xs font-black uppercase tracking-widest transition-all ${sixPage === sixTotalPages - 1 ? 'opacity-40 cursor-not-allowed' : 'hover:translate-x-0.5'} ${isDarkMode ? 'border-[#DA251D] text-[#E8D9C5]' : 'border-[#2C2A29] text-[#2C2A29]'}`}
+              >
+                Qua <ChevronRight size={14} />
+              </button>
+            </div>
+          </div>
+
+          {/* Tám đặc trưng cơ bản */}
           <div className={`relative border-4 border-double shadow-[8px_8px_0px_0px_var(--text-primary)] overflow-hidden transition-all duration-500 ${isDarkMode ? 'bg-[#0A0A0A] border-[#DA251D]' : 'bg-[#FAF3EB] border-[#2C2A29]'}`}>
             <div className={`px-8 pt-6 pb-5 border-b-4 border-double transition-colors duration-500 ${isDarkMode ? 'bg-[#1C1C1C] border-[#DA251D]' : 'bg-[#F5E6D3] border-[#2C2A29]'}`}>
               <h3 className={`text-2xl md:text-3xl font-serif-heading font-black uppercase leading-tight mb-2 transition-colors ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>
