@@ -464,7 +464,7 @@ export default function BorderAndSubsidySection() {
               Khái niệm
             </h3>
             <p className={`font-serif-body text-justify leading-relaxed transition-colors ${isDarkMode ? 'text-[#E8D9C5]/70' : 'text-[#5C554E]'}`}>
-              Nhà nước pháp quyền XHCN Việt Nam là Nhà nước của Nhân dân, do Nhân dân, vì Nhân dân, dưới sự lãnh đạo của Đảng Cộng sản Việt Nam. Nhà nước quản lý xã hội bằng Hiến pháp và pháp luật, lấy lợi ích hợp pháp của người dân làm trọng tâm.
+              Nhà nước pháp quyền xã hội chủ nghĩa Việt Nam là Nhà nước của Nhân dân, do Nhân dân, vì Nhân dân, do Đảng Cộng sản Việt Nam lãnh đạo. Nhà nước quản lý xã hội bằng Hiến pháp và pháp luật, lấy lợi ích hợp pháp, chính đáng của người dân và doanh nghiệp làm trọng tâm của mọi chính sách.
             </p>
           </div>
 

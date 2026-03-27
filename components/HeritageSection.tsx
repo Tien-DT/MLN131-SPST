@@ -42,44 +42,36 @@ export default function HeritageSection() {
 
   const features = [
     {
-      title: 'Sự lãnh đạo tuyệt đối của Đảng Cộng sản Việt Nam',
-      content:
-        'Đảng quyết định bản chất và sự thành công của công cuộc xây dựng Nhà nước pháp quyền. Sự lãnh đạo này đảm bảo tính thống nhất chính trị và tránh tình trạng chia cắt quyền lực dẫn đến bế tắc.'
+      title: 'Nhà nước pháp quyền xã hội chủ nghĩa Việt Nam do Ðảng Cộng sản Việt Nam lãnh đạo',
+      content: ''
     },
     {
-      title: 'Bản chất Nhà nước của Nhân dân, do Nhân dân, vì Nhân dân',
-      content:
-        'Nhân dân là chủ thể tối cao của quyền lực nhà nước. Điều này đòi hỏi các cơ chế dân chủ trực tiếp và đại diện phải được thực thi hiệu quả, đặc biệt là dân chủ cơ sở.'
+      title: 'Nhà nước của Nhân dân, do Nhân dân, vì Nhân dân',
+      content: ''
     },
     {
-      title: 'Tôn trọng, bảo đảm và bảo vệ quyền con người, quyền công dân',
-      content:
-        'Quyền con người được cụ thể hóa trong Hiến pháp và các đạo luật. Nhà nước có trách nhiệm tạo hành lang pháp lý để người dân phát huy năng lực và bảo vệ họ trước các hành vi xâm phạm.'
+      title: 'Quyền con người, quyền công dân được công nhận, tôn trọng, bảo đảm, bảo vệ theo Hiến pháp và pháp luật',
+      content: ''
     },
     {
-      title: 'Thượng tôn Hiến pháp và pháp luật',
-      content:
-        'Mọi cơ quan, tổ chức và cá nhân đều phải tôn trọng sự tối thượng của Hiến pháp. Hệ thống pháp luật phải minh bạch, ổn định và dễ tiếp cận.'
+      title: 'Nhà nước được tổ chức và hoạt động theo Hiến pháp và pháp luật, quản lý xã hội bằng Hiến pháp và pháp luật',
+      content: ''
     },
     {
-      title: 'Quyền lực nhà nước là thống nhất, phân công rành mạch, phối hợp chặt chẽ và kiểm soát hiệu quả',
-      content:
-        'Quyền lực nhà nước không phân lập mà thống nhất, nhưng có sự chuyên môn hóa giữa quyền lập pháp, hành pháp và tư pháp để ngăn ngừa tha hóa quyền lực.'
+      title: 'Quyền lực nhà nước là thống nhất, có sự phân công rành mạch, phối hợp chặt chẽ và kiểm soát hiệu quả giữa các cơ quan nhà nước trong thực hiện các quyền lập pháp, hành pháp, tư pháp',
+      content: ''
     },
     {
-      title: 'Hệ thống pháp luật dân chủ, công bằng, nhân đạo và hiện đại',
-      content:
-        'Pháp luật là đòn bẩy cho sự phát triển bền vững và đổi mới sáng tạo, tạo môi trường công bằng cho mọi thành phần kinh tế thay vì là rào cản hành chính.'
+      title: 'Hệ thống pháp luật dân chủ, công bằng, nhân đạo, đầy đủ, đồng bộ, thống nhất, kịp thời, khả thi, công khai, minh bạch, ổn định, dễ tiếp cận, được thực hiện nghiêm minh và nhất quán',
+      content: ''
     },
     {
-      title: 'Độc lập của Tòa án theo thẩm quyền xét xử',
-      content:
-        'Tòa án phải độc lập; thẩm phán và hội thẩm nhân dân chỉ tuân theo pháp luật. Đây là chốt chặn cuối cùng bảo vệ công lý và quyền lợi hợp pháp của công dân.'
+      title: 'Độc lập của tòa án theo thẩm quyền xét xử, thẩm phán, hội thẩm xét xử độc lập và chỉ tuân theo pháp luật',
+      content: ''
     },
     {
-      title: 'Tôn trọng và thực hiện các điều ước quốc tế',
-      content:
-        'Nhà nước cam kết tuân thủ các chuẩn mực quốc tế trên cơ sở tôn trọng độc lập, chủ quyền và lợi ích quốc gia - dân tộc.'
+      title: 'Tôn trọng và bảo đảm thực hiện các điều ước quốc tế mà nước Cộng hòa xã hội chủ nghĩa Việt Nam là thành viên, bảo đảm cao nhất lợi ích quốc gia - dân tộc trên cơ sở các nguyên tắc cơ bản của Hiến chương Liên Hợp Quốc và luật pháp quốc tế',
+      content: ''
     }
   ];
 

@@ -108,7 +108,7 @@ const WHEEL_ITEMS = [
     desc: "Hành vi cửa quyền, hạch sách, gây khó khăn phiền hà cho dân và doanh nghiệp nhằm gợi ý 'lót tay'.",
     signs: "Hồ sơ đủ nhưng bị ngâm không lý do, thái độ hách dịch khi tiếp nhận yêu cầu hành chính.",
     penalty: "Kỷ luật cách chức hoặc xử lý hình sự (tù đến 15 năm).",
-    link: "https://thuvienphapluat.vn/van-ban/Bo-may-hanh-chinh/Luat-Phong-chong-tham-nhung-2018-372134.aspx?anchor=dieu_2",
+    link: "https://thuvienphapluat.vn/phap-luat/ho-tro-phap-luat/nhung-nhieu-la-gi-hanh-vi-nhung-nhieu-vi-vu-loi-co-phai-la-hanh-vi-tham-nhung-trong-khu-vuc-nha-nuo-932816-82766.html",
     image: "/images/wheel/nhung-nhieu.jpg"
   },
   {
@@ -431,7 +431,7 @@ export default function CorruptionWheel() {
                       <div className="bg-black/5 dark:bg-white/5 p-4 rounded-xl border border-black/5 dark:border-white/5 shadow-inner">
                         <div className="flex items-center gap-2 mb-2 opacity-50">
                            <FileText size={12} className="shrink-0" />
-                           <p className="text-[9px] font-black uppercase tracking-[0.1em] font-sans m-0 leading-none">Mô tả hành vi:</p>
+                           <p className="text-[9px] font-black uppercase tracking-[0.1em] font-serif-body m-0 leading-none">Mô tả hành vi:</p>
                         </div>
                         <p className="text-sm sm:text-base font-serif-body italic leading-relaxed text-justify m-0 opacity-80 decoration-[#DA251D]/20">
                           {result.desc}
@@ -442,7 +442,7 @@ export default function CorruptionWheel() {
                       <div className="bg-black/5 dark:bg-white/5 p-4 rounded-xl border border-black/5 dark:border-white/5 shadow-inner">
                         <div className="flex items-center gap-2 mb-2 opacity-50">
                            <Eye size={12} className="shrink-0" />
-                           <p className="text-[9px] font-black uppercase tracking-[0.1em] font-sans m-0 leading-none">Dấu hiệu nhận biết:</p>
+                           <p className="text-[9px] font-black uppercase tracking-[0.1em] font-serif-body m-0 leading-none">Dấu hiệu nhận biết:</p>
                         </div>
                         <p className="text-sm sm:text-base font-serif-body leading-relaxed text-justify m-0">
                           {result.signs}
@@ -456,7 +456,7 @@ export default function CorruptionWheel() {
                          <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2 text-[#DA251D]">
                                <Scale size={14} className="shrink-0" />
-                               <p className="text-[9px] font-black uppercase tracking-[0.1em] font-sans m-0 leading-none">Căn cứ pháp lý & Hình phạt:</p>
+                               <p className="text-[9px] font-black uppercase tracking-[0.1em] font-serif-body m-0 leading-none">Căn cứ pháp lý & Hình phạt:</p>
                             </div>
                             <a 
                               href={result.link} 
