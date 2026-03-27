@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import PageHeader from "../components/PageHeader";
-import { Users, Bot, Sparkles, Code, Video, MessageSquare } from "lucide-react";
+import { Users, Bot, Sparkles, Code, Video, MessageSquare, ChevronRight } from "lucide-react";
 
 const members = [
   { id: "1", name: "Trương Nguyễn Ngọc Thạch", role: "Member" },
@@ -16,7 +16,10 @@ const members = [
 const aiTools = [
   {
     name: "NotebookLM",
-    description: "",
+    subtitle: "Nguồn tổng hợp tài liệu, ghi chú và đối chiếu nội dung học thuật cho dự án.",
+    description:
+      "Prompt: Hiện tại tôi cần soạn nội dung lý thuyết dựa theo file tôi cung cấp để làm 1 website. Trong file hãy tập trung vào chương 3: Dân chủ xã hội chủ nghĩa và nhà nước pháp quyền xã hội chủ nghĩa ở Việt Nam. Hãy nghiên cứu phân tích chi tiết các đề mục sau: Nhà nước pháp quyền xã hội chủ nghĩa ở Việt Nam; Phát huy dân chủ xã hội chủ nghĩa, xây dựng Nhà nước pháp quyền xã hội chủ nghĩa ở Việt Nam hiện nay; Phòng, chống tham nhũng góp phần bảo vệ chế độ, xây dựng Nhà nước pháp quyền; Trách nhiệm của công dân trong phòng, chống tham nhũng.",
+    collapsible: true,
     icon: Video,
     color: "text-blue-500",
     bg: "bg-blue-50",
@@ -125,21 +128,49 @@ export default function ThanhVienPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 + index * 0.1 }}
-                  className="p-5 rounded-sm bg-white border-2 border-[#D1C2A5] hover:bg-[#F5E6D3] hover:border-[#1a5276] transition-all hover:shadow-[2px_2px_0px_0px_rgba(44,42,41,1)] hover:-translate-y-1"
+                  className="rounded-sm bg-white border-2 border-[#D1C2A5] hover:bg-[#F5E6D3] hover:border-[#1a5276] transition-all hover:shadow-[2px_2px_0px_0px_rgba(44,42,41,1)] hover:-translate-y-1"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 border-2 border-[#2C2A29] bg-[#E3D6C1] rounded-sm shrink-0">
-                      <tool.icon className="text-[#2C2A29]" size={20} />
-                    </div>
-                    <div>
-                      <h3 className="font-serif-heading text-lg font-bold text-[#2C2A29] mb-1">{tool.name}</h3>
-                      {tool.description && (
-                        <p className="text-sm font-serif-body text-[#5C554E] leading-relaxed">
+                  {tool.collapsible ? (
+                    <details className="group">
+                      <summary className="list-none cursor-pointer p-5 flex items-center justify-between gap-4">
+                        <div className="flex items-start gap-4">
+                          <div className="p-2 border-2 border-[#2C2A29] bg-[#E3D6C1] rounded-sm shrink-0">
+                            <tool.icon className="text-[#2C2A29]" size={20} />
+                          </div>
+                          <div>
+                            <h3 className="font-serif-heading text-lg font-bold text-[#2C2A29] mb-1">{tool.name}</h3>
+                            {tool.subtitle && (
+                              <p className="text-sm font-serif-body text-[#5C554E] leading-relaxed">
+                                {tool.subtitle}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <ChevronRight size={20} className="text-[#2C2A29] transition-transform duration-300 group-open:rotate-90" />
+                      </summary>
+                      <div className="px-5 pb-5 -mt-2">
+                        <p className="text-sm font-serif-body text-[#5C554E] leading-relaxed pl-[52px] whitespace-pre-line">
                           {tool.description}
                         </p>
-                      )}
+                      </div>
+                    </details>
+                  ) : (
+                    <div className="p-5">
+                      <div className="flex items-start gap-4">
+                        <div className="p-2 border-2 border-[#2C2A29] bg-[#E3D6C1] rounded-sm shrink-0">
+                          <tool.icon className="text-[#2C2A29]" size={20} />
+                        </div>
+                        <div>
+                          <h3 className="font-serif-heading text-lg font-bold text-[#2C2A29] mb-1">{tool.name}</h3>
+                          {tool.description && (
+                            <p className="text-sm font-serif-body text-[#5C554E] leading-relaxed">
+                              {tool.description}
+                            </p>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </motion.div>
               ))}
             </div>
