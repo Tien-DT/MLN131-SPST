@@ -1,6 +1,7 @@
 import './globals.css'
 import Navbar from './components/Navbar'
 import ThemeProvider from './components/ThemeProvider'
+import MainContent from './components/MainContent'
 
 export const metadata = {
   title: 'Nhà nước Pháp quyền Xã hội Chủ nghĩa Việt Nam | 1975 - 1981',
@@ -13,9 +14,7 @@ export default function RootLayout({ children }) {
       <body>
         <ThemeProvider>
           <Navbar />
-          <main className="pt-[200px] min-h-screen">
-            {children}
-          </main>
+          <MainContent>{children}</MainContent>
         </ThemeProvider>
       </body>
     </html>
