@@ -10,7 +10,7 @@ export default function OnTapQuiz() {
       <div className="max-w-[1200px] mx-auto px-6 relative z-10 mt-12">
         <div className="bg-[#FAF3EB] rounded-sm shadow-[6px_6px_0px_0px_rgba(44,42,41,1)] py-8 border-2 border-[#D1C2A5] p-6 md:p-8 mb-8 text-center mt-8">
           <p className="font-sans text-xs uppercase tracking-[.3em] font-bold text-[#5C554E] mb-3">Hồ sơ chuyên đề</p>
-          <h1 className="text-3xl md:text-5xl font-serif-heading font-black text-[#2C2A29] mb-6 uppercase tracking-wider leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-[2.6rem] font-serif-heading font-black text-[#2C2A29] mb-6 uppercase tracking-[0.01em] leading-tight">
             Hợp Tuyển Lịch Sử: <br className="md:hidden" /><span className="text-[#DA251D]">Các Đại Án Kỷ Lục</span>
           </h1>
           <div className="w-16 h-1 bg-[#DA251D] mx-auto mb-6"></div>
