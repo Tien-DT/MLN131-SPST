@@ -362,12 +362,13 @@ export function QuizScreen({
                 }}
               >
                 <span
-                  className="inline-block w-6 mr-2"
+                  className="inline-block mr-2"
                   style={{
                     color: pick === null ? "#FFD700" : isCorrectOpt ? "#95d5b2" : isThis ? "#ff6b6b" : "#555",
                   }}
                 >
-                  {String.fromCharCode(65 + i)}.
+                  {String.fromCharCode(65 + i)}
+                  <span style={{ fontWeight: isCorrectOpt ? "bold" : "normal", fontSize: isCorrectOpt ? "1.3em" : "1em" }}>.</span>
                 </span>
                 {opt}
               </button>
