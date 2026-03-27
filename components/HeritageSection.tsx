@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Scale, Gavel } from 'lucide-react';
 import { useTheme } from '@/app/components/ThemeProvider';
 
 export default function HeritageSection() {
@@ -78,6 +78,7 @@ export default function HeritageSection() {
   const pageSize = 3;
   const totalPages = Math.ceil(features.length / pageSize);
   const currentItems = features.slice(page * pageSize, (page + 1) * pageSize);
+  const watermarkTone = isDarkMode ? 'text-[#DA251D]/[0.04]' : 'text-[#2C2A29]/[0.04]';
 
 
   return (
@@ -100,9 +101,17 @@ export default function HeritageSection() {
           </p>
         </div>
 
-        <div className="max-w-5xl mx-auto space-y-12">
+        <div className="absolute inset-x-0 top-20 bottom-0 pointer-events-none z-0">
+          <Scale size={150} className={`absolute left-[11%] top-[4%] ${watermarkTone}`} />
+          <Gavel size={140} className={`absolute right-[11%] top-[20%] rotate-[18deg] ${watermarkTone}`} />
+          <Gavel size={140} className={`absolute left-[20%] top-[56%] rotate-[-16deg] ${watermarkTone}`} />
+          <Scale size={170} className={`absolute right-[12%] bottom-[18%] ${watermarkTone}`} />
+        </div>
+
+        <div className="max-w-5xl mx-auto space-y-12 relative z-10">
+
           {/* Sáu đặc trưng cơ bản */}
-          <div className={`relative border-4 border-double shadow-[8px_8px_0px_0px_var(--text-primary)] overflow-hidden transition-all duration-500 ${isDarkMode ? 'bg-[#0A0A0A] border-[#DA251D]' : 'bg-[#FAF3EB] border-[#2C2A29]'}`}>
+          <div className={`relative z-10 border-4 border-double shadow-[8px_8px_0px_0px_var(--text-primary)] overflow-hidden transition-all duration-500 ${isDarkMode ? 'bg-[#0A0A0A] border-[#DA251D]' : 'bg-[#FAF3EB] border-[#2C2A29]'}`}>
             <div className={`px-8 pt-6 pb-5 border-b-4 border-double transition-colors duration-500 ${isDarkMode ? 'bg-[#1C1C1C] border-[#DA251D]' : 'bg-[#F5E6D3] border-[#2C2A29]'}`}>
               <h3 className={`text-2xl md:text-3xl font-serif-heading font-black uppercase leading-tight mb-2 transition-colors ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>
                 Sáu đặc trưng cơ bản
@@ -163,7 +172,7 @@ export default function HeritageSection() {
           </div>
 
           {/* Tám đặc trưng cơ bản */}
-          <div className={`relative border-4 border-double shadow-[8px_8px_0px_0px_var(--text-primary)] overflow-hidden transition-all duration-500 ${isDarkMode ? 'bg-[#0A0A0A] border-[#DA251D]' : 'bg-[#FAF3EB] border-[#2C2A29]'}`}>
+          <div className={`relative z-10 border-4 border-double shadow-[8px_8px_0px_0px_var(--text-primary)] overflow-hidden transition-all duration-500 ${isDarkMode ? 'bg-[#0A0A0A] border-[#DA251D]' : 'bg-[#FAF3EB] border-[#2C2A29]'}`}>
             <div className={`px-8 pt-6 pb-5 border-b-4 border-double transition-colors duration-500 ${isDarkMode ? 'bg-[#1C1C1C] border-[#DA251D]' : 'bg-[#F5E6D3] border-[#2C2A29]'}`}>
               <h3 className={`text-2xl md:text-3xl font-serif-heading font-black uppercase leading-tight mb-2 transition-colors ${isDarkMode ? 'text-[#E8D9C5]' : 'text-[#2C2A29]'}`}>
                 Tám đặc trưng cơ bản (Theo Nghị quyết số 27-NQ/TW)

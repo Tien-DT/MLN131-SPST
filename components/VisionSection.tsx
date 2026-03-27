@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useTheme } from '@/app/components/ThemeProvider';
 
 export default function VisionSection() {
@@ -56,6 +57,17 @@ export default function VisionSection() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className={`max-w-5xl mx-auto mt-10 border-4 border-double shadow-[8px_8px_0px_0px_var(--text-primary)] overflow-hidden transition-colors duration-500 ${isDarkMode ? 'bg-[#141414] border-[#DA251D]' : 'bg-[#FAF3EB] border-[#2C2A29]'}`}>
+          <div className={`relative aspect-[11/6] ${isDarkMode ? 'opacity-95' : 'opacity-100'}`}>
+            <Image
+              src="/images/vision/17489359243.jpg"
+              alt="Hình minh họa tầm nhìn phát triển Nhà nước pháp quyền Việt Nam"
+              fill
+              className="object-cover"
+            />
+          </div>
         </div>
       </div>
     </section>

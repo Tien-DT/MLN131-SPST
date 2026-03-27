@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -463,6 +463,16 @@ export default function BorderAndSubsidySection() {
             <h3 className={`text-2xl font-serif-heading border-b-2 transition-colors duration-500 pb-4 mb-6 ${isDarkMode ? 'text-[#E8D9C5] border-[#DA251D]/20' : 'text-[#2C2A29] border-[#D1C2A5]'}`}>
               Khái niệm
             </h3>
+            <figure className="mb-6">
+              <div className={`relative aspect-[16/9] overflow-hidden border-2 shadow-[4px_4px_0px_0px_var(--text-primary)] transition-colors duration-500 ${isDarkMode ? 'border-[#DA251D]/40' : 'border-[#2C2A29]/30'}`}>
+                <Image
+                  src="/images/concept/hq720.jpg"
+                  alt="Việt Nam là Nhà nước của dân, do dân, vì dân"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </figure>
             <p className={`font-serif-body text-justify leading-relaxed transition-colors ${isDarkMode ? 'text-[#E8D9C5]/70' : 'text-[#5C554E]'}`}>
               Nhà nước pháp quyền xã hội chủ nghĩa Việt Nam là Nhà nước của Nhân dân, do Nhân dân, vì Nhân dân, do Đảng Cộng sản Việt Nam lãnh đạo. Nhà nước quản lý xã hội bằng Hiến pháp và pháp luật, lấy lợi ích hợp pháp, chính đáng của người dân và doanh nghiệp làm trọng tâm của mọi chính sách.
             </p>
