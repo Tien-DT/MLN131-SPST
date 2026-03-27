@@ -16,7 +16,7 @@ const members = [
 const aiTools = [
   {
     name: "NotebookLM",
-    description: "Kiểm duyệt nội dung, Tạo video tổng hợp kiến thức cho trang web",
+    description: "",
     icon: Video,
     color: "text-blue-500",
     bg: "bg-blue-50",
@@ -133,9 +133,11 @@ export default function ThanhVienPage() {
                     </div>
                     <div>
                       <h3 className="font-serif-heading text-lg font-bold text-[#2C2A29] mb-1">{tool.name}</h3>
-                      <p className="text-sm font-serif-body text-[#5C554E] leading-relaxed">
-                        {tool.description}
-                      </p>
+                      {tool.description && (
+                        <p className="text-sm font-serif-body text-[#5C554E] leading-relaxed">
+                          {tool.description}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </motion.div>
